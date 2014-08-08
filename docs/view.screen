@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model:Screen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:model="http://wireframesketcher.com/1.0/model.ecore">
+  <widgets xsi:type="model:WidgetGroup" id="29" x="8" y="8" measuredWidth="745" measuredHeight="226">
+    <widgets xsi:type="model:Window" id="1" width="745" height="226" text="分类管理 - 视图" measuredWidth="745" measuredHeight="226" minimizeButton="true" maximizeButton="true"/>
+    <widgets xsi:type="model:ButtonBar" id="3" x="4" y="23" text="新建, 编辑, 删除" measuredWidth="134" measuredHeight="30" selection="0">
+      <font/>
+      <items x="0" y="0" width="45" height="30" text="新建"/>
+      <items x="45" y="0" width="44" height="30" text="编辑"/>
+      <items x="89" y="0" width="45" height="30" text="删除"/>
+    </widgets>
+    <widgets xsi:type="model:Table" id="5" x="127" y="55" width="618" height="171" text="(w:30). !,(w:30). 状态,(w:60). 所属分类,(w:80). 名称,(w:60). 编码,(w:60). 排序号,(w:145). 权限配置,最后修改&#xA;1,正常,,模板分类,TPL,10,{wrench}小张(编辑),小明 (2013-01-01 10:15)&#xA;2,正常,模板分类,经济合同,JJHT,10-01,,小明 (2013-01-01 10:15)&#xA;3,正常,模板分类,劳动合同,LDHT,10-02,,小明 (2013-01-01 10:15)&#xA;4,正常,模板分类,配件,PMC,10-03,,小明 (2013-01-01 10:15)&#xA;5,正常,,资产分类,ZC,12,{wrench}小李(编辑),小明 (2013-01-01 10:15)&#xA;" measuredWidth="618" measuredHeight="171" alternative="#eeeeee">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:SearchField" id="7" x="556" y="25" width="183" measuredWidth="183" measuredHeight="25">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:ButtonBar" id="149" x="140" y="23" text="正常, 禁用, 全部" measuredWidth="134" measuredHeight="30" selection="0">
+      <font/>
+      <items x="0" y="0" width="45" height="30" text="正常"/>
+      <items x="45" y="0" width="44" height="30" text="禁用"/>
+      <items x="89" y="0" width="45" height="30" text="全部"/>
+    </widgets>
+    <widgets xsi:type="model:Tree" id="150" y="55" width="129" height="171" text="全部&#xA;[-] 模板分类&#xA;-[+] 经济合同&#xA;-[+] 劳动合同&#xA;-[+] 配件&#xA;[+] 资产分类" measuredWidth="129" measuredHeight="171" verticalScrollbar="true" selection="0">
+      <items x="0" y="5" width="112" height="23" text="全部"/>
+      <items x="0" y="28" width="112" height="23" text="[-] 模板分类"/>
+      <items x="0" y="51" width="112" height="23" text="-[+] 经济合同"/>
+      <items x="0" y="74" width="112" height="23" text="-[+] 劳动合同"/>
+      <items x="0" y="97" width="112" height="23" text="-[+] 配件"/>
+      <items x="0" y="120" width="112" height="23" text="[+] 资产分类"/>
+      <font/>
+    </widgets>
+  </widgets>
+  <widgets xsi:type="model:WidgetGroup" id="177" x="8" y="240" measuredWidth="745" measuredHeight="226">
+    <widgets xsi:type="model:Window" id="178" width="745" height="226" text="模板分类 - 视图" measuredWidth="745" measuredHeight="226" minimizeButton="true" maximizeButton="true"/>
+    <widgets xsi:type="model:ButtonBar" id="179" x="4" y="23" text="新建, 编辑, 删除" measuredWidth="134" measuredHeight="30" selection="0">
+      <font/>
+      <items x="0" y="0" width="45" height="30" text="新建"/>
+      <items x="45" y="0" width="44" height="30" text="编辑"/>
+      <items x="89" y="0" width="45" height="30" text="删除"/>
+    </widgets>
+    <widgets xsi:type="model:Table" id="180" x="127" y="55" width="618" height="171" text="(w:30). !,(w:30). 状态,(w:60). 所属分类,(w:80). 名称,(w:60). 编码,(w:60). 排序号,(w:145). 权限配置,最后修改&#xA;1,正常,模板分类,经济合同,JJHT,10-01,,小明 (2013-01-01 10:15)&#xA;2,正常,模板分类,劳动合同,LDHT,10-02,,小明 (2013-01-01 10:15)&#xA;3,正常,模板分类,配件,PMC,10-03,,小明 (2013-01-01 10:15)" measuredWidth="618" measuredHeight="171" alternative="#eeeeee">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:SearchField" id="181" x="556" y="25" width="183" measuredWidth="183" measuredHeight="25">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:ButtonBar" id="182" x="140" y="23" text="正常, 禁用, 全部" measuredWidth="134" measuredHeight="30" selection="0">
+      <font/>
+      <items x="0" y="0" width="45" height="30" text="正常"/>
+      <items x="45" y="0" width="44" height="30" text="禁用"/>
+      <items x="89" y="0" width="45" height="30" text="全部"/>
+    </widgets>
+    <widgets xsi:type="model:Tree" id="183" y="55" width="129" height="171" text="全部&#xA;[+] 经济合同&#xA;[+] 劳动合同&#xA;[+] 配件" measuredWidth="129" measuredHeight="171" verticalScrollbar="true" selection="0">
+      <items x="0" y="5" width="112" height="23" text="全部"/>
+      <items x="0" y="28" width="112" height="23" text="[+] 经济合同"/>
+      <items x="0" y="51" width="112" height="23" text="[+] 劳动合同"/>
+      <items x="0" y="74" width="112" height="23" text="[+] 配件"/>
+      <font/>
+    </widgets>
+  </widgets>
+  <widgets xsi:type="model:Note" id="184" x="8" y="480" width="493" height="185" text="1）角色配置：&#xD;&#xA;可以通过配置文件或继承扩展，将指定节点的管理公布为特定的模块使用。初期实现如下3类：&#xD;&#xA;> 分类管理（BC_CATEGORY_MANAGE）&#xD;&#xA;> 资产分类管理（BC_ASSET_TYPE_MANAGE）&#xD;&#xA;> 模板分类管理（BC_TEMPLATE_TYPE_MANAGE）&#xD;&#xA;有相应的管理角色，就可以完全管理相应的节点。如过没有相应的角色，则只可管理有相应ACL编辑权限的节点及其子节点。&#xD;&#xA;2）删除操作说明：父级节点不允许直接删除，提示用户须先删除其子节点。&#xD;&#xA;3）权限配置列的图标为配置对应此分类的ACL配置。" measuredWidth="493" measuredHeight="185" annotation="true" textAlignment="Left">
+    <font/>
+  </widgets>
+  <hRuler/>
+  <vRuler/>
+  <font size="12px"/>
+</model:Screen>
