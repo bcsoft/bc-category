@@ -6,7 +6,7 @@
 	<!-- 管理端 -->
 	<package name="category" extends="bc-default" namespace="/bc/category">
 		<!-- 视图：分页 -->
-		<action name="paging" class="categorysAction" method="paging">
+		<action name="paging" class="categoryViewAction" method="paging">
 			<!-- 窗口标题 -->
 			<param name="pageTitle">分类管理</param>
 			<!-- 根节点全编码 -->
@@ -16,32 +16,32 @@
 		</action>
 
 		<!-- 视图：分页数据 -->
-		<action name="data" class="categorysAction" method="data">
+		<action name="data" class="categoryViewAction" method="data">
 			<param name="rootCode"></param>
 			<param name="manageRole">BC_CATEGORY_MANAGE</param>
 		</action>
 
 		<!-- 视图：导出数据 -->
-		<action name="export" class="categorysAction" method="export">
+		<action name="export" class="categoryViewAction" method="export">
 			<param name="rootCode"></param>
 			<param name="manageRole">BC_CATEGORY_MANAGE</param>
 		</action>
 
 		<!-- 表单：新建|编辑|查看 -->
-		<action name="form" class="categoryAction" method="form">
+		<action name="form" class="categoryFormAction" method="form">
 			<param name="rootCode"></param>
 			<param name="manageRole">BC_CATEGORY_MANAGE</param>
 			<result name="form">/modules/bc/category/form.jsp</result>
 		</action>
 
 		<!-- 表单：保存 -->
-		<action name="save" class="categoryAction" method="save">
+		<action name="save" class="categoryFormAction" method="save">
 			<param name="rootCode"></param>
 			<param name="manageRole">BC_CATEGORY_MANAGE</param>
 		</action>
 
 		<!-- 视图：删除 -->
-		<action name="delete" class="categoryAction" method="delete">
+		<action name="delete" class="categoryFormAction" method="delete">
 			<param name="rootCode"></param>
 			<param name="manageRole">BC_CATEGORY_MANAGE</param>
 		</action>
@@ -50,7 +50,7 @@
 	<!-- 模板分类 -->
 	<package name="assetType" extends="bc-default" namespace="/bc/asset">
 		<!-- 视图：分页 -->
-		<action name="paging" class="categorysAction" method="paging">
+		<action name="paging" class="categoryViewAction" method="paging">
 			<!-- 窗口标题 -->
 			<param name="pageTitle">资产分类</param>
 			<!-- 根节点全编码 -->
@@ -60,32 +60,32 @@
 		</action>
 
 		<!-- 视图：分页数据 -->
-		<action name="data" class="categorysAction" method="data">
+		<action name="data" class="categoryViewAction" method="data">
 			<param name="rootCode">ASSET_TYPE</param>
 			<param name="manageRole">BC_ASSET_TYPE_MANAGE</param>
 		</action>
 
 		<!-- 视图：导出数据 -->
-		<action name="export" class="categorysAction" method="export">
+		<action name="export" class="categoryViewAction" method="export">
 			<param name="rootCode">ASSET_TYPE</param>
 			<param name="manageRole">BC_ASSET_TYPE_MANAGE</param>
 		</action>
 
 		<!-- 表单：新建|编辑|查看 -->
-		<action name="form" class="categoryAction" method="form">
+		<action name="form" class="categoryFormAction" method="form">
 			<param name="rootCode">ASSET_TYPE</param>
 			<param name="manageRole">BC_ASSET_TYPE_MANAGE</param>
 			<result name="form">/modules/bc/category/form.jsp</result>
 		</action>
 
 		<!-- 表单：保存 -->
-		<action name="save" class="categoryAction" method="save">
+		<action name="save" class="categoryFormAction" method="save">
 			<param name="rootCode">ASSET_TYPE</param>
 			<param name="manageRole">BC_ASSET_TYPE_MANAGE</param>
 		</action>
 
 		<!-- 视图：删除 -->
-		<action name="delete" class="categoryAction" method="delete">
+		<action name="delete" class="categoryFormAction" method="delete">
 			<param name="rootCode">ASSET_TYPE</param>
 			<param name="manageRole">BC_ASSET_TYPE_MANAGE</param>
 		</action>
