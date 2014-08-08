@@ -10,39 +10,39 @@
 			<!-- 窗口标题 -->
 			<param name="pageTitle">分类管理</param>
 			<!-- 根节点全编码 -->
-			<param name="rootCode"></param>
+			<param name="rootNode"></param>
 			<!-- 管理角色的编码 -->
 			<param name="manageRole">BC_CATEGORY_MANAGE</param>
 		</action>
 
 		<!-- 视图：分页数据 -->
 		<action name="data" class="categoryViewAction" method="data">
-			<param name="rootCode"></param>
+			<param name="rootNode"></param>
 			<param name="manageRole">BC_CATEGORY_MANAGE</param>
 		</action>
 
 		<!-- 视图：导出数据 -->
 		<action name="export" class="categoryViewAction" method="export">
-			<param name="rootCode"></param>
+			<param name="rootNode"></param>
 			<param name="manageRole">BC_CATEGORY_MANAGE</param>
 		</action>
 
 		<!-- 表单：新建|编辑|查看 -->
 		<action name="form" class="categoryFormAction" method="form">
-			<param name="rootCode"></param>
+			<param name="rootNode"></param>
 			<param name="manageRole">BC_CATEGORY_MANAGE</param>
 			<result name="form">/modules/bc/category/form.jsp</result>
 		</action>
 
 		<!-- 表单：保存 -->
 		<action name="save" class="categoryFormAction" method="save">
-			<param name="rootCode"></param>
+			<param name="rootNode"></param>
 			<param name="manageRole">BC_CATEGORY_MANAGE</param>
 		</action>
 
 		<!-- 视图：删除 -->
 		<action name="delete" class="categoryFormAction" method="delete">
-			<param name="rootCode"></param>
+			<param name="rootNode"></param>
 			<param name="manageRole">BC_CATEGORY_MANAGE</param>
 		</action>
 	</package>
@@ -54,39 +54,39 @@
 			<!-- 窗口标题 -->
 			<param name="pageTitle">资产分类</param>
 			<!-- 根节点全编码 -->
-			<param name="rootCode">ASSET_TYPE</param>
+			<param name="rootNode">ASSET_TYPE</param>
 			<!-- 管理角色的编码 -->
 			<param name="manageRole">BC_ASSET_TYPE_MANAGE</param>
 		</action>
 
 		<!-- 视图：分页数据 -->
 		<action name="data" class="categoryViewAction" method="data">
-			<param name="rootCode">ASSET_TYPE</param>
+			<param name="rootNode">ASSET_TYPE</param>
 			<param name="manageRole">BC_ASSET_TYPE_MANAGE</param>
 		</action>
 
 		<!-- 视图：导出数据 -->
 		<action name="export" class="categoryViewAction" method="export">
-			<param name="rootCode">ASSET_TYPE</param>
+			<param name="rootNode">ASSET_TYPE</param>
 			<param name="manageRole">BC_ASSET_TYPE_MANAGE</param>
 		</action>
 
 		<!-- 表单：新建|编辑|查看 -->
 		<action name="form" class="categoryFormAction" method="form">
-			<param name="rootCode">ASSET_TYPE</param>
+			<param name="rootNode">ASSET_TYPE</param>
 			<param name="manageRole">BC_ASSET_TYPE_MANAGE</param>
 			<result name="form">/modules/bc/category/form.jsp</result>
 		</action>
 
 		<!-- 表单：保存 -->
 		<action name="save" class="categoryFormAction" method="save">
-			<param name="rootCode">ASSET_TYPE</param>
+			<param name="rootNode">ASSET_TYPE</param>
 			<param name="manageRole">BC_ASSET_TYPE_MANAGE</param>
 		</action>
 
 		<!-- 视图：删除 -->
 		<action name="delete" class="categoryFormAction" method="delete">
-			<param name="rootCode">ASSET_TYPE</param>
+			<param name="rootNode">ASSET_TYPE</param>
 			<param name="manageRole">BC_ASSET_TYPE_MANAGE</param>
 		</action>
 	</package>
