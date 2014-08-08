@@ -1,7 +1,7 @@
 -- 插入数据
 
 insert into BC_CATEGORY (ID,PID,STATUS_,CODE,NAME_,SN,MODIFIED_DATE,MODIFIER_ID)
-  select NEXTVAL('CORE_SEQUENCE'),0,0,'TPL','模板','0000',now(),
+  select NEXTVAL('CORE_SEQUENCE'),null,0,'TPL','模板','0000',now(),
     (select id from bc_identity_actor_history where actor_code='admin' and current=true)
   from bc_dual
   where not exists (
@@ -10,7 +10,7 @@ insert into BC_CATEGORY (ID,PID,STATUS_,CODE,NAME_,SN,MODIFIED_DATE,MODIFIER_ID)
   );
 
 insert into BC_CATEGORY (ID,PID,STATUS_,CODE,NAME_,SN,MODIFIED_DATE,MODIFIER_ID)
-  select NEXTVAL('CORE_SEQUENCE'),0,0,'BGYP','办公用品','0001',now(),
+  select NEXTVAL('CORE_SEQUENCE'),null,0,'BGYP','办公用品','0001',now(),
     (select id from bc_identity_actor_history where actor_code='admin' and current=true)
   from bc_dual
   where not exists (
@@ -19,7 +19,7 @@ insert into BC_CATEGORY (ID,PID,STATUS_,CODE,NAME_,SN,MODIFIED_DATE,MODIFIER_ID)
   );
 
 insert into BC_CATEGORY (ID,PID,STATUS_,CODE,NAME_,SN,MODIFIED_DATE,MODIFIER_ID)
-  select NEXTVAL('CORE_SEQUENCE'),0,0,'ZC','资产','0002',now(),
+  select NEXTVAL('CORE_SEQUENCE'),null,0,'ZC','资产','0002',now(),
     (select id from bc_identity_actor_history where actor_code='admin' and current=true)
   from bc_dual
   where not exists (
