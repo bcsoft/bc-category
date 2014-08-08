@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model:Screen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:model="http://wireframesketcher.com/1.0/model.ecore">
+  <widgets xsi:type="model:WidgetGroup" id="154" x="8" y="8" measuredWidth="273" measuredHeight="257">
+    <widgets xsi:type="model:Window" id="155" width="273" height="257" text="选择分类 - 单选" measuredWidth="273" measuredHeight="257" minimizeButton="true" maximizeButton="true"/>
+    <widgets xsi:type="model:WidgetGroup" id="158" x="86" y="24" measuredWidth="183" measuredHeight="25">
+      <widgets xsi:type="model:SearchField" id="159" width="183" measuredWidth="183" measuredHeight="25">
+        <font/>
+      </widgets>
+      <widgets xsi:type="model:Icon" id="160" x="156" y="6" height="14" measuredWidth="16" measuredHeight="14" icon="desc (small)"/>
+    </widgets>
+    <widgets xsi:type="model:Button" id="166" x="213" y="226" width="56" text="确定" measuredWidth="56" measuredHeight="27">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Table" id="170" y="52" width="273" height="171" text="(w:30). ,(w:30). 状态,(w:80). 名称,(w:60). 编码,(w:60). 所属分类&#xA;1,正常,模板,TPL&#xA;2,正常,经济合同,JJHT,模板&#xA;3,正常,劳动合同,LDHT,模板&#xA;4,正常,配件,PMC,模板&#xA;5,正常,办公用品,BGYP&#xA;6,正常,资产,ZC&#xA;" measuredWidth="273" measuredHeight="171" alternative="#eeeeee">
+      <font/>
+    </widgets>
+  </widgets>
+  <hRuler/>
+  <vRuler/>
+  <font size="12px"/>
+</model:Screen>
