@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model:Screen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:model="http://wireframesketcher.com/1.0/model.ecore">
+  <widgets xsi:type="model:WidgetGroup" id="119" x="8" y="8" measuredWidth="493" measuredHeight="145">
+    <widgets xsi:type="model:Window" id="120" width="493" height="145" text="【名称】 - 表单" measuredWidth="493" measuredHeight="145" minimizeButton="true" maximizeButton="true"/>
+    <widgets xsi:type="model:HLine" id="121" y="104" width="493" measuredWidth="493" measuredHeight="6"/>
+    <widgets xsi:type="model:Button" id="122" x="432" y="112" width="56" text="保存" measuredWidth="56" measuredHeight="27">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="125" x="30" y="25" text="*名称：" measuredWidth="46" measuredHeight="25" textAlignment="Right">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:TextField" id="126" x="73" y="25" width="168" text="经济合同" measuredWidth="168" measuredHeight="25">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="128" x="258" y="25" text="所属分类：" measuredWidth="65" measuredHeight="25" textAlignment="Right">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="132" x="258" y="80" text="最后更新：小明 (2011-01-02 10:15)" measuredWidth="202" measuredHeight="25" textAlignment="Right" foreground="#999999">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="133" x="30" y="52" text="*编码：" measuredWidth="46" measuredHeight="25" textAlignment="Right">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:TextField" id="134" x="73" y="52" width="168" text="JJHT" measuredWidth="168" measuredHeight="25">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:RadioButton" id="142" x="76" y="80" text="正常" measuredWidth="44" measuredHeight="25" selected="true">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:RadioButton" id="143" x="131" y="80" text="禁用" measuredWidth="44" measuredHeight="25">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="144" x="36" y="80" text="状态：" measuredWidth="41" measuredHeight="25">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:WidgetGroup" id="148" x="320" y="25" measuredWidth="168" measuredHeight="25">
+      <widgets xsi:type="model:TextField" id="130" width="168" text="模板" measuredWidth="168" measuredHeight="25">
+        <font/>
+      </widgets>
+      <widgets xsi:type="model:Icon" id="141" x="148" y="5" measuredWidth="16" measuredHeight="16" foreground="#666666" icon="delete (small)"/>
+      <widgets xsi:type="model:Icon" id="147" x="130" y="5" measuredWidth="16" measuredHeight="16" foreground="#666666" icon="add (small)"/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="168" x="270" y="52" text="排序号：" measuredWidth="53" measuredHeight="25" textAlignment="Right">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:TextField" id="169" x="320" y="52" width="168" text="10-01" measuredWidth="168" measuredHeight="25">
+      <font/>
+    </widgets>
+  </widgets>
+  <hRuler/>
+  <vRuler/>
+  <font size="12px"/>
+</model:Screen>
