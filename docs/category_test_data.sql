@@ -32,7 +32,7 @@ insert into BC_CATEGORY (ID,PID,STATUS_,CODE,NAME_,SN,MODIFIED_DATE,MODIFIER_ID)
 -- 模板 子节点
 insert into BC_CATEGORY (ID,PID,STATUS_,CODE,NAME_,SN,MODIFIED_DATE,MODIFIER_ID)
   select NEXTVAL('CORE_SEQUENCE'),(select id from bc_category where code='TPL'),
-    0,'JJHT','经济合同','11-01',now(),
+    0,'JJHT','经济合同','01',now(),
     (select id from bc_identity_actor_history where actor_code='admin' and current=true)
   from bc_dual
   where not exists (
@@ -42,7 +42,7 @@ insert into BC_CATEGORY (ID,PID,STATUS_,CODE,NAME_,SN,MODIFIED_DATE,MODIFIER_ID)
 
 insert into BC_CATEGORY (ID,PID,STATUS_,CODE,NAME_,SN,MODIFIED_DATE,MODIFIER_ID)
   select NEXTVAL('CORE_SEQUENCE'),(select id from bc_category where code='TPL'),
-    0,'LDHT','劳动合同','11-02',now(),
+    0,'LDHT','劳动合同','02',now(),
     (select id from bc_identity_actor_history where actor_code='admin' and current=true)
   from bc_dual
   where not exists (
@@ -52,7 +52,7 @@ insert into BC_CATEGORY (ID,PID,STATUS_,CODE,NAME_,SN,MODIFIED_DATE,MODIFIER_ID)
 
 insert into BC_CATEGORY (ID,PID,STATUS_,CODE,NAME_,SN,MODIFIED_DATE,MODIFIER_ID)
   select NEXTVAL('CORE_SEQUENCE'),(select id from bc_category where code='TPL'),
-    0,'ARRANGE','编排','11-03',now(),
+    0,'ARRANGE','编排','03',now(),
     (select id from bc_identity_actor_history where actor_code='admin' and current=true)
   from bc_dual
   where not exists (
@@ -62,7 +62,7 @@ insert into BC_CATEGORY (ID,PID,STATUS_,CODE,NAME_,SN,MODIFIED_DATE,MODIFIER_ID)
 
 insert into BC_CATEGORY (ID,PID,STATUS_,CODE,NAME_,SN,MODIFIED_DATE,MODIFIER_ID)
   select NEXTVAL('CORE_SEQUENCE'),(select id from bc_category where code='TPL'),
-    0,'CARTAX','车船税','11-04',now(),
+    0,'CARTAX','车船税','04',now(),
     (select id from bc_identity_actor_history where actor_code='admin' and current=true)
   from bc_dual
   where not exists (
@@ -72,7 +72,7 @@ insert into BC_CATEGORY (ID,PID,STATUS_,CODE,NAME_,SN,MODIFIED_DATE,MODIFIER_ID)
 
 insert into BC_CATEGORY (ID,PID,STATUS_,CODE,NAME_,SN,MODIFIED_DATE,MODIFIER_ID)
   select NEXTVAL('CORE_SEQUENCE'),(select id from bc_category where code='TPL'),
-    0,'PMC','配件','11-05',now(),
+    0,'PMC','配件','05',now(),
     (select id from bc_identity_actor_history where actor_code='admin' and current=true)
   from bc_dual
   where not exists (
@@ -82,7 +82,7 @@ insert into BC_CATEGORY (ID,PID,STATUS_,CODE,NAME_,SN,MODIFIED_DATE,MODIFIER_ID)
 
 insert into BC_CATEGORY (ID,PID,STATUS_,CODE,NAME_,SN,MODIFIED_DATE,MODIFIER_ID)
   select NEXTVAL('CORE_SEQUENCE'),(select id from bc_category where code='TPL'),
-    0,'REPORT','统计报表','11-06',now(),
+    0,'REPORT','统计报表','06',now(),
     (select id from bc_identity_actor_history where actor_code='admin' and current=true)
   from bc_dual
   where not exists (
@@ -94,7 +94,7 @@ insert into BC_CATEGORY (ID,PID,STATUS_,CODE,NAME_,SN,MODIFIED_DATE,MODIFIER_ID)
 -- 模板/经济合同 子节点
 insert into BC_CATEGORY (ID,PID,STATUS_,CODE,NAME_,SN,MODIFIED_DATE,MODIFIER_ID)
   select NEXTVAL('CORE_SEQUENCE'),(select id from bc_category where code='JJHT'),
-    0,'HT','合同','11-01-01',now(),
+    0,'HT','合同','01',now(),
     (select id from bc_identity_actor_history where actor_code='admin' and current=true)
   from bc_dual
   where not exists (
@@ -104,7 +104,7 @@ insert into BC_CATEGORY (ID,PID,STATUS_,CODE,NAME_,SN,MODIFIED_DATE,MODIFIER_ID)
 
 insert into BC_CATEGORY (ID,PID,STATUS_,CODE,NAME_,SN,MODIFIED_DATE,MODIFIER_ID)
   select NEXTVAL('CORE_SEQUENCE'),(select id from bc_category where code='JJHT'),
-    0,'SFTZ','收费通知','11-01-02',now(),
+    0,'SFTZ','收费通知','02',now(),
     (select id from bc_identity_actor_history where actor_code='admin' and current=true)
   from bc_dual
   where not exists (
@@ -114,7 +114,7 @@ insert into BC_CATEGORY (ID,PID,STATUS_,CODE,NAME_,SN,MODIFIED_DATE,MODIFIER_ID)
 
 insert into BC_CATEGORY (ID,PID,STATUS_,CODE,NAME_,SN,MODIFIED_DATE,MODIFIER_ID)
   select NEXTVAL('CORE_SEQUENCE'),(select id from bc_category where code='JJHT'),
-    0,'BCXY','补充协议','11-01-03',now(),
+    0,'BCXY','补充协议','03',now(),
     (select id from bc_identity_actor_history where actor_code='admin' and current=true)
   from bc_dual
   where not exists (
@@ -124,7 +124,7 @@ insert into BC_CATEGORY (ID,PID,STATUS_,CODE,NAME_,SN,MODIFIED_DATE,MODIFIER_ID)
 
 insert into BC_CATEGORY (ID,PID,STATUS_,CODE,NAME_,SN,MODIFIED_DATE,MODIFIER_ID)
   select NEXTVAL('CORE_SEQUENCE'),(select id from bc_category where code='JJHT'),
-    0,'TBXY','替班协议','11-01-04',now(),
+    0,'TBXY','替班协议','04',now(),
     (select id from bc_identity_actor_history where actor_code='admin' and current=true)
   from bc_dual
   where not exists (
@@ -134,7 +134,7 @@ insert into BC_CATEGORY (ID,PID,STATUS_,CODE,NAME_,SN,MODIFIED_DATE,MODIFIER_ID)
 
 insert into BC_CATEGORY (ID,PID,STATUS_,CODE,NAME_,SN,MODIFIED_DATE,MODIFIER_ID)
   select NEXTVAL('CORE_SEQUENCE'),(select id from bc_category where code='JJHT'),
-    0,'ZZXY','终止协议','11-01-05',now(),
+    0,'ZZXY','终止协议','05',now(),
     (select id from bc_identity_actor_history where actor_code='admin' and current=true)
   from bc_dual
   where not exists (
@@ -144,7 +144,7 @@ insert into BC_CATEGORY (ID,PID,STATUS_,CODE,NAME_,SN,MODIFIED_DATE,MODIFIER_ID)
 
 insert into BC_CATEGORY (ID,PID,STATUS_,CODE,NAME_,SN,MODIFIED_DATE,MODIFIER_ID)
   select NEXTVAL('CORE_SEQUENCE'),(select id from bc_category where code='JJHT'),
-    0,'ZTBGXY','主体变更协议','11-01-06',now(),
+    0,'ZTBGXY','主体变更协议','06',now(),
     (select id from bc_identity_actor_history where actor_code='admin' and current=true)
   from bc_dual
   where not exists (
@@ -154,7 +154,7 @@ insert into BC_CATEGORY (ID,PID,STATUS_,CODE,NAME_,SN,MODIFIED_DATE,MODIFIER_ID)
 
 insert into BC_CATEGORY (ID,PID,STATUS_,CODE,NAME_,SN,MODIFIED_DATE,MODIFIER_ID)
   select NEXTVAL('CORE_SEQUENCE'),(select id from bc_category where code='JJHT'),
-    0,'CLWXXY','车辆维修协议','11-01-07',now(),
+    0,'CLWXXY','车辆维修协议','07',now(),
     (select id from bc_identity_actor_history where actor_code='admin' and current=true)
   from bc_dual
   where not exists (
@@ -164,7 +164,7 @@ insert into BC_CATEGORY (ID,PID,STATUS_,CODE,NAME_,SN,MODIFIED_DATE,MODIFIER_ID)
 
 insert into BC_CATEGORY (ID,PID,STATUS_,CODE,NAME_,SN,MODIFIED_DATE,MODIFIER_ID)
   select NEXTVAL('CORE_SEQUENCE'),(select id from bc_category where code='JJHT'),
-    0,'SQS','申请书','11-01-08',now(),
+    0,'SQS','申请书','08',now(),
     (select id from bc_identity_actor_history where actor_code='admin' and current=true)
   from bc_dual
   where not exists (
@@ -174,7 +174,7 @@ insert into BC_CATEGORY (ID,PID,STATUS_,CODE,NAME_,SN,MODIFIED_DATE,MODIFIER_ID)
 
 insert into BC_CATEGORY (ID,PID,STATUS_,CODE,NAME_,SN,MODIFIED_DATE,MODIFIER_ID)
   select NEXTVAL('CORE_SEQUENCE'),(select id from bc_category where code='JJHT'),
-    0,'CNS','承诺书','11-01-09',now(),
+    0,'CNS','承诺书','09',now(),
     (select id from bc_identity_actor_history where actor_code='admin' and current=true)
   from bc_dual
   where not exists (
@@ -184,7 +184,7 @@ insert into BC_CATEGORY (ID,PID,STATUS_,CODE,NAME_,SN,MODIFIED_DATE,MODIFIER_ID)
 
 insert into BC_CATEGORY (ID,PID,STATUS_,CODE,NAME_,SN,MODIFIED_DATE,MODIFIER_ID)
   select NEXTVAL('CORE_SEQUENCE'),(select id from bc_category where code='JJHT'),
-    0,'GZZF','工资支付','11-01-10',now(),
+    0,'GZZF','工资支付','10',now(),
     (select id from bc_identity_actor_history where actor_code='admin' and current=true)
   from bc_dual
   where not exists (
@@ -194,7 +194,7 @@ insert into BC_CATEGORY (ID,PID,STATUS_,CODE,NAME_,SN,MODIFIED_DATE,MODIFIER_ID)
 
 insert into BC_CATEGORY (ID,PID,STATUS_,CODE,NAME_,SN,MODIFIED_DATE,MODIFIER_ID)
   select NEXTVAL('CORE_SEQUENCE'),(select id from bc_category where code='JJHT'),
-    0,'ZFGJJ','住房公积金','11-01-11',now(),
+    0,'ZFGJJ','住房公积金','11',now(),
     (select id from bc_identity_actor_history where actor_code='admin' and current=true)
   from bc_dual
   where not exists (
