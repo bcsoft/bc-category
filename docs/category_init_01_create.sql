@@ -19,7 +19,7 @@ CREATE TABLE bc_category(
       REFERENCES bc_identity_actor_history (id)
       ON UPDATE NO ACTION ON DELETE NO ACTION,
   CONSTRAINT bcuk_category_pid_code UNIQUE (pid, code),
-  CONSTRAINT bcck_category_code CHECK (code !~~ '%/%')
+  CONSTRAINT bcck_category_code_no_slash CHECK (code !~~ '%/%')
 );
 COMMENT ON TABLE bc_category IS '分类模块';
 COMMENT ON COLUMN bc_category.pid IS '父类别ID';
