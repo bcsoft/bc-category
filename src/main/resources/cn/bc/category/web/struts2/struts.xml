@@ -90,4 +90,9 @@
 			<param name="manageRole">BC_ASSET_TYPE_MANAGE</param>
 		</action>
 	</package>
+	<!-- 选择所属分类 -->
+	<package name="selectCategoryType" extends="bc-default" namespace="/bc/category/selectCategoryType">
+		<!-- 视图：分页 -->
+		<action name="paging" class="selectCategoryTypesAction" method="paging"></action>
+	</package>
 </struts>

@@ -39,3 +39,33 @@ COMMENT ON COLUMN bc_category.name_ IS '名称';
 COMMENT ON COLUMN bc_category.sn IS '同级节点间的顺序号';
 COMMENT ON COLUMN bc_category.modifier_id IS '最后修改人ID';
 COMMENT ON COLUMN bc_category.modified_date IS '最后修改时间';
+
+/**
+ * 根据pid获得对应的上级分类名称的字符串，如：合同的所属分类   格式："模板/经济合同"
+ */
+CREATE or replace FUNCTION func_get_category_type(in in_id int4, out o_type text)  AS 
+$$ 
+DECLARE
+   v_rec_record RECORD;
+BEGIN
+  o_type = '';
+  FOR v_rec_record IN (WITH RECURSIVE r AS (SELECT *
+                           FROM bc_category
+                          WHERE id = in_id
+                         union ALL
+                         SELECT bc_category.*
+                           FROM bc_category, r
+                          WHERE bc_category.id = r.pid)SELECT name_
+                         FROM r where r.id != in_id
+                        ORDER BY id) LOOP
+	if o_type ='' then
+		o_type := v_rec_record.name_;
+	else
+		o_type := o_type|| '/' || v_rec_record.name_;
+  	end if; 
+  
+  END LOOP;
+  return;
+END; 
+$$
+LANGUAGE 'plpgsql';
