@@ -1,0 +1,245 @@
+package cn.bc.category.web.struts2;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Controller;
+
+import cn.bc.BCConstants;
+import cn.bc.core.Page;
+import cn.bc.core.query.Query;
+import cn.bc.core.query.cfg.PagingQueryConfig;
+import cn.bc.core.query.condition.Condition;
+import cn.bc.db.jdbc.SqlObject;
+import cn.bc.db.jdbc.spring.JdbcTemplatePagingQuery;
+import cn.bc.identity.web.SystemContext;
+import cn.bc.template.service.TemplateService;
+import cn.bc.web.formater.EntityStatusFormater;
+import cn.bc.web.struts2.TreeViewAction;
+import cn.bc.web.ui.html.grid.Column;
+import cn.bc.web.ui.html.grid.IdColumn;
+import cn.bc.web.ui.html.grid.TextColumn4MapKey;
+import cn.bc.web.ui.html.page.PageOption;
+import cn.bc.web.ui.html.toolbar.Toolbar;
+import cn.bc.web.ui.html.tree.Tree;
+import cn.bc.web.ui.html.tree.TreeNode;
+import cn.bc.web.ui.json.Json;
+
+/**
+ * 分类视图Action
+ * 
+ * @author Action
+ *
+ */
+@Scope(BeanDefinition.SCOPE_PROTOTYPE)
+@Controller
+public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
+	private static final long serialVersionUID = 1L;
+	private final static Log logger = LogFactory.getLog(CategoryViewAction.class);
+
+	@Autowired
+	private TemplateService templateService;
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
+
+	/** 窗口标题 */
+	public String pageTitle;
+	/** 管理角色编码 */
+	public String manageRole;
+	/** 根节点全编码 */
+	public String rootNode;
+
+	@Override
+	public boolean isReadonly() {
+		// 判断当前用户是否只读，拥有manageRole角色即不用判断ACL权限
+		SystemContext context = (SystemContext) this.getContext();
+		boolean isReadonly = true;
+		if (manageRole != null && manageRole.length() != 0) 
+			isReadonly = !context.hasAnyRole(manageRole);
+		else if (!isReadonly) 
+			return isReadonly;
+
+		//TODO 不拥有角色，判断ACL权限
+		return isReadonly;
+	}
+
+	@Override
+	protected Condition getGridSpecalCondition() {
+		// TODO 状态为0，pid 为？ 的条件
+		return super.getGridSpecalCondition();
+	}
+
+	/**
+	 * SQL分页查询语句及参数配置
+	 * 
+	 * @return
+	 */
+	private PagingQueryConfig getPagingQueryConfig() {
+		//TODO 查询的SQL
+		String s1 = this.templateService.getContent("FLGL");
+		String s2 = "select count(*) from bc_category";
+		cn.bc.core.query.cfg.impl.PagingQueryConfig cfg =
+				new cn.bc.core.query.cfg.impl.PagingQueryConfig(s1, s2, null);
+
+		// 分页参数
+		Page<Map<String, Object>> p = getPage();
+		if (p != null) {
+			cfg.setLimit(p.getPageSize());
+			cfg.setOffset(p.getFirstResult());
+		}
+
+		return cfg;
+	}
+
+	@Override
+	protected Query<Map<String, Object>> getQuery() {
+		JdbcTemplatePagingQuery<Map<String, Object>> jdbcQuery =
+				new JdbcTemplatePagingQuery<Map<String,Object>>(jdbcTemplate, getPagingQueryConfig(), null);
+		jdbcQuery.condition(this.getGridCondition());
+		return jdbcQuery;
+	}
+
+	@Override
+	protected SqlObject<Map<String, Object>> getSqlObject() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	protected String getGridRowLabelExpression() {
+		// TODO 检查这个方法是否还被调用。不调用返回null即可
+		return "['pid'] + ['code']";
+	}
+
+	@Override
+	protected String[] getGridSearchFields() {
+		//TODO 查询条件中要匹配的域 要什么域
+		return new String[]{"father，c.name_，c.code"};
+	}
+
+	@Override
+	protected PageOption getHtmlPageOption() {
+		return super.getHtmlPageOption().setWidth(870).setMinWidth(600)
+				.setHeight(450).setMinHeight(350);
+	}
+
+	@Override
+	protected String getHtmlPageTitle() {
+		// TODO 根据根节点来自动改变窗口标题
+		return this.pageTitle;
+	}
+
+	@Override
+	protected Toolbar getHtmlPageToolbar() {
+		// 页面的标题 管理权限可以看到此工具条，只读用户则不能
+		// TODO 只读情况下，视图显示不正常
+		Toolbar toolbar = new Toolbar();
+		if (!this.isReadonly()) {
+			// 新建
+			toolbar.addButton(this.getDefaultCreateToolbarButton());
+			// 编辑
+			toolbar.addButton(this.getDefaultEditToolbarButton());
+			// 删除
+			toolbar.addButton(this.getDefaultDeleteToolbarButton());
+			// 状态
+			toolbar.addButton(Toolbar.getDefaultToolbarRadioGroup(
+					this.getStatues(), "status", 0, 
+					getText("title.click2changeSearchStatus")));
+		}
+		// 搜索按钮
+		toolbar.addButton(this.getDefaultSearchToolbarButton());
+		return toolbar;
+	}
+
+	@Override
+	protected List<Column> getGridColumns() {
+		List<Column> columns = new ArrayList<Column>();
+		//TODO id列
+		columns.add(new IdColumn().setId("id").setValueExpression("['pid'] + ',' + ['code']"));
+		// 状态
+		columns.add(new TextColumn4MapKey("status", "status_",
+				getText("category.status"), 35).setSortable(true)
+				.setValueFormater(new EntityStatusFormater(getStatues())));
+		//TODO 所属分类
+		columns.add(new TextColumn4MapKey("father", "father",
+				getText("category.father"), 80).setSortable(true));
+		// 名称
+		columns.add(new TextColumn4MapKey("name", "name_",
+				getText("category.name"), 80).setSortable(true));
+		// 编码
+		columns.add(new TextColumn4MapKey("code", "code",
+				getText("category.code"), 80).setSortable(true));
+		// 排序号
+		columns.add(new TextColumn4MapKey("sn", "sn",
+				getText("category.order"), 60).setSortable(true));
+		//TODO 权限配置
+		columns.add(new TextColumn4MapKey("acl", "acl",
+				getText("category.permiss")).setSortable(true));
+		// 最后修改
+		columns.add(new TextColumn4MapKey("modified", "modified",
+				getText("category.modified"), 240).setSortable(true));
+		return columns;
+	}
+
+	@Override
+	protected Tree getHtmlPageTree() {
+		Tree tree = new Tree("0", "全部");
+		tree.setShowRoot(true);
+
+		// 点击展开子节点图标的url
+		tree.setUrl(this.getHtmlPageNamespace() + "/loadTreeData");
+
+		// 树的参数配置
+		Json cfg = new Json();
+		// TODO 点击节点的回调函数
+		cfg.put("clickNode", "");
+		tree.setCfg(cfg);
+
+		// TODO 获取树的数据
+		List<String[]> treeData;
+
+		// TODO 构建树
+		Collection<TreeNode> treeNodes;
+		return tree;
+	}
+
+	/**
+	 * 展开树形菜单的子节点
+	 * 
+	 * @return
+	 */
+	public String loadTreeData() {
+		// TODO 展开树形菜单的子节点
+		return null;
+	}
+
+	/**
+	 * 状态值转换列表：正常|禁用|全部
+	 * 
+	 * @return
+	 */
+	protected Map<String, String> getStatues() {
+		Map<String, String> statues = new LinkedHashMap<String, String>();
+		statues.put(String.valueOf(BCConstants.STATUS_ENABLED), 
+				getText("bc.status.enabled"));
+		statues.put(String.valueOf(BCConstants.STATUS_DISABLED), 
+				getText("bc.status.disabled"));
+		statues.put("", getText("bc.status.all"));
+		return statues;
+	}
+
+	@Override
+	protected String getFormActionName() {
+		// TODO 获取表单action的简易名称
+		return null;
+	}
+
+}
