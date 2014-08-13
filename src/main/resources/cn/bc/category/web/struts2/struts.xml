@@ -4,7 +4,7 @@
     "http://struts.apache.org/dtds/struts-2.0.dtd">
 <struts>
 	<!-- 管理端 -->
-	<package name="category" extends="bc-default" namespace="/bc/category">
+	<package name="category" extends="bc-default" namespace="/bc/category" >
 		<!-- 视图：分页 -->
 		<action name="paging" class="categoryViewAction" method="paging">
 			<!-- 窗口标题 -->
@@ -27,7 +27,7 @@
 			<param name="manageRole">BC_CATEGORY_MANAGE</param>
 		</action>
 
-		<!-- 表单：新建|编辑|查看 -->
+		<!-- 表单：新建|编辑|查看 -->                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
 		<action name="form" class="categoryFormAction" method="form">
 			<param name="rootNode"></param>
 			<param name="manageRole">BC_CATEGORY_MANAGE</param>
@@ -94,5 +94,6 @@
 	<package name="selectCategoryType" extends="bc-default" namespace="/bc/category/selectCategoryType">
 		<!-- 视图：分页 -->
 		<action name="paging" class="selectCategoryTypesAction" method="paging"></action>
+		<action name="data" class="selectCategoryTypesAction" method="data"></action>
 	</package>
 </struts>
