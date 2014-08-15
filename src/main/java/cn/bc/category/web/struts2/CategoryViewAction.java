@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -15,10 +16,13 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 
 import cn.bc.BCConstants;
+import cn.bc.category.service.CategoryService;
 import cn.bc.core.Page;
 import cn.bc.core.query.Query;
 import cn.bc.core.query.cfg.PagingQueryConfig;
 import cn.bc.core.query.condition.Condition;
+import cn.bc.core.query.condition.ConditionUtils;
+import cn.bc.core.query.condition.impl.EqualsCondition;
 import cn.bc.db.jdbc.SqlObject;
 import cn.bc.db.jdbc.spring.JdbcTemplatePagingQuery;
 import cn.bc.identity.web.SystemContext;
@@ -33,6 +37,8 @@ import cn.bc.web.ui.html.toolbar.Toolbar;
 import cn.bc.web.ui.html.tree.Tree;
 import cn.bc.web.ui.html.tree.TreeNode;
 import cn.bc.web.ui.json.Json;
+
+import com.sun.star.uno.Exception;
 
 /**
  * 分类视图Action
@@ -50,6 +56,8 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 	private TemplateService templateService;
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
+	@Autowired
+	private CategoryService categoryService;
 
 	/** 窗口标题 */
 	public String pageTitle;
@@ -57,6 +65,10 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 	public String manageRole;
 	/** 根节点全编码 */
 	public String rootNode;
+	/** 树节点 */
+	public String pid = "RootNode:";
+	/** 状态：正常|禁用|全部 */
+	public String status = String.valueOf(0);
 
 	@Override
 	public boolean isReadonly() {
@@ -74,8 +86,18 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 
 	@Override
 	protected Condition getGridSpecalCondition() {
-		// TODO 状态为0，pid 为？ 的条件
-		return super.getGridSpecalCondition();
+		// TODO 状态条件
+		Condition statusCondition = null;
+		if (status != null && status.length() > 0) {
+			String[] ss = status.split(",");
+			if (ss.length == 1) {
+				statusCondition = new EqualsCondition("c.status_",
+						new Integer(ss[0]));
+			}
+		}
+
+		// 合并多个条件
+		return ConditionUtils.mix2AndCondition(statusCondition);
 	}
 
 	/**
@@ -191,24 +213,54 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 
 	@Override
 	protected Tree getHtmlPageTree() {
-		Tree tree = new Tree("0", "全部");
+		String RootNode = "RootNode:";
+		Tree tree = new Tree(RootNode, "全部");
 		tree.setShowRoot(true);
 
-		// 点击展开子节点图标的url
+		// 点击展开子节点图标的URL
 		tree.setUrl(this.getHtmlPageNamespace() + "/loadTreeData");
 
 		// 树的参数配置
 		Json cfg = new Json();
 		// TODO 点击节点的回调函数
-		cfg.put("clickNode", "");
+		cfg.put("clickNode", "bc.category.view.clickTreeNode");
 		tree.setCfg(cfg);
 
-		// TODO 获取树的数据
-		List<String[]> treeData;
+		// 获取树的数据 
+		List<Map<String, Object>> treeData = this.categoryService.findSubNodesData(RootNode);
 
-		// TODO 构建树
+		// 构建树的子节点
 		Collection<TreeNode> treeNodes;
+		try {
+			treeNodes = this.buildTreeNodes(treeData);
+			for (TreeNode treeNode : treeNodes) 
+				tree.addSubNode(treeNode);
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		}
+
 		return tree;
+	}
+
+	/**
+	 * 构建树节点
+	 * 
+	 * @param treeData 树节点数据
+	 * @return
+	 */
+	private Collection<TreeNode> buildTreeNodes(List<Map<String, Object>> treeData)
+			throws Exception {
+		List<TreeNode> treeNodes = new ArrayList<TreeNode>();
+		for (Map<String, Object> data : treeData) {
+			TreeNode node = null;
+			node = new TreeNode(
+				String.valueOf(data.get("code")) + ":" + String.valueOf(data.get("id")),
+				String.valueOf(data.get("name_")),
+				!(Integer.parseInt(String.valueOf(data.get("sub"))) > 0));
+
+			treeNodes.add(node);
+		}
+		return treeNodes;
 	}
 
 	/**
@@ -217,8 +269,24 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 	 * @return
 	 */
 	public String loadTreeData() {
-		// TODO 展开树形菜单的子节点
-		return null;
+		JSONObject json = new JSONObject();
+		try {
+			List<Map<String, Object>> data = 
+					this.categoryService.findSubNodesData(this.pid);
+			json.put("success", true);
+			json.put("subNodesCount", data.size());
+			json.put("html", TreeNode.buildSubNodes(this.buildTreeNodes(data)));
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		this.json = json.toString();
+		return "json";
+	}
+
+	@Override
+	protected Integer getTreeWith() {
+		return 140;
 	}
 
 	/**
@@ -234,6 +302,17 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 				getText("bc.status.disabled"));
 		statues.put("", getText("bc.status.all"));
 		return statues;
+	}
+
+	@Override
+	protected String getHtmlPageNamespace() {
+		return getModuleContextPath() + "/category";
+	}
+
+	@Override
+	protected String getHtmlPageJs() {
+		return this.getContextPath()
+				+ "/modules/bc/category/view.js";
 	}
 
 	@Override

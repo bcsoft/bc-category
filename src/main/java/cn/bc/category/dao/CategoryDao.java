@@ -1,4 +1,7 @@
-package cn.bc.category.Dao;
+package cn.bc.category.dao;
+
+import java.util.List;
+import java.util.Map;
 
 import cn.bc.category.domain.Category;
 import cn.bc.core.dao.CrudDao;
@@ -22,4 +25,12 @@ public interface CategoryDao extends CrudDao<Category>{
 	 * @return
 	 */
 	public boolean saveCategory(Category category);
+
+	/**
+	 * 通过PID查找
+	 * 
+	 * @param pid 父类别ID
+	 * @return
+	 */
+	List<Map<String, Object>> findForPid(Integer pid);
 }

@@ -27,6 +27,10 @@
 			<param name="manageRole">BC_CATEGORY_MANAGE</param>
 		</action>
 
+		<!-- 展开树读取数据 -->
+		<action name="loadTreeData" class="categoryViewAction" 
+			method="loadTreeData" />
+
 		<!-- 表单：新建|编辑|查看 -->
 		<action name="form" class="categoryFormAction" method="form">
 			<param name="rootNode"></param>
