@@ -1,4 +1,7 @@
 package cn.bc.category.service;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import cn.bc.category.dao.CategoryDao;
@@ -19,6 +22,16 @@ private CategoryDao categoryDao;
 	}
 	public boolean saveCategory(Category category) {
 		return this.categoryDao.saveCategory(category);
+	}
+
+	public List<Map<String, Object>> findSubNodesData(String nodeId) {
+		// 格式化参数nodeId，获得PID
+		String[] param = nodeId.trim().split(":");
+		String pid = param.length > 1 ? param[1] : null;
+
+		// TODO 调用DAO层查找数据
+		return pid == null ? this.categoryDao.findForPid(null)
+				: this.categoryDao.findForPid(Integer.parseInt(pid));
 	}
 	public String find4ParentType(Long id) {
 		return this.categoryDao.find4ParentType(id);

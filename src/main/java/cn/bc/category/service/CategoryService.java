@@ -1,5 +1,8 @@
 package cn.bc.category.service;
 
+import java.util.List;
+import java.util.Map;
+
 import cn.bc.category.domain.Category;
 import cn.bc.core.service.CrudService;
 
@@ -18,7 +21,15 @@ public interface CategoryService extends CrudService<Category>{
 	 * @return
 	 */
 	public boolean saveCategory(Category category);
-	
+
+	/**
+	 * 查找nodeId下的子节点，nodeId的格式为： code:pid
+	 * 
+	 * @param nodeId 节点ID
+	 * @return
+	 */
+	List<Map<String, Object>> findSubNodesData(String nodeId);
+
 	/**
 	 * 查找父类的名称
 	 */

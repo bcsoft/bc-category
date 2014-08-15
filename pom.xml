@@ -11,11 +11,7 @@
 	<description>分类管理</description>
 
 	<dependencies>
-	    <dependency>
-			<groupId>cn.bc</groupId>
-			<artifactId>bc-form</artifactId>
-			<version>${project.version}</version>
-		</dependency>
+		<!-- 模板模块 -->
 		<dependency>
 			<groupId>cn.bc</groupId>
 			<artifactId>bc-web</artifactId>
@@ -46,6 +42,7 @@
 			<artifactId>servlet-api</artifactId>
 			<scope>provided</scope>
 		</dependency>
+		
 		<dependency>
 			<groupId>cn.bc</groupId>
 			<artifactId>bc-identity</artifactId>
