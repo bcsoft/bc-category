@@ -6,7 +6,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import cn.bc.BCConstants;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
+
 import cn.bc.core.query.condition.Condition;
 import cn.bc.core.query.condition.impl.AndCondition;
 import cn.bc.core.query.condition.impl.EqualsCondition;
@@ -15,6 +18,7 @@ import cn.bc.core.util.StringUtils;
 import cn.bc.db.jdbc.RowMapper;
 import cn.bc.db.jdbc.SqlObject;
 import cn.bc.web.formater.KeyValueFormater;
+import cn.bc.web.struts2.AbstractSelectPageAction;
 import cn.bc.web.struts2.ViewAction;
 import cn.bc.web.ui.html.grid.Column;
 import cn.bc.web.ui.html.grid.IdColumn4MapKey;
@@ -25,7 +29,9 @@ import cn.bc.web.ui.html.toolbar.Toolbar;
 /*
  * 选择所属分类视图
  */
-public class SelectCategoryTypesAction  extends ViewAction<Map<String, Object>>{
+@Scope(BeanDefinition.SCOPE_PROTOTYPE)
+@Controller
+public class SelectCategoryTypesAction  extends AbstractSelectPageAction<Map<String, Object>>{
 
 	/**
 	 * 
@@ -51,9 +57,10 @@ public class SelectCategoryTypesAction  extends ViewAction<Map<String, Object>>{
 				Map<String, Object> map = new HashMap<String, Object>();
 				int i = 0;
 				map.put("id", rs[i++]);
-				map.put("code", rs[i++]); // 状态
-				map.put("name", rs[i++]); // 经营权号
-				map.put("ptype", rs[i++]); // 经营权号
+				map.put("status", rs[i++]);
+				map.put("code", rs[i++]); 
+				map.put("name", rs[i++]); 
+				map.put("ptype", rs[i++]);
 				return map;
 			}
 		});
@@ -67,10 +74,10 @@ public class SelectCategoryTypesAction  extends ViewAction<Map<String, Object>>{
 		columns.add(new TextColumn4MapKey("c.status_", "status",
 				getText("category.select.status"), 40).setSortable(true)
 				.setValueFormater(new KeyValueFormater(getStatus())));
-		columns.add(new TextColumn4MapKey("c.name_", "name",
-				getText("category.select.name"), 80).setSortable(true));
 		columns.add(new TextColumn4MapKey("c.code", "code",
 				getText("category.select.code"), 80).setSortable(true));
+		columns.add(new TextColumn4MapKey("c.name_", "name",
+				getText("category.select.name"), 80).setSortable(true));		
 		columns.add(new TextColumn4MapKey("", "ptype",
 				getText("category.select.type")).setSortable(true)
 				.setUseTitleFromLabel(true));;
@@ -79,27 +86,33 @@ public class SelectCategoryTypesAction  extends ViewAction<Map<String, Object>>{
 
 	@Override
 	protected String getGridRowLabelExpression() {
-		return null;
+		return "['name']";
 	}
 
 	@Override
 	protected String[] getGridSearchFields() {
 		return new String[] { "c.name_","c.code" };
 	}
-
 	
-	@Override
-	protected Toolbar getHtmlPageToolbar() {	
-		Toolbar tb = new Toolbar();		
-		// 搜索按钮
-		tb.addButton(this.getDefaultSearchToolbarButton());
-		return tb;
-	}
 
+	@Override
+	protected String getModuleContextPath() {
+		return this.getContextPath();
+	}
+	
+	 @Override
+    protected String getHtmlPageNamespace() {
+        return getModuleContextPath() + "/bc/category";
+    }
+	 
 	@Override
 	protected String getFormActionName() {
-		return null;
+		return "selectCategoryType";
 	}
+    @Override
+    protected String getViewActionName() {
+        return "selectCategoryType";
+    }
 	@Override
 	protected PageOption getHtmlPageOption() {
 		return super.getHtmlPageOption().setWidth(400).setHeight(450);
@@ -107,7 +120,7 @@ public class SelectCategoryTypesAction  extends ViewAction<Map<String, Object>>{
 	
 	@Override
 	protected String getHtmlPageJs() {
-		return this.getModuleContextPath() + "/select.js";
+		return this.getContextPath()+"/modules/bc/category/select.js";
 	}
 	
 	@Override
@@ -128,6 +141,10 @@ public class SelectCategoryTypesAction  extends ViewAction<Map<String, Object>>{
 		return ac.isEmpty()?null:ac;
 	}
 
+	@Override
+	protected String getClickOkMethod() {
+		return "bc.select.category.clickOk";
+	}
 	
 	@Override
 	protected String getHtmlPageTitle() {
@@ -135,7 +152,7 @@ public class SelectCategoryTypesAction  extends ViewAction<Map<String, Object>>{
 	}
 
 	/**
-	 * 状态值转换列表：在案|注销|全部
+	 * 状态值转换列表：正常|禁用|全部
 	 * 
 	 * @return
 	 */
@@ -148,5 +165,4 @@ public class SelectCategoryTypesAction  extends ViewAction<Map<String, Object>>{
 		statuses.put("0,1", getText("category.status.all"));
 		return statuses;
 	}
-
 }

@@ -1,7 +1,7 @@
 package cn.bc.category.service;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import cn.bc.category.Dao.CategoryDao;
+import cn.bc.category.dao.CategoryDao;
 import cn.bc.category.domain.Category;
 import cn.bc.core.service.DefaultCrudService;
 
@@ -19,6 +19,9 @@ private CategoryDao categoryDao;
 	}
 	public boolean saveCategory(Category category) {
 		return this.categoryDao.saveCategory(category);
+	}
+	public String find4ParentType(Long id) {
+		return this.categoryDao.find4ParentType(id);
 	}
 
 }

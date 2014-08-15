@@ -1,4 +1,4 @@
-package cn.bc.category.Dao;
+package cn.bc.category.dao;
 
 import cn.bc.category.domain.Category;
 import cn.bc.core.dao.CrudDao;
@@ -22,4 +22,9 @@ public interface CategoryDao extends CrudDao<Category>{
 	 * @return
 	 */
 	public boolean saveCategory(Category category);
+	
+	/**
+	 * 查找父类的名称
+	 */
+	public String find4ParentType(Long id);
 }

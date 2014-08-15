@@ -18,4 +18,9 @@ public interface CategoryService extends CrudService<Category>{
 	 * @return
 	 */
 	public boolean saveCategory(Category category);
+	
+	/**
+	 * 查找父类的名称
+	 */
+	public String find4ParentType(Long id);
 }

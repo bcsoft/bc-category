@@ -1,4 +1,4 @@
-/** sql 参考 */
+﻿/** sql 参考 */
 select * from BC_CATEGORY; --order by sn;
 
 
