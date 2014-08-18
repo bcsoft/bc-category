@@ -31,7 +31,9 @@ public interface CategoryService extends CrudService<Category>{
 	List<Map<String, Object>> findSubNodesData(String nodeId);
 
 	/**
-	 * 查找父类的名称
+	 * 查找父类的名称和修改者名称
+	 * @param id 分类的id
+	 * @return
 	 */
-	public String find4ParentType(Long id);
+	public List<Map<String , Object>> find4ParentType(Long id);
 }

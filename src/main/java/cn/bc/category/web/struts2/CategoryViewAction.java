@@ -22,7 +22,10 @@ import cn.bc.core.query.Query;
 import cn.bc.core.query.cfg.PagingQueryConfig;
 import cn.bc.core.query.condition.Condition;
 import cn.bc.core.query.condition.ConditionUtils;
+import cn.bc.core.query.condition.impl.AndCondition;
 import cn.bc.core.query.condition.impl.EqualsCondition;
+import cn.bc.core.query.condition.impl.InCondition;
+import cn.bc.core.util.StringUtils;
 import cn.bc.db.jdbc.SqlObject;
 import cn.bc.db.jdbc.spring.JdbcTemplatePagingQuery;
 import cn.bc.identity.web.SystemContext;
@@ -30,10 +33,12 @@ import cn.bc.template.service.TemplateService;
 import cn.bc.web.formater.EntityStatusFormater;
 import cn.bc.web.struts2.TreeViewAction;
 import cn.bc.web.ui.html.grid.Column;
+import cn.bc.web.ui.html.grid.HiddenColumn4MapKey;
 import cn.bc.web.ui.html.grid.IdColumn;
 import cn.bc.web.ui.html.grid.TextColumn4MapKey;
 import cn.bc.web.ui.html.page.PageOption;
 import cn.bc.web.ui.html.toolbar.Toolbar;
+import cn.bc.web.ui.html.toolbar.ToolbarButton;
 import cn.bc.web.ui.html.tree.Tree;
 import cn.bc.web.ui.html.tree.TreeNode;
 import cn.bc.web.ui.json.Json;
@@ -86,7 +91,7 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 
 	@Override
 	protected Condition getGridSpecalCondition() {
-		// TODO 状态条件
+		/*// TODO 状态条件
 		Condition statusCondition = null;
 		if (status != null && status.length() > 0) {
 			String[] ss = status.split(",");
@@ -97,7 +102,19 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 		}
 
 		// 合并多个条件
-		return ConditionUtils.mix2AndCondition(statusCondition);
+		return ConditionUtils.mix2AndCondition(statusCondition);*/
+		AndCondition ac=new AndCondition();
+		if (status != null && status.length() > 0) {
+			String[] ss = status.split(",");
+			if(ss.length == 1){
+				ac.add(new EqualsCondition("c.status_", new Integer(ss[0])));
+			} else {
+				ac.add(new InCondition("c.status_",
+						StringUtils.stringArray2IntegerArray(ss)));
+			}
+		}
+
+		return ac.isEmpty()?null:ac;
 	}
 
 	/**
@@ -108,7 +125,7 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 	private PagingQueryConfig getPagingQueryConfig() {
 		//TODO 查询的SQL
 		String s1 = this.templateService.getContent("FLGL");
-		String s2 = "select count(*) from bc_category";
+		String s2 = this.templateService.getContent("FLGLCOUNT");
 		cn.bc.core.query.cfg.impl.PagingQueryConfig cfg =
 				new cn.bc.core.query.cfg.impl.PagingQueryConfig(s1, s2, null);
 
@@ -166,11 +183,11 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 		Toolbar toolbar = new Toolbar();
 		if (!this.isReadonly()) {
 			// 新建
-			toolbar.addButton(this.getDefaultCreateToolbarButton());
+			toolbar.addButton(new ToolbarButton().setIcon("ui-icon-lightbulb").setText("新建").setClick("bc.category.view.create"));
 			// 编辑
-			toolbar.addButton(this.getDefaultEditToolbarButton());
+			toolbar.addButton(new ToolbarButton().setIcon("ui-icon-lightbulb").setText("编辑").setClick("bc.category.view.edit"));
 			// 删除
-			toolbar.addButton(this.getDefaultDeleteToolbarButton());
+			toolbar.addButton(new ToolbarButton().setIcon("ui-icon-lightbulb").setText("删除").setClick("bc.category.view.delete_"));
 			// 状态
 			toolbar.addButton(Toolbar.getDefaultToolbarRadioGroup(
 					this.getStatues(), "status", 0, 
@@ -208,6 +225,8 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 		// 最后修改
 		columns.add(new TextColumn4MapKey("modified", "modified",
 				getText("category.modified"), 240).setSortable(true));
+		columns.add(new HiddenColumn4MapKey("id", "id"));
+		columns.add(new HiddenColumn4MapKey("name_", "name_"));
 		return columns;
 	}
 
@@ -313,6 +332,12 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 	protected String getHtmlPageJs() {
 		return this.getContextPath()
 				+ "/modules/bc/category/view.js";
+	}
+	
+	//视图双击的方法
+	@Override
+	protected String getGridDblRowMethod() {
+		return "bc.category.view.edit";
 	}
 
 	@Override

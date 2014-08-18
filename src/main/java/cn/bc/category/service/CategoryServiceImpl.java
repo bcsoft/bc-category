@@ -33,7 +33,7 @@ private CategoryDao categoryDao;
 		return pid == null ? this.categoryDao.findForPid(null)
 				: this.categoryDao.findForPid(Integer.parseInt(pid));
 	}
-	public String find4ParentType(Long id) {
+	public List<Map<String , Object>> find4ParentType(Long id) {
 		return this.categoryDao.find4ParentType(id);
 	}
 

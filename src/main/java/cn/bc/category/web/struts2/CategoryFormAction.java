@@ -2,6 +2,7 @@ package cn.bc.category.web.struts2;
 
 import java.util.Calendar;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.struts2.interceptor.SessionAware;
@@ -26,6 +27,9 @@ public class CategoryFormAction extends EntityAction<Long,Category> implements
 	public boolean isNew;
 	
 	public String ptype;
+	public String actor_name;
+	
+	public String manageRole;
 	
 	private CategoryService categoryService;
 	@Autowired
@@ -35,8 +39,11 @@ public class CategoryFormAction extends EntityAction<Long,Category> implements
 	}
 	
 	@Override
-	public boolean isReadonly() {
+	public boolean isReadonly() {//拥有管理员的角色和分类管理的角色
 		SystemContext context = (SystemContext) this.getContext();		
+		
+		String a = this.manageRole;
+		System.out.println("a:"+a);
 		return !context.hasAnyRole(
 				getText("key.role.bc.category.manage"),getText("key.role.bc.admin"));
 	}
@@ -66,9 +73,18 @@ public class CategoryFormAction extends EntityAction<Long,Category> implements
 	
 	@Override
 	protected void initForm(boolean editable) throws Exception {
-		//等到分类的父级分类
+		//得到分类的父级分类
 		if(!isNew){
-			this.ptype = this.categoryService.find4ParentType(this.getId());
+			List<Map<String , Object>> lists = this.categoryService.find4ParentType(this.getId());
+			if(lists.size()>0){
+				if(lists.get(0).get("name_")!=null)
+					ptype = String.valueOf(lists.get(0).get("name_"));
+				if(lists.get(0).get("actor_name")!=null)
+					actor_name = String.valueOf(lists.get(0).get("actor_name"));
+			}
+		}else{
+			ActorHistory actor = getContext().getAttr("userHistory");
+			actor_name = actor.getName();
 		}
 	}
 	

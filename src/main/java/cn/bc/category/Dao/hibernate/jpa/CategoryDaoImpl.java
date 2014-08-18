@@ -4,7 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import cn.bc.category.dao.CategoryDao;
 import cn.bc.category.domain.Category;
@@ -17,6 +18,12 @@ import cn.bc.orm.hibernate.jpa.HibernateJpaNativeQuery;
 
 public class CategoryDaoImpl extends HibernateCrudJpaDao<Category> implements CategoryDao {
 
+	private JdbcTemplate jdbcTemplate;
+
+	@Autowired
+	public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+		this.jdbcTemplate = jdbcTemplate;
+	}
 	public Category find4OneCategory(long id) {
 		return this.createQuery().condition(new AndCondition().add(new EqualsCondition("id", id))).singleResult();
 	}
@@ -56,5 +63,14 @@ public class CategoryDaoImpl extends HibernateCrudJpaDao<Category> implements Ca
 		// 执行查询
 		return new HibernateJpaNativeQuery(this.getJpaTemplate(), 
 				sqlObject).list();
+	}
+	
+	public List<Map<String , Object>> find4ParentType(Long id) {
+		String sql = "select pbc.name_,iah.actor_name" +
+				" from bc_category bc" +
+				" left join bc_category pbc on bc.pid = pbc.id" +
+				" left join bc_identity_actor_history iah on iah.id= bc.modifier_id where bc.id=?";
+		List<Map<String , Object>> list = this.jdbcTemplate.queryForList(sql, id);
+		return list;
 	}
 }

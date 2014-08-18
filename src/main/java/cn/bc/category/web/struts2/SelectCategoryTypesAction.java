@@ -19,12 +19,10 @@ import cn.bc.db.jdbc.RowMapper;
 import cn.bc.db.jdbc.SqlObject;
 import cn.bc.web.formater.KeyValueFormater;
 import cn.bc.web.struts2.AbstractSelectPageAction;
-import cn.bc.web.struts2.ViewAction;
 import cn.bc.web.ui.html.grid.Column;
 import cn.bc.web.ui.html.grid.IdColumn4MapKey;
 import cn.bc.web.ui.html.grid.TextColumn4MapKey;
 import cn.bc.web.ui.html.page.PageOption;
-import cn.bc.web.ui.html.toolbar.Toolbar;
 
 /*
  * 选择所属分类视图
@@ -94,15 +92,15 @@ public class SelectCategoryTypesAction  extends AbstractSelectPageAction<Map<Str
 		return new String[] { "c.name_","c.code" };
 	}
 	
-
 	@Override
 	protected String getModuleContextPath() {
 		return this.getContextPath();
 	}
 	
-	 @Override
+	@Override
     protected String getHtmlPageNamespace() {
-        return getModuleContextPath() + "/bc/category";
+		//要写selectCategoryType，不然搜索或刷新找不到这个命名空间
+        return getModuleContextPath() + "/bc/category/selectCategoryType";
     }
 	 
 	@Override
@@ -126,12 +124,10 @@ public class SelectCategoryTypesAction  extends AbstractSelectPageAction<Map<Str
 	@Override
 	protected Condition getGridSpecalCondition() {
 		AndCondition ac=new AndCondition();
-
 		if (status != null && status.length() > 0) {
 			String[] ss = status.split(",");
-			if (ss.length == 1) {
-				ac.add(new EqualsCondition("c.status_", new Integer(
-						ss[0])));
+			if(ss.length == 1){
+				ac.add(new EqualsCondition("c.status_", new Integer(ss[0])));
 			} else {
 				ac.add(new InCondition("c.status_",
 						StringUtils.stringArray2IntegerArray(ss)));
@@ -165,4 +161,10 @@ public class SelectCategoryTypesAction  extends AbstractSelectPageAction<Map<Str
 		statuses.put("0,1", getText("category.status.all"));
 		return statuses;
 	}
+	
+	@Override
+	protected boolean canExport() {
+		return false;
+	}
+	
 }
