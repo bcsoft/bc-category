@@ -35,6 +35,7 @@ import cn.bc.web.ui.html.grid.IdColumn;
 import cn.bc.web.ui.html.grid.TextColumn4MapKey;
 import cn.bc.web.ui.html.page.PageOption;
 import cn.bc.web.ui.html.toolbar.Toolbar;
+import cn.bc.web.ui.html.toolbar.ToolbarButton;
 import cn.bc.web.ui.html.tree.Tree;
 import cn.bc.web.ui.html.tree.TreeNode;
 import cn.bc.web.ui.json.Json;
@@ -179,13 +180,13 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 		Toolbar toolbar = new Toolbar();
 		if (!this.isReadonly()) {
 			// 新建
-			toolbar.addButton(this.getDefaultCreateToolbarButton()
+			toolbar.addButton(new ToolbarButton().setIcon("ui-icon-lightbulb").setText("新建")
 					.setClick("bc.category.view.create"));
 			// 编辑
-			toolbar.addButton(this.getDefaultEditToolbarButton()
+			toolbar.addButton(new ToolbarButton().setIcon("ui-icon-lightbulb").setText("编辑")
 					.setClick("bc.category.view.edit"));
 			// 删除
-			toolbar.addButton(this.getDefaultDeleteToolbarButton()
+			toolbar.addButton(new ToolbarButton().setIcon("ui-icon-lightbulb").setText("删除")
 					.setClick("bc.category.view.delete_"));
 			// 状态
 			toolbar.addButton(Toolbar.getDefaultToolbarRadioGroup(
@@ -225,6 +226,7 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 		columns.add(new TextColumn4MapKey("modified", "modified",
 				getText("category.modified"), 240).setSortable(true));
 		columns.add(new HiddenColumn4MapKey("id", "id"));
+		columns.add(new HiddenColumn4MapKey("name_", "name_"));
 		return columns;
 	}
 
@@ -330,6 +332,12 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 	protected String getHtmlPageJs() {
 		return this.getContextPath()
 				+ "/modules/bc/category/view.js";
+	}
+	
+	//视图双击的方法
+	@Override
+	protected String getGridDblRowMethod() {
+		return "bc.category.view.edit";
 	}
 
 	@Override
