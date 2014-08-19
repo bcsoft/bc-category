@@ -31,6 +31,14 @@ public interface CategoryService extends CrudService<Category>{
 	List<Map<String, Object>> findSubNodesData(String nodeId);
 
 	/**
+	 * 通过full_code获得id
+	 * 
+	 * @param full_code
+	 * @return
+	 */
+	Long findId(String full_code);
+
+    /**
 	 * 查找父类的名称和修改者名称
 	 * @param id 分类的id
 	 * @return

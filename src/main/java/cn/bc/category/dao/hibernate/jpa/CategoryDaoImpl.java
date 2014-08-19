@@ -4,11 +4,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import cn.bc.category.dao.CategoryDao;
 import cn.bc.category.domain.Category;
+import cn.bc.category.web.struts2.CategoryViewAction;
 import cn.bc.core.query.condition.impl.AndCondition;
 import cn.bc.core.query.condition.impl.EqualsCondition;
 import cn.bc.db.jdbc.RowMapper;
@@ -19,6 +26,7 @@ import cn.bc.orm.hibernate.jpa.HibernateJpaNativeQuery;
 public class CategoryDaoImpl extends HibernateCrudJpaDao<Category> implements CategoryDao {
 
 	private JdbcTemplate jdbcTemplate;
+    private final static Log logger = LogFactory.getLog(CategoryViewAction.class);
 
 	@Autowired
 	public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
@@ -61,16 +69,18 @@ public class CategoryDaoImpl extends HibernateCrudJpaDao<Category> implements Ca
 		});
 
 		// 执行查询
-		return new HibernateJpaNativeQuery(this.getJpaTemplate(), 
+		return new HibernateJpaNativeQuery<Map<String, Object>>(this.getJpaTemplate(), 
 				sqlObject).list();
 	}
-	
-	public List<Map<String , Object>> find4ParentType(Long id) {
-		String sql = "select pbc.name_,iah.actor_name" +
-				" from bc_category bc" +
-				" left join bc_category pbc on bc.pid = pbc.id" +
-				" left join bc_identity_actor_history iah on iah.id= bc.modifier_id where bc.id=?";
-		List<Map<String , Object>> list = this.jdbcTemplate.queryForList(sql, id);
-		return list;
+
+	public Long findByFullCode(String full_code) {
+		// TODO 让程序抛异常，然后捕获异常，写入日志文件
+		Long id = null;
+		try {
+			id = this.jdbcTemplate.queryForLong("select category_get_by_full_code(?)", full_code);
+		} catch (EmptyResultDataAccessException e) {
+			logger.error(e.getMessage(), e);
+		}
+		return id;
 	}
 }

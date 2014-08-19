@@ -68,9 +68,11 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 	/** 根节点全编码 */
 	public String rootNode;
 	/** 树节点 */
-	public String pid = "RootNode:";
+	public String pid = "node:";
 	/** 状态：正常|禁用|全部 */
 	public String status = String.valueOf(0);
+	/** 父类别ID */
+	public Long pid_;
 
 	@Override
 	public boolean isReadonly() {
@@ -105,20 +107,21 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 	 * SQL分页查询语句及参数配置
 	 * 
 	 * @return
+	 * @throws java.lang.Exception 
 	 */
 	private PagingQueryConfig getPagingQueryConfig() {
 		// 是否为根节点
 		boolean isRoot = (rootNode == null || rootNode.length() == 0);
+		pid_ = this.categoryService.findId(this.rootNode);
 		// 加载模板，获得查询SQL
 		String querySql = this.templateService.getContent("BC-CATEGORY");
 		String countSql = this.templateService.getContent("BC-CATEGORY-COUNT");
-		//TODO 查询参数
+		// 查询参数
 		List<Object> params = null;
 
-		if (!isRoot) {
-			//TODO 调用service获得PID，如果空则抛异常
+		if (!isRoot && pid_ != null && pid_ > 0) {
 			params = new ArrayList<Object>();
-			params.add(23623);
+			params.add(pid_);
 		}
 
 		// 查询对象
@@ -132,14 +135,15 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 			cfg.setLimit(p.getPageSize());
 			cfg.setOffset(p.getFirstResult());
 		}
-
 		return cfg;
 	}
 
 	@Override
 	protected Query<Map<String, Object>> getQuery() {
-		JdbcTemplatePagingQuery<Map<String, Object>> jdbcQuery =
-				new JdbcTemplatePagingQuery<Map<String,Object>>(jdbcTemplate, getPagingQueryConfig(), null);
+		JdbcTemplatePagingQuery<Map<String, Object>> jdbcQuery = null;
+		
+		jdbcQuery = new JdbcTemplatePagingQuery<Map<String,Object>>(jdbcTemplate, getPagingQueryConfig(), null);
+		
 		jdbcQuery.condition(this.getGridCondition());
 		return jdbcQuery;
 	}
@@ -151,7 +155,6 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 
 	@Override
 	protected String getGridRowLabelExpression() {
-		// TODO 检查这个方法是否还被调用。不调用返回null即可
 		return "['pid'] + ['code']";
 	}
 
@@ -201,13 +204,13 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 	@Override
 	protected List<Column> getGridColumns() {
 		List<Column> columns = new ArrayList<Column>();
-		//TODO id列
+		// id列
 		columns.add(new IdColumn().setId("id").setValueExpression("['pid'] + ',' + ['code']"));
 		// 状态
 		columns.add(new TextColumn4MapKey("status", "status_",
 				getText("category.status"), 35).setSortable(true)
 				.setValueFormater(new EntityStatusFormater(getStatues())));
-		//TODO 所属分类
+		// 所属分类
 		columns.add(new TextColumn4MapKey("father", "father",
 				getText("category.father"), 80).setSortable(true));
 		// 名称
@@ -225,6 +228,7 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 		// 最后修改
 		columns.add(new TextColumn4MapKey("modified", "modified",
 				getText("category.modified"), 240).setSortable(true));
+		// 隐藏列
 		columns.add(new HiddenColumn4MapKey("id", "id"));
 		columns.add(new HiddenColumn4MapKey("name_", "name_"));
 		return columns;
@@ -232,7 +236,7 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 
 	@Override
 	protected Tree getHtmlPageTree() {
-		String RootNode = "RootNode:";
+		String RootNode = pid_ != null ? pid + pid_ : pid;
 		Tree tree = new Tree(RootNode, "全部");
 		tree.setShowRoot(true);
 
@@ -245,12 +249,14 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 		cfg.put("clickNode", "bc.category.view.clickTreeNode");
 		tree.setCfg(cfg);
 
-		// 获取树的数据 
-		List<Map<String, Object>> treeData = this.categoryService.findSubNodesData(RootNode);
+		// 树的数据 
+		List<Map<String, Object>> treeData;
 
 		// 构建树的子节点
 		Collection<TreeNode> treeNodes;
 		try {
+			// TODO 查询可能抛异常异常
+			treeData = this.categoryService.findSubNodesData(RootNode);
 			treeNodes = this.buildTreeNodes(treeData);
 			for (TreeNode treeNode : treeNodes) 
 				tree.addSubNode(treeNode);
@@ -335,6 +341,11 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 	}
 	
 	//视图双击的方法
+	@Override
+	protected String getGridDblRowMethod() {
+		return "bc.category.view.edit";
+	}
+
 	@Override
 	protected String getGridDblRowMethod() {
 		return "bc.category.view.edit";
