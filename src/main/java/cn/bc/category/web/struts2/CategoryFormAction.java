@@ -16,6 +16,7 @@ import cn.bc.category.service.CategoryService;
 import cn.bc.identity.domain.ActorHistory;
 import cn.bc.identity.web.SystemContext;
 import cn.bc.web.struts2.EntityAction;
+import cn.bc.web.ui.html.page.PageOption;
 
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 @Controller
@@ -29,7 +30,8 @@ public class CategoryFormAction extends EntityAction<Long,Category> implements
 	public String ptype;
 	public String actor_name;
 	
-	public String manageRole;
+	public String manageRole;//对应每个模块的管理者编码，如果没有，就需要进行ACL权限判断了！
+	public String rootNode;//等于空表示是最上级的节点！
 	
 	private CategoryService categoryService;
 	@Autowired
@@ -42,27 +44,33 @@ public class CategoryFormAction extends EntityAction<Long,Category> implements
 	public boolean isReadonly() {//拥有管理员的角色和分类管理的角色
 		SystemContext context = (SystemContext) this.getContext();		
 		
-		String a = this.manageRole;
-		System.out.println("a:"+a);
-		return !context.hasAnyRole(
-				getText("key.role.bc.category.manage"),getText("key.role.bc.admin"));
+		String manage = this.manageRole;
+		System.out.println("manage:"+manage);
+		if(manageRole != null && !"".equals(manageRole)){//manageRole不为空
+			return !context.hasAnyRole(
+					manageRole,getText("key.role.bc.admin"));
+		}else{
+			//判断ACL
+			
+			//也没有ACL，直接返回true
+			return true;
+		}	
 	}
 	
 	public String form () throws Exception{
 		getStatusList();
-		if(isNew){
-			return this.create();
+		if(isReadonly()){
+			return this.open();
 		}else{
-			return this.edit();
-		}	
-	
+			if(isNew){
+				return this.create();
+			}else{
+				return this.edit();
+			}	
+		}
+		
 	}
 
-	@Override
-	public String save() throws Exception {
-		return super.save();
-	}
-	
 	@Override
 	protected void beforeSave(Category entity) {
 		ActorHistory actor = getContext().getAttr("userHistory");
@@ -70,7 +78,7 @@ public class CategoryFormAction extends EntityAction<Long,Category> implements
 		entity.setModified_date(Calendar.getInstance());
 		super.beforeSave(entity);
 	}
-	
+
 	@Override
 	protected void initForm(boolean editable) throws Exception {
 		//得到分类的父级分类
@@ -86,11 +94,8 @@ public class CategoryFormAction extends EntityAction<Long,Category> implements
 			ActorHistory actor = getContext().getAttr("userHistory");
 			actor_name = actor.getName();
 		}
-	}
-	
-	@Override
-	public String create() throws Exception {
-		return super.create();
+		
+		super.initForm(editable);
 	}
 	
 	public Map<String, String> getStatusList() {
@@ -100,6 +105,19 @@ public class CategoryFormAction extends EntityAction<Long,Category> implements
 		return map;
 	}
 	
+	//表单的大小
+	@Override
+	protected PageOption buildFormPageOption(boolean editable) {
+		return super.buildFormPageOption(editable).setWidth(670).setHeight(210)
+				.setMinHeight(200).setMinWidth(600);
+	}
+	
+	//不使用打印功能
+	@Override
+	protected boolean useFormPrint() {
+		return false;
+	}
+
 	/*private static final long serialVersionUID = 1L;
 	protected Log logger = LogFactory.getLog(getClass());
 	public Map<String,String> statusList = null; //状态列表

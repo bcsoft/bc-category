@@ -35,6 +35,7 @@
 			<param name="rootNode"></param>
 			<param name="manageRole">BC_CATEGORY_MANAGE</param>
 			<result name="form">/modules/bc/category/form.jsp</result>
+			<result name="formr">/modules/bc/category/form.jsp</result>
 		</action>
 
 		<!-- 表单：保存 -->
@@ -93,10 +94,24 @@
 			<param name="manageRole">BC_ASSET_TYPE_MANAGE</param>
 		</action>
 	</package>
-	<!-- 选择所属分类 -->
-	<package name="selectCategoryType" extends="bc-default" namespace="/bc/category/selectCategoryType">
+	<!-- 管理端选择所属分类 -->
+	<package name="selectCategory" extends="bc-default" namespace="/bc/category/selectCategory">
 		<!-- 视图：分页 -->
-		<action name="paging" class="selectCategoryTypesAction" method="paging"></action>
-		<action name="data" class="selectCategoryTypesAction" method="data"></action>
+		<action name="paging" class="selectCategoryAction" method="paging">
+		    <param name="pageTitle">选择所属分类</param>
+			<!-- 根节点全编码 -->
+			<param name="rootNode"></param>
+			<!-- 管理角色的编码 -->
+			<param name="manageRole">BC_CATEGORY_MANAGE</param>
+		</action>
+		<action name="list" class="selectCategoryAction" method="list"></action>
+		<action name="data" class="selectCategoryAction" method="data"></action>
 	</package>
+	<!--模板分类选择所属分类 -->
+	<!-- <package name="selectCategory" extends="bc-default" namespace="/bc/category/selectCategory">
+		视图：分页
+		<action name="paging" class="selectCategoryAction" method="paging"></action>
+		<action name="list" class="selectCategoryAction" method="list"></action>
+		<action name="data" class="selectCategoryAction" method="data"></action>
+	</package> -->
 </struts>
