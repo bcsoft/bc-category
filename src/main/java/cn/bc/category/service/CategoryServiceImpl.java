@@ -30,8 +30,8 @@ private CategoryDao categoryDao;
 		String pid = param.length > 1 ? param[1] : null;
 
 		// TODO 调用DAO层查找数据
-		return pid == null ? this.categoryDao.findForPid(null)
-				: this.categoryDao.findForPid(Integer.parseInt(pid));
+		return pid == null ? this.categoryDao.findByPid(null)
+				: this.categoryDao.findByPid(Integer.parseInt(pid));
 	}
 
 }

@@ -30,6 +30,7 @@ import cn.bc.template.service.TemplateService;
 import cn.bc.web.formater.EntityStatusFormater;
 import cn.bc.web.struts2.TreeViewAction;
 import cn.bc.web.ui.html.grid.Column;
+import cn.bc.web.ui.html.grid.HiddenColumn4MapKey;
 import cn.bc.web.ui.html.grid.IdColumn;
 import cn.bc.web.ui.html.grid.TextColumn4MapKey;
 import cn.bc.web.ui.html.page.PageOption;
@@ -86,12 +87,11 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 
 	@Override
 	protected Condition getGridSpecalCondition() {
-		// TODO 状态条件
 		Condition statusCondition = null;
 		if (status != null && status.length() > 0) {
 			String[] ss = status.split(",");
 			if (ss.length == 1) {
-				statusCondition = new EqualsCondition("c.status_",
+				statusCondition = new EqualsCondition("status_",
 						new Integer(ss[0]));
 			}
 		}
@@ -106,11 +106,24 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 	 * @return
 	 */
 	private PagingQueryConfig getPagingQueryConfig() {
-		//TODO 查询的SQL
-		String s1 = this.templateService.getContent("FLGL");
-		String s2 = "select count(*) from bc_category";
-		cn.bc.core.query.cfg.impl.PagingQueryConfig cfg =
-				new cn.bc.core.query.cfg.impl.PagingQueryConfig(s1, s2, null);
+		// 是否为根节点
+		boolean isRoot = (rootNode == null || rootNode.length() == 0);
+		// 加载模板，获得查询SQL
+		String querySql = this.templateService.getContent("BC-CATEGORY");
+		String countSql = this.templateService.getContent("BC-CATEGORY-COUNT");
+		//TODO 查询参数
+		List<Object> params = null;
+
+		if (!isRoot) {
+			//TODO 调用service获得PID，如果空则抛异常
+			params = new ArrayList<Object>();
+			params.add(23623);
+		}
+
+		// 查询对象
+		cn.bc.core.query.cfg.impl.PagingQueryConfig cfg = 
+				new cn.bc.core.query.cfg.impl.PagingQueryConfig(querySql, countSql, params);
+		cfg.addTemplateParam("isRoot", isRoot);
 
 		// 分页参数
 		Page<Map<String, Object>> p = getPage();
@@ -149,7 +162,7 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 
 	@Override
 	protected PageOption getHtmlPageOption() {
-		return super.getHtmlPageOption().setWidth(870).setMinWidth(600)
+		return super.getHtmlPageOption().setWidth(850).setMinWidth(600)
 				.setHeight(450).setMinHeight(350);
 	}
 
@@ -166,11 +179,14 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 		Toolbar toolbar = new Toolbar();
 		if (!this.isReadonly()) {
 			// 新建
-			toolbar.addButton(this.getDefaultCreateToolbarButton());
+			toolbar.addButton(this.getDefaultCreateToolbarButton()
+					.setClick("bc.category.view.create"));
 			// 编辑
-			toolbar.addButton(this.getDefaultEditToolbarButton());
+			toolbar.addButton(this.getDefaultEditToolbarButton()
+					.setClick("bc.category.view.edit"));
 			// 删除
-			toolbar.addButton(this.getDefaultDeleteToolbarButton());
+			toolbar.addButton(this.getDefaultDeleteToolbarButton()
+					.setClick("bc.category.view.delete_"));
 			// 状态
 			toolbar.addButton(Toolbar.getDefaultToolbarRadioGroup(
 					this.getStatues(), "status", 0, 
@@ -208,6 +224,7 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 		// 最后修改
 		columns.add(new TextColumn4MapKey("modified", "modified",
 				getText("category.modified"), 240).setSortable(true));
+		columns.add(new HiddenColumn4MapKey("id", "id"));
 		return columns;
 	}
 

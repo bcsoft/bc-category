@@ -26,7 +26,7 @@ public class CategoryDaoImpl extends HibernateCrudJpaDao<Category> implements Ca
 		return this.save(category) != null;
 	}
 
-	public List<Map<String, Object>> findForPid(Integer pid) {
+	public List<Map<String, Object>> findByPid(Integer pid) {
 		// 构建查询语句
 		SqlObject<Map<String,Object>> sqlObject = new SqlObject<Map<String,Object>>();
 		StringBuffer sql = new StringBuffer();
