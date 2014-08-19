@@ -31,5 +31,3 @@ select id, status_, name_, code, sn,
 	-- 分页
 	<#if limit??>limit ${limit}<#else>limit 25</#if>
 	<#if offset??>offset ${offset}</#if>
--- select category_get_by_full_code(null);
--- select category_get_by_full_code('TPL/JJHT/HT');

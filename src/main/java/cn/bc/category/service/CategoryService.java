@@ -29,4 +29,12 @@ public interface CategoryService extends CrudService<Category>{
 	 * @return
 	 */
 	List<Map<String, Object>> findSubNodesData(String nodeId);
+
+	/**
+	 * 通过full_code获得id
+	 * 
+	 * @param full_code
+	 * @return
+	 */
+	Long findId(String full_code);
 }

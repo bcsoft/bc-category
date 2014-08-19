@@ -29,9 +29,13 @@ private CategoryDao categoryDao;
 		String[] param = nodeId.trim().split(":");
 		String pid = param.length > 1 ? param[1] : null;
 
-		// TODO 调用DAO层查找数据
+		// 调用DAO层查找数据
 		return pid == null ? this.categoryDao.findByPid(null)
 				: this.categoryDao.findByPid(Integer.parseInt(pid));
 	}
 
+	public Long findId(String full_code) {
+		Long id = this.categoryDao.findByFullCode(full_code);
+		return id;
+	}
 }

@@ -33,4 +33,12 @@ public interface CategoryDao extends CrudDao<Category>{
 	 * @return
 	 */
 	List<Map<String, Object>> findByPid(Integer pid);
+
+	/**
+	 * 通过节点全编码 full code 查找 ID
+	 * 
+	 * @param full_code
+	 * @return
+	 */
+	Long findByFullCode(String full_code);
 }
