@@ -32,7 +32,7 @@ public interface CategoryDao extends CrudDao<Category>{
 	 * @param pid 父类别ID
 	 * @return
 	 */
-	List<Map<String, Object>> findForPid(Integer pid);
+	List<Map<String, Object>> findByPid(Integer pid);
 	/**
 	 * 查找父类的名称和修改者名称
 	 * @param id 分类的id

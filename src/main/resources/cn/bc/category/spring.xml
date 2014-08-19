@@ -13,6 +13,8 @@
         http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
 
 	<!-- 需要在主配置文件配置entityManagerFactory和transactionManager的实现 -->
+
+	<!-- 需要在主配置文件配置entityManagerFactory和transactionManager的实现 -->
 	<!-- 分类模块 -->
 	<bean id="categoryDao" class="cn.bc.category.dao.hibernate.jpa.CategoryDaoImpl"
 		p:entityManagerFactory-ref="entityManagerFactory" />
