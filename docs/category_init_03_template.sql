@@ -1,6 +1,5 @@
 -- 插入模板
 
-
 -- 平台/分类管理
 insert into bc_template (id,order_,code,content,file_date,author_id,modifier_id,modified_date,subject,
 	path,inner_,desc_,status_,version_,category,type_id,size_,formatted,uid_)

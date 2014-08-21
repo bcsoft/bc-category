@@ -25,10 +25,10 @@ public interface CategoryService extends CrudService<Category>{
 	/**
 	 * 查找nodeId下的子节点，nodeId的格式为： code:pid
 	 * 
-	 * @param nodeId 节点ID
+	 * @param pid 父节点ID
 	 * @return
 	 */
-	List<Map<String, Object>> findSubNodesData(String nodeId);
+	List<Map<String, Object>> findSubNodesData(Long pid);
 
 	/**
 	 * 通过full_code获得id
@@ -36,5 +36,5 @@ public interface CategoryService extends CrudService<Category>{
 	 * @param full_code
 	 * @return
 	 */
-	Long findId(String full_code);
+	Long getIdByFullCode(String full_code);
 }
