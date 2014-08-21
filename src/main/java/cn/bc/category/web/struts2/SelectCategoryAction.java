@@ -6,12 +6,15 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 
+import cn.bc.category.service.CategoryService;
 import cn.bc.core.Page;
 import cn.bc.core.query.Query;
 import cn.bc.core.query.cfg.PagingQueryConfig;
@@ -34,8 +37,9 @@ import cn.bc.web.ui.html.grid.IdColumn4MapKey;
 import cn.bc.web.ui.html.grid.TextColumn4MapKey;
 import cn.bc.web.ui.html.page.PageOption;
 
-/*
+/**
  * 选择所属分类视图
+ * @author LeeDane
  */
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 @Controller
@@ -49,16 +53,22 @@ public class SelectCategoryAction  extends AbstractSelectPageAction<Map<String, 
 	
 	public String pageTitle; //窗口的标题
 	public String manageRole;//对应每个模块的管理者编码，如果没有，就需要进行ACL权限判断了！
-	public String rootNode;//等于空表示是最上级的节点！
+	public String rootNode;//等于空表示是最上级的节点！TPL/JJHT
 	
 	//public String preCode;//当前的节点编号
 	//public Long preId;//当前的节点的id
+	
+	public int preRoleId;//根据pid查找所有的
+	public long preId;//当前要编辑的分类的id，如果没有，就是新建，默认是0
 	
 	@Autowired
 	private TemplateService templateService;
 	
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
+	
+	@Autowired
+	private CategoryService categoryService;
 
 	/**
 	 * SQL分页查询语句及参数配置
@@ -66,23 +76,29 @@ public class SelectCategoryAction  extends AbstractSelectPageAction<Map<String, 
 	 * @return
 	 */
 	private PagingQueryConfig getPagingQueryConfig() {
+		// 是否为根节点
+		boolean isRoot = true;
 		//TODO 查询的SQL
-		String s1 = this.templateService.getContent("SELECT-CATEGORY");
-		String s2 = this.templateService.getContent("SELECT-CATEGORY-COUNT");
+		String s1 = this.templateService.getContent("BC-SELECT-CATEGORY");
+		String s2 = this.templateService.getContent("BC-SELECT-CATEGORY-COUNT");
 
-		List<Object> args = new ArrayList<Object>();
-		Long Rid = (long) 23080; //当前的权限下的最大分类的id
-		String Rcode = "TPL";//当前的权限下的最大分类的code
-		//preCode = "SFTZ";//当前编辑/新建时所要处理的分类的code
-		//preId = 23090;//当前编辑/新建时所要处理的分类的id
-		args.add(Rid);//参数id
-		args.add(Rcode);//参数code
-		//args.add(preCode);//当前的分类Code
-		//args.add(preId);//当前的分类id
+		//preRoleId = 23122;
 		
+		List<Object> args = new ArrayList<Object>();
+		if(preRoleId != 0 ){
+			//Long pid = this.categoryService.findId(rootNode); //当前的权限下的最大分类的id
+			//preCode = "SFTZ";//当前编辑/新建时所要处理的分类的code
+			//preId = 23090;//当前编辑/新建时所要处理的分类的id
+			args.add(preRoleId);//参数id
+			isRoot = false;
+			//args.add(preCode);//当前的分类Code
+			//args.add(preId);//当前的分类id
+		}
+
+		args.add(preId);
 		cn.bc.core.query.cfg.impl.PagingQueryConfig cfg =
 				new cn.bc.core.query.cfg.impl.PagingQueryConfig(s1, s2, args);
-
+		cfg.addTemplateParam("isRoot",isRoot);
 		// 分页参数
 		Page<Map<String, Object>> p = getPage();
 		if (p != null) {
@@ -91,6 +107,22 @@ public class SelectCategoryAction  extends AbstractSelectPageAction<Map<String, 
 		}
 
 		return cfg;
+	}
+	
+	@Override
+    protected void extendGridExtrasData(JSONObject json) throws JSONException {
+		super.extendGridExtrasData(json);
+
+		// 状态条件
+		if (this.status != null && this.status.trim().length() > 0) {
+			json.put("status", status);
+		}
+
+		// 父节点条件
+		json.put("preRoleId", this.preRoleId);
+
+		// 是否是调用选择文件夹方法
+		//json.put("isSelectFolders", isSelectFolders);
 	}
 
 	@Override
@@ -237,5 +269,4 @@ public class SelectCategoryAction  extends AbstractSelectPageAction<Map<String, 
 	protected boolean canExport() {
 		return false;
 	}
-	
 }

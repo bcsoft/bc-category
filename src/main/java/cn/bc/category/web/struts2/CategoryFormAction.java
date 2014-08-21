@@ -16,8 +16,13 @@ import cn.bc.category.service.CategoryService;
 import cn.bc.identity.domain.ActorHistory;
 import cn.bc.identity.web.SystemContext;
 import cn.bc.web.struts2.EntityAction;
+import cn.bc.web.ui.html.page.ButtonOption;
 import cn.bc.web.ui.html.page.PageOption;
-
+/**
+ * 分类模块表单
+ * @author LeeDane
+ *
+ */
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 @Controller
 public class CategoryFormAction extends EntityAction<Long,Category> implements
@@ -33,6 +38,8 @@ public class CategoryFormAction extends EntityAction<Long,Category> implements
 	public String manageRole;//对应每个模块的管理者编码，如果没有，就需要进行ACL权限判断了！
 	public String rootNode;//等于空表示是最上级的节点！
 	
+	public long rootId;
+	
 	private CategoryService categoryService;
 	@Autowired
 	public void setCategoryService(CategoryService categoryService){
@@ -44,8 +51,6 @@ public class CategoryFormAction extends EntityAction<Long,Category> implements
 	public boolean isReadonly() {//拥有管理员的角色和分类管理的角色
 		SystemContext context = (SystemContext) this.getContext();		
 		
-		String manage = this.manageRole;
-		System.out.println("manage:"+manage);
 		if(manageRole != null && !"".equals(manageRole)){//manageRole不为空
 			return !context.hasAnyRole(
 					manageRole,getText("key.role.bc.admin"));
@@ -110,6 +115,15 @@ public class CategoryFormAction extends EntityAction<Long,Category> implements
 	protected PageOption buildFormPageOption(boolean editable) {
 		return super.buildFormPageOption(editable).setWidth(670).setHeight(210)
 				.setMinHeight(200).setMinWidth(600);
+	}
+	
+	@Override
+	protected void buildFormPageButtons(PageOption pageOption, boolean editable) {
+		// 保存按钮
+		ButtonOption saveButtonOption = new ButtonOption(
+				"保存", null, "bc.categoryForm.save");
+		
+		pageOption.addButton(saveButtonOption);
 	}
 	
 	//不使用打印功能

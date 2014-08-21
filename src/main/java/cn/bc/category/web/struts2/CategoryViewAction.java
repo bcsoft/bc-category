@@ -111,7 +111,7 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 		Long rootId = this.categoryService.getIdByFullCode(this.rootNode);
 		// 树节点ID
 		Long pid = this.getPid();
-		return rootId == pid || rootId.equals(pid);
+		return rootId == pid || (rootId != null && pid != null && rootId.equals(pid));
 	}
 
 	@Override
@@ -258,7 +258,7 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 //				getText("category.permiss")).setSortable(true));
 		// 最后修改
 		columns.add(new TextColumn4MapKey("modified", "modified",
-				getText("category.modified"), 240).setSortable(true));
+				getText("category.modified")).setSortable(true));
 		// 隐藏列
 		columns.add(new HiddenColumn4MapKey("id", "id"));
 		columns.add(new HiddenColumn4MapKey("name_", "name_"));
@@ -267,7 +267,10 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 
 	@Override
 	protected Tree getHtmlPageTree() {
-		Tree tree = new Tree("", "全部");
+		Long pid = this.getPid();
+		String rootPid = (pid != null ? pid.toString() : "");
+		
+		Tree tree = new Tree(rootPid, "全部");
 		tree.setShowRoot(true);
 
 		// 点击展开子节点图标的URL
@@ -340,7 +343,34 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 		if (this.status != null && this.status.trim().length() > 0) {
 			json.put("status", status);
 		}
+		
+		// 父节点条件
+		json.put("pid", this.getPid());
+		json.put("rootNode", this.rootNode);
+		json.put("rootId", this.getPid());
 	}
+	
+	/*@Override
+	protected JSONObject getGridExtrasData(){
+		JSONObject json = new JSONObject();	
+
+		try{
+			json.put("rootId", this.getPid());
+
+			
+			if (this.status != null && this.status.trim().length() > 0) {
+				json.put("status", status);
+			}
+			
+			// 父节点条件
+			json.put("pid", this.pid);
+		}catch(JSONException e){
+			
+		}
+		
+		
+		return json;
+	}*/
 
 	@Override
 	protected Integer getTreeWith() {
@@ -378,12 +408,6 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 	protected String getGridDblRowMethod() {
 		return "bc.category.view.edit";
 	}
-
-	@Override
-	protected String getGridDblRowMethod() {
-		return "bc.category.view.edit";
-	}
-
 	@Override
 	protected String getFormActionName() {
 		// TODO 获取表单action的简易名称
