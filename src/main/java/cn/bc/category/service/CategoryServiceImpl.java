@@ -4,7 +4,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import cn.bc.category.Dao.CategoryDao;
+import cn.bc.category.dao.CategoryDao;
 import cn.bc.category.domain.Category;
 import cn.bc.core.service.DefaultCrudService;
 
