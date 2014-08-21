@@ -52,6 +52,94 @@
 	</package>
 
 	<!-- 模板分类 -->
+	<package name="tplType" extends="bc-default" namespace="/bc/tpl">
+		<!-- 视图：分页 -->
+		<action name="paging" class="categoryViewAction" method="paging">
+			<!-- 窗口标题 -->
+			<param name="pageTitle">模板分类</param>
+			<!-- 根节点全编码 -->
+			<param name="rootNode">TPL</param>
+			<!-- 管理角色的编码 -->
+			<param name="manageRole">BC_TPL_MANAGE</param>
+		</action>
+
+		<!-- 视图：分页数据 -->
+		<action name="data" class="categoryViewAction" method="data">
+			<param name="rootNode">TPL</param>
+			<param name="manageRole">BC_TPL_MANAGE</param>
+		</action>
+
+		<!-- 视图：导出数据 -->
+		<action name="export" class="categoryViewAction" method="export">
+			<param name="rootNode">TPL</param>
+			<param name="manageRole">BC_TPL_MANAGE</param>
+		</action>
+
+		<!-- 表单：新建|编辑|查看 -->
+		<action name="form" class="categoryFormAction" method="form">
+			<param name="rootNode">TPL</param>
+			<param name="manageRole">BC_TPL_MANAGE</param>
+			<result name="form">/modules/bc/category/form.jsp</result>
+		</action>
+
+		<!-- 表单：保存 -->
+		<action name="save" class="categoryFormAction" method="save">
+			<param name="rootNode">TPL</param>
+			<param name="manageRole">BC_TPL_MANAGE</param>
+		</action>
+
+		<!-- 视图：删除 -->
+		<action name="delete" class="categoryFormAction" method="delete">
+			<param name="rootNode">TPL</param>
+			<param name="manageRole">BC_TPL_MANAGE</param>
+		</action>
+	</package>
+
+	<!-- 办公用品分类 -->
+	<package name="officeType" extends="bc-default" namespace="/bc/officeType">
+		<!-- 视图：分页 -->
+		<action name="paging" class="categoryViewAction" method="paging">
+			<!-- 窗口标题 -->
+			<param name="pageTitle">办公用品分类</param>
+			<!-- 根节点全编码 -->
+			<param name="rootNode">BGYP</param>
+			<!-- 管理角色的编码 -->
+			<param name="manageRole">BC_OFFICE_TYPE_MANAGE</param>
+		</action>
+
+		<!-- 视图：分页数据 -->
+		<action name="data" class="categoryViewAction" method="data">
+			<param name="rootNode">BGYP</param>
+			<param name="manageRole">BC_OFFICE_TYPE_MANAGE</param>
+		</action>
+
+		<!-- 视图：导出数据 -->
+		<action name="export" class="categoryViewAction" method="export">
+			<param name="rootNode">BGYP</param>
+			<param name="manageRole">BC_OFFICE_TYPE_MANAGE</param>
+		</action>
+
+		<!-- 表单：新建|编辑|查看 -->
+		<action name="form" class="categoryFormAction" method="form">
+			<param name="rootNode">BGYP</param>
+			<param name="manageRole">BC_OFFICE_TYPE_MANAGE</param>
+			<result name="form">/modules/bc/category/form.jsp</result>
+		</action>
+
+		<!-- 表单：保存 -->
+		<action name="save" class="categoryFormAction" method="save">
+			<param name="rootNode">BGYP</param>
+			<param name="manageRole">BC_OFFICE_TYPE_MANAGE</param>
+		</action>
+
+		<!-- 视图：删除 -->
+		<action name="delete" class="categoryFormAction" method="delete">
+			<param name="rootNode">BGYP</param>
+			<param name="manageRole">BC_OFFICE_TYPE_MANAGE</param>
+		</action>
+	</package>
+
+	<!-- 资产分类 -->
 	<package name="assetType" extends="bc-default" namespace="/bc/asset">
 		<!-- 视图：分页 -->
 		<action name="paging" class="categoryViewAction" method="paging">

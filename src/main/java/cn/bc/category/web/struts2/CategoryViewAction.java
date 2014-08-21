@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -22,7 +23,9 @@ import cn.bc.core.query.Query;
 import cn.bc.core.query.cfg.PagingQueryConfig;
 import cn.bc.core.query.condition.Condition;
 import cn.bc.core.query.condition.ConditionUtils;
+import cn.bc.core.query.condition.Direction;
 import cn.bc.core.query.condition.impl.EqualsCondition;
+import cn.bc.core.query.condition.impl.OrderCondition;
 import cn.bc.db.jdbc.SqlObject;
 import cn.bc.db.jdbc.spring.JdbcTemplatePagingQuery;
 import cn.bc.identity.web.SystemContext;
@@ -67,12 +70,22 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 	public String manageRole;
 	/** 根节点全编码 */
 	public String rootNode;
-	/** 树节点 */
-	public String pid = "node:";
+	/** 当前节点ID */
+	private Long pid;
 	/** 状态：正常|禁用|全部 */
 	public String status = String.valueOf(0);
-	/** 父类别ID */
-	public Long pid_;
+
+	public Long getPid() {
+		if(this.pid == null){
+			return this.categoryService.getIdByFullCode(this.rootNode);
+		}else{
+			return this.pid;
+		}
+	}
+
+	public void setPid(Long pid) {
+		this.pid = pid;
+	}
 
 	@Override
 	public boolean isReadonly() {
@@ -86,6 +99,19 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 
 		//TODO 不拥有角色，判断ACL权限
 		return isReadonly;
+	}
+
+	/**
+	 * 是否为树的根节点
+	 * 
+	 * @return
+	 */
+	public boolean isRootNode() {
+		// 树根节点ID
+		Long rootId = this.categoryService.getIdByFullCode(this.rootNode);
+		// 树节点ID
+		Long pid = this.getPid();
+		return rootId == pid || rootId.equals(pid);
 	}
 
 	@Override
@@ -103,6 +129,12 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 		return ConditionUtils.mix2AndCondition(statusCondition);
 	}
 
+	@Override
+	protected OrderCondition getGridOrderCondition() {
+		return new OrderCondition("father", Direction.Desc)
+				.add("sn", Direction.Asc);
+	}
+
 	/**
 	 * SQL分页查询语句及参数配置
 	 * 
@@ -110,24 +142,24 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 	 * @throws java.lang.Exception 
 	 */
 	private PagingQueryConfig getPagingQueryConfig() {
-		// 是否为根节点
-		boolean isRoot = (rootNode == null || rootNode.length() == 0);
-		pid_ = this.categoryService.findId(this.rootNode);
 		// 加载模板，获得查询SQL
 		String querySql = this.templateService.getContent("BC-CATEGORY");
 		String countSql = this.templateService.getContent("BC-CATEGORY-COUNT");
 		// 查询参数
 		List<Object> params = null;
+		Long pid = this.getPid();
 
-		if (!isRoot && pid_ != null && pid_ > 0) {
+		// 是否为顶级节点
+		if (pid != null) {
 			params = new ArrayList<Object>();
-			params.add(pid_);
+			params.add(pid);
 		}
 
 		// 查询对象
 		cn.bc.core.query.cfg.impl.PagingQueryConfig cfg = 
 				new cn.bc.core.query.cfg.impl.PagingQueryConfig(querySql, countSql, params);
-		cfg.addTemplateParam("isRoot", isRoot);
+		if (pid != null) cfg.addTemplateParam("pid", pid);
+		cfg.addTemplateParam("isRoot", this.isRootNode());
 
 		// 分页参数
 		Page<Map<String, Object>> p = getPage();
@@ -140,10 +172,9 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 
 	@Override
 	protected Query<Map<String, Object>> getQuery() {
-		JdbcTemplatePagingQuery<Map<String, Object>> jdbcQuery = null;
-		
-		jdbcQuery = new JdbcTemplatePagingQuery<Map<String,Object>>(jdbcTemplate, getPagingQueryConfig(), null);
-		
+		JdbcTemplatePagingQuery<Map<String, Object>> jdbcQuery = 
+				new JdbcTemplatePagingQuery<Map<String,Object>>(jdbcTemplate, 
+						getPagingQueryConfig(), null);
 		jdbcQuery.condition(this.getGridCondition());
 		return jdbcQuery;
 	}
@@ -160,8 +191,7 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 
 	@Override
 	protected String[] getGridSearchFields() {
-		//TODO 查询条件中要匹配的域 要什么域
-		return new String[]{"father，c.name_，c.code"};
+		return new String[]{"father", "name_", "code"};
 	}
 
 	@Override
@@ -172,14 +202,11 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 
 	@Override
 	protected String getHtmlPageTitle() {
-		// TODO 根据根节点来自动改变窗口标题
 		return this.pageTitle;
 	}
 
 	@Override
 	protected Toolbar getHtmlPageToolbar() {
-		// 页面的标题 管理权限可以看到此工具条，只读用户则不能
-		// TODO 只读情况下，视图显示不正常
 		Toolbar toolbar = new Toolbar();
 		if (!this.isReadonly()) {
 			// 新建
@@ -195,6 +222,10 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 			toolbar.addButton(Toolbar.getDefaultToolbarRadioGroup(
 					this.getStatues(), "status", 0, 
 					getText("title.click2changeSearchStatus")));
+		} else {
+			// 查看
+			toolbar.addButton(this.getDefaultOpenToolbarButton()
+					.setClick("bc.category.view.create"));
 		}
 		// 搜索按钮
 		toolbar.addButton(this.getDefaultSearchToolbarButton());
@@ -222,9 +253,9 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 		// 排序号
 		columns.add(new TextColumn4MapKey("sn", "sn",
 				getText("category.order"), 60).setSortable(true));
-		//TODO 权限配置
-		columns.add(new TextColumn4MapKey("acl", "acl",
-				getText("category.permiss")).setSortable(true));
+//		//TODO 权限配置
+//		columns.add(new TextColumn4MapKey("acl", "acl",
+//				getText("category.permiss")).setSortable(true));
 		// 最后修改
 		columns.add(new TextColumn4MapKey("modified", "modified",
 				getText("category.modified"), 240).setSortable(true));
@@ -236,8 +267,7 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 
 	@Override
 	protected Tree getHtmlPageTree() {
-		String RootNode = pid_ != null ? pid + pid_ : pid;
-		Tree tree = new Tree(RootNode, "全部");
+		Tree tree = new Tree("", "全部");
 		tree.setShowRoot(true);
 
 		// 点击展开子节点图标的URL
@@ -245,7 +275,7 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 
 		// 树的参数配置
 		Json cfg = new Json();
-		// TODO 点击节点的回调函数
+		// 点击节点的回调函数
 		cfg.put("clickNode", "bc.category.view.clickTreeNode");
 		tree.setCfg(cfg);
 
@@ -255,8 +285,7 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 		// 构建树的子节点
 		Collection<TreeNode> treeNodes;
 		try {
-			// TODO 查询可能抛异常异常
-			treeData = this.categoryService.findSubNodesData(RootNode);
+			treeData = this.categoryService.findSubNodesData(this.getPid());
 			treeNodes = this.buildTreeNodes(treeData);
 			for (TreeNode treeNode : treeNodes) 
 				tree.addSubNode(treeNode);
@@ -278,11 +307,7 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 		List<TreeNode> treeNodes = new ArrayList<TreeNode>();
 		for (Map<String, Object> data : treeData) {
 			TreeNode node = null;
-			node = new TreeNode(
-				String.valueOf(data.get("code")) + ":" + String.valueOf(data.get("id")),
-				String.valueOf(data.get("name_")),
-				!(Integer.parseInt(String.valueOf(data.get("sub"))) > 0));
-
+			node = new TreeNode(String.valueOf(data.get("id")), String.valueOf(data.get("name")));
 			treeNodes.add(node);
 		}
 		return treeNodes;
@@ -296,17 +321,25 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 	public String loadTreeData() {
 		JSONObject json = new JSONObject();
 		try {
-			List<Map<String, Object>> data = 
-					this.categoryService.findSubNodesData(this.pid);
+			List<Map<String, Object>> data = this.categoryService.findSubNodesData(this.getPid());
 			json.put("success", true);
 			json.put("subNodesCount", data.size());
 			json.put("html", TreeNode.buildSubNodes(this.buildTreeNodes(data)));
 		} catch (java.lang.Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 
 		this.json = json.toString();
 		return "json";
+	}
+
+	@Override
+	protected void extendGridExtrasData(JSONObject json) throws JSONException {
+		super.extendGridExtrasData(json);
+		// 状态条件
+		if (this.status != null && this.status.trim().length() > 0) {
+			json.put("status", status);
+		}
 	}
 
 	@Override

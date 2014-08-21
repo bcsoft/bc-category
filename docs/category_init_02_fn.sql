@@ -1,16 +1,21 @@
--- drop function category_get_by_full_code(character varying)
-CREATE OR REPLACE FUNCTION category_get_by_full_code(full_code text)
-	RETURNS INT AS
-	$BODY$
-	/** 获取 actor 直属的组织（单位、部门或所在岗位）
-	 *	@param actor_code 单位、部门、岗位或用户的编码
+-- Function: category_get_id_by_full_code(text)
+
+-- 删除函数
+DROP FUNCTION IF exists category_get_id_by_full_code(text) ;
+
+-- 创建函数
+CREATE OR REPLACE FUNCTION category_get_id_by_full_code(full_code text)
+  RETURNS integer AS
+$BODY$
+	/** 获取 full code 的 id
+	 *	@param full_code 树节点全编码
 	 */
 	DECLARE
 		_id INT;
 		i INT;
 		r record;
 	BEGIN
-		-- 
+		-- 参数为空返回空值
 		if $1 is null then 
 			return null;
 		end if;
@@ -23,13 +28,16 @@ CREATE OR REPLACE FUNCTION category_get_by_full_code(full_code text)
 			else
 				select c.id into _id from bc_category c where c.pid = _id and c.code = r.code;
 			end if;
+			
+			-- id 为空返回空值
 			if _id is null then 
 				return null;
 			end if;
+			
       i := i + 1;
-    END LOOP;
-    RETURN _id;
+		END LOOP;
+		-- 返回查询到的id
+		return _id;
 	END;
-	$BODY$ LANGUAGE plpgsql;
--- select category_get_by_full_code(null);
--- select category_get_by_full_code('TPL/JJHT/HT');
+	$BODY$
+  LANGUAGE plpgsql VOLATILE
