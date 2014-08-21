@@ -19,7 +19,6 @@ import org.springframework.stereotype.Controller;
 import cn.bc.BCConstants;
 import cn.bc.category.service.CategoryService;
 import cn.bc.core.Page;
-import cn.bc.core.exception.CoreException;
 import cn.bc.core.query.Query;
 import cn.bc.core.query.cfg.PagingQueryConfig;
 import cn.bc.core.query.condition.Condition;
@@ -207,8 +206,6 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 
 	@Override
 	protected Toolbar getHtmlPageToolbar() {
-		// 页面的标题 管理权限可以看到此工具条，只读用户则不能
-		// TODO 只读情况下，视图显示不正常
 		Toolbar toolbar = new Toolbar();
 		if (!this.isReadonly()) {
 			// 新建
@@ -328,7 +325,7 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 			json.put("subNodesCount", data.size());
 			json.put("html", TreeNode.buildSubNodes(this.buildTreeNodes(data)));
 		} catch (java.lang.Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 
 		this.json = json.toString();
@@ -342,10 +339,6 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 		if (this.status != null && this.status.trim().length() > 0) {
 			json.put("status", status);
 		}
-
-		
-		json.put("rootNode", this.rootNode);
-		
 	}
 
 	@Override

@@ -23,18 +23,20 @@ public interface CategoryService extends CrudService<Category>{
 	public boolean saveCategory(Category category);
 
 	/**
-	 * 查找nodeId下的子节点，nodeId的格式为： code:pid
+	 * 查找pid下的子类别
 	 * 
-	 * @param pid 父节点ID
-	 * @return
+	 * @param pid 父类别ID
+	 * @return 一个包含Map的列表，Map key 为：
+	 * <p>key: id -- bc_category的id</p>
+	 * <p>key: name -- bc_category的name</p>
 	 */
 	List<Map<String, Object>> findSubNodesData(Long pid);
 
 	/**
-	 * 通过full_code获得id
+	 * 通过节点全编码获得id
 	 * 
-	 * @param full_code
-	 * @return
+	 * @param full_code 节点全编码
+	 * @return 节点的ID
 	 */
 	Long getIdByFullCode(String full_code);
 }

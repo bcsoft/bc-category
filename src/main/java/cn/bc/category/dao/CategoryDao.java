@@ -27,18 +27,20 @@ public interface CategoryDao extends CrudDao<Category>{
 	public boolean saveCategory(Category category);
 
 	/**
-	 * 通过PID查找
+	 * 通过父类别ID查找子类别数据
 	 * 
 	 * @param pid 父类别ID
-	 * @return
+	 * @return 一个包含Map的列表，Map key 为：
+	 * <p>key: id -- bc_category的id</p>
+	 * <p>key: name -- bc_category的name</p>
 	 */
 	List<Map<String, Object>> findSubNodesData(Long pid);
 
 	/**
-	 * 通过节点全编码 full code 查找 ID
+	 * 通过节点全编码查找ID
 	 * 
-	 * @param getIdByFullCode
-	 * @return
+	 * @param full_code 节点全编码
+	 * @return 节点的ID
 	 */
-	Long getIdByFullCode(String getIdByFullCode);
+	Long getIdByFullCode(String fullCode);
 }
