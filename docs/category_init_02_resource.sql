@@ -15,6 +15,11 @@ delete from bc_subscribe_actor where aid in (
 	select id from BC_IDENTITY_ACTOR where name like '%分类%' and code like '%Category%'
 );
 delete from BC_IDENTITY_ACTOR where name like '%分类%' and code like '%Category%';
+-- 模板
+delete from bc_template where id in 
+	(select id from bc_template where code like 'BC-CATEGORY%');
+delete from bc_template where id in 
+	(select id from bc_template where code like 'BC-SELECT-CATEGORY%');
 
 
 --------------------------------------  资源配置  ----------------------------------------------------

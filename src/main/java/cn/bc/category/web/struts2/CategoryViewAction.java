@@ -2,6 +2,7 @@ package cn.bc.category.web.struts2;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,10 +27,12 @@ import cn.bc.core.query.condition.ConditionUtils;
 import cn.bc.core.query.condition.Direction;
 import cn.bc.core.query.condition.impl.EqualsCondition;
 import cn.bc.core.query.condition.impl.OrderCondition;
+import cn.bc.core.util.DateUtils;
 import cn.bc.db.jdbc.SqlObject;
 import cn.bc.db.jdbc.spring.JdbcTemplatePagingQuery;
 import cn.bc.identity.web.SystemContext;
 import cn.bc.template.service.TemplateService;
+import cn.bc.web.formater.AbstractFormater;
 import cn.bc.web.formater.EntityStatusFormater;
 import cn.bc.web.struts2.TreeViewAction;
 import cn.bc.web.ui.html.grid.Column;
@@ -196,8 +199,8 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 
 	@Override
 	protected PageOption getHtmlPageOption() {
-		return super.getHtmlPageOption().setWidth(850).setMinWidth(600)
-				.setHeight(450).setMinHeight(350);
+		return super.getHtmlPageOption().setWidth(880).setMinWidth(600)
+				.setHeight(480).setMinHeight(350);
 	}
 
 	@Override
@@ -243,13 +246,16 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 				.setValueFormater(new EntityStatusFormater(getStatues())));
 		// 所属分类
 		columns.add(new TextColumn4MapKey("father", "father",
-				getText("category.father"), 80).setSortable(true));
+				getText("category.father"), 120).setSortable(true)
+				.setUseTitleFromLabel(true));
 		// 名称
 		columns.add(new TextColumn4MapKey("name", "name_",
-				getText("category.name"), 80).setSortable(true));
+				getText("category.name")).setSortable(true)
+				.setUseTitleFromLabel(true));
 		// 编码
 		columns.add(new TextColumn4MapKey("code", "code",
-				getText("category.code"), 80).setSortable(true));
+				getText("category.code"), 150).setSortable(true)
+				.setUseTitleFromLabel(true));
 		// 排序号
 		columns.add(new TextColumn4MapKey("sn", "sn",
 				getText("category.order"), 60).setSortable(true));
@@ -257,8 +263,19 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 //		columns.add(new TextColumn4MapKey("acl", "acl",
 //				getText("category.permiss")).setSortable(true));
 		// 最后修改
-		columns.add(new TextColumn4MapKey("modified", "modified",
-				getText("category.modified")).setSortable(true));
+		columns.add(new TextColumn4MapKey("modified_date", "modified_date", 
+				getText("category.modified"), 210).setSortable(true)
+				.setValueFormater(new AbstractFormater<Object>() {
+					@Override
+					public Object format(Object context, Object value) {
+						if (value == null || "".equals(value.toString()))
+							return null;
+						@SuppressWarnings("unchecked")
+						Map<String, Object> map = (Map<String, Object>) context;
+						return map.get("modifier") + 
+								" (" +DateUtils.formatDateTime2Minute((Date)value) + "）";
+					}
+				}));
 		// 隐藏列
 		columns.add(new HiddenColumn4MapKey("id", "id"));
 		columns.add(new HiddenColumn4MapKey("name_", "name_"));
@@ -374,7 +391,7 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 
 	@Override
 	protected Integer getTreeWith() {
-		return 140;
+		return 220;
 	}
 
 	/**
