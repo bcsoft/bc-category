@@ -20,7 +20,7 @@ CREATE TABLE bc_category(
   CONSTRAINT bcfk_category_modifier FOREIGN KEY (modifier_id)
       REFERENCES bc_identity_actor_history (id)
       ON UPDATE NO ACTION ON DELETE NO ACTION,
-  CONSTRAINT bcuk_category_pid_code UNIQUE (pid, code),
+  --CONSTRAINT bcuk_category_pid_code UNIQUE (pid, code),
   CONSTRAINT bcck_category_code_no_slash CHECK (code !~~ '%/%')
 );
 COMMENT ON TABLE bc_category IS '分类模块';
@@ -31,6 +31,9 @@ COMMENT ON COLUMN bc_category.name_ IS '名称';
 COMMENT ON COLUMN bc_category.sn IS '同级节点间的顺序号';
 COMMENT ON COLUMN bc_category.modifier_id IS '最后修改人ID';
 COMMENT ON COLUMN bc_category.modified_date IS '最后修改时间';
+
+--建立pid和code的唯一性索引
+ CREATE UNIQUE INDEX bcuk_category_pid_code ON bc_category ((coalesce(pid,-1)||code));
 
 ------------------------------ 存储函数 ------------------------------
 

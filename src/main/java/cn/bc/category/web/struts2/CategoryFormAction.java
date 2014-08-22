@@ -18,6 +18,7 @@ import cn.bc.identity.web.SystemContext;
 import cn.bc.web.struts2.EntityAction;
 import cn.bc.web.ui.html.page.ButtonOption;
 import cn.bc.web.ui.html.page.PageOption;
+import cn.bc.web.ui.json.Json;
 /**
  * 分类模块表单
  * @author LeeDane
@@ -113,17 +114,32 @@ public class CategoryFormAction extends EntityAction<Long,Category> implements
 	//表单的大小
 	@Override
 	protected PageOption buildFormPageOption(boolean editable) {
-		return super.buildFormPageOption(editable).setWidth(670).setHeight(210)
+		return super.buildFormPageOption(editable).setWidth(620).setHeight(210)
 				.setMinHeight(200).setMinWidth(600);
 	}
 	
 	@Override
-	protected void buildFormPageButtons(PageOption pageOption, boolean editable) {
-		// 保存按钮
-		ButtonOption saveButtonOption = new ButtonOption(
-				"保存", null, "bc.categoryForm.save");
+	protected void buildFormPageButtons(PageOption pageOption, boolean editable) {		
+		if(!isReadonly()){
+			// 保存按钮
+			ButtonOption saveButtonOption = new ButtonOption(
+					"保存", null, "bc.categoryForm.save");
+			pageOption.addButton(saveButtonOption);
+		}		
+	}
+	
+	@Override
+	public String save() throws Exception {
+		try{
+			return super.save();
+		}catch(Exception e){
+			Json js = new Json();
+			js.put("success",false);
+			js.put("msg", "这个编码在该分类下已经存在");
+			this.json = js.toString();
+			return "json";
+		}
 		
-		pageOption.addButton(saveButtonOption);
 	}
 	
 	//不使用打印功能
