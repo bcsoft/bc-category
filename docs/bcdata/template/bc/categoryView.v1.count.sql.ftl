@@ -11,10 +11,11 @@ with recursive category (id, pid, status_, code, name_, sn, modifier_id, modifie
 		from bc_category c
 		inner join category p on p.id = c.pid
 </#if>
-), category_ (id, status_, name_, code, sn, father, modified) as (
+), category_ (id, status_, name_, code, sn, father, modifier, modified_date) as (
 	select id, status_, name_, code, sn, 
 		(select ca.name_ from bc_category ca where ca.id = c.pid) as father,
-		concat((select h.actor_name from bc_identity_actor_history h where h.id = c.modifier_id), ' ', c.modified_date) as modified
+		(select h.actor_name from bc_identity_actor_history h where h.id = c.modifier_id) as modifier, 
+		c.modified_date as modified_date
 		from category c
 )
 select count(*) from category_
