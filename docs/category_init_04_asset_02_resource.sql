@@ -1,4 +1,23 @@
+-- 清除资源、角色、岗位配置数据
 -- 资产分类
+delete from BC_IDENTITY_ROLE_RESOURCE where sid in 
+	(select id from BC_IDENTITY_RESOURCE where ORDER_ like '800703');
+delete from BC_IDENTITY_RESOURCE where ORDER_ like '800703';
+-- 角色
+delete from BC_IDENTITY_ROLE_ACTOR where rid in 
+	(select id from BC_IDENTITY_ROLE where code like 'BC_ASSET_TYPE_%');
+delete from bc_identity_role_resource where rid in
+	(select id from BC_IDENTITY_ROLE where code like 'BC_ASSET_TYPE_%');
+delete from BC_IDENTITY_ROLE where code like 'BC_ASSET_TYPE_%';
+-- 岗位
+delete from BC_IDENTITY_ACTOR_RELATION where 
+	FOLLOWER_ID in (select id from BC_IDENTITY_ACTOR where name like '%资产分类%')
+	or MASTER_ID in (select id from BC_IDENTITY_ACTOR where name like '%资产分类%');
+delete from bc_subscribe_actor where aid in (
+	select id from BC_IDENTITY_ACTOR where name like '%资产分类%'
+);
+delete from BC_IDENTITY_ACTOR where name like '%资产分类%';
+
 
 --------------------------------------  资源配置  ----------------------------------------------------
 -- 插入资源: 资产分类，隶属系统维护
@@ -11,13 +30,13 @@ insert into BC_IDENTITY_RESOURCE (ID,STATUS_,INNER_,TYPE_,BELONG,ORDER_,NAME,URL
 --------------------------------------  角色配置  ----------------------------------------------------
 -- 插入角色: 资产分类管理角色
 insert into BC_IDENTITY_ROLE (ID,STATUS_,INNER_,TYPE_,ORDER_,CODE,NAME) 
-	select NEXTVAL('CORE_SEQUENCE'), 0, false,  0,'0026', 'BC_ASSET_TYPE_MANAGE','资产分类管理角色'
+	select NEXTVAL('CORE_SEQUENCE'), 0, false,  0,'0026', 'BC_ASSET_TYPE_MANAGE','资产分类管理'
 	from BC_DUAL 
 	where not exists (select 0 from BC_IDENTITY_ROLE where CODE='BC_ASSET_TYPE_MANAGE');
 
 -- 插入角色: 资产分类查阅角色
 insert into BC_IDENTITY_ROLE (ID,STATUS_,INNER_,TYPE_,ORDER_,CODE,NAME) 
-	select NEXTVAL('CORE_SEQUENCE'), 0, false,  0,'0027', 'BC_ASSET_TYPE_READ','资产分类查阅角色'
+	select NEXTVAL('CORE_SEQUENCE'), 0, false,  0,'0027', 'BC_ASSET_TYPE_READ','资产分类查阅'
 	from BC_DUAL 
 	where not exists (select 0 from BC_IDENTITY_ROLE where CODE='BC_ASSET_TYPE_READ');
 
@@ -42,7 +61,7 @@ insert into BC_IDENTITY_ROLE_RESOURCE (RID,SID)
 -- 插入岗位：资产分类管理岗位隶属于宝成
 insert into BC_IDENTITY_ACTOR (ID,UID_,STATUS_,INNER_,TYPE_,CODE, NAME, ORDER_,PCODE,PNAME) 
 	select NEXTVAL('CORE_SEQUENCE'),'group.init.'||NEXTVAL('CORE_SEQUENCE'), 0, false, 3
-	, 'assetManageGroup','资产分类管理岗位', '9926','[1]baochengzongbu','宝城'
+	, 'assetManageGroup','资产分类管理岗', '9926','[1]baochengzongbu','宝城'
 	from BC_DUAL
 	where not exists (select 0 from BC_IDENTITY_ACTOR where CODE='assetManageGroup');
 insert into BC_IDENTITY_ACTOR_RELATION (TYPE_,MASTER_ID,FOLLOWER_ID) 
@@ -55,7 +74,7 @@ insert into BC_IDENTITY_ACTOR_RELATION (TYPE_,MASTER_ID,FOLLOWER_ID)
 -- 插入岗位：资产分类查阅岗位隶属于宝成
 insert into BC_IDENTITY_ACTOR (ID,UID_,STATUS_,INNER_,TYPE_,CODE, NAME, ORDER_,PCODE,PNAME) 
 	select NEXTVAL('CORE_SEQUENCE'),'group.init.'||NEXTVAL('CORE_SEQUENCE'), 0, false, 3
-	, 'assetReadGroup','资产分类查阅岗位', '9927','[1]baochengzongbu','宝城'
+	, 'assetReadGroup','资产分类查阅岗', '9927','[1]baochengzongbu','宝城'
 	from BC_DUAL
 	where not exists (select 0 from BC_IDENTITY_ACTOR where CODE='assetReadGroup');
 insert into BC_IDENTITY_ACTOR_RELATION (TYPE_,MASTER_ID,FOLLOWER_ID) 

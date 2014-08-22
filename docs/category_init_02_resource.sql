@@ -1,3 +1,22 @@
+-- 清除资源、角色、岗位配置数据
+-- 资源
+delete from BC_IDENTITY_ROLE_RESOURCE where sid in 
+	(select id from BC_IDENTITY_RESOURCE where ORDER_ like '800700');
+delete from BC_IDENTITY_RESOURCE where ORDER_ like '800700';
+-- 角色
+delete from BC_IDENTITY_ROLE_ACTOR where rid in 
+	(select id from BC_IDENTITY_ROLE where code like 'BC_CATEGORY_%');
+delete from BC_IDENTITY_ROLE where code like 'BC_CATEGORY_%';
+-- 岗位
+delete from BC_IDENTITY_ACTOR_RELATION where 
+	FOLLOWER_ID in (select id from BC_IDENTITY_ACTOR where name like '%分类%' and code like '%Category%')
+	or MASTER_ID in (select id from BC_IDENTITY_ACTOR where name like '%分类%' and code like '%Category%');
+delete from bc_subscribe_actor where aid in (
+	select id from BC_IDENTITY_ACTOR where name like '%分类%' and code like '%Category%'
+);
+delete from BC_IDENTITY_ACTOR where name like '%分类%' and code like '%Category%';
+
+
 --------------------------------------  资源配置  ----------------------------------------------------
 -- 插入资源: 分类管理，隶属系统维护
 insert into BC_IDENTITY_RESOURCE (ID,STATUS_,INNER_,TYPE_,BELONG,ORDER_,NAME,URL,ICONCLASS) 
@@ -7,20 +26,20 @@ insert into BC_IDENTITY_RESOURCE (ID,STATUS_,INNER_,TYPE_,BELONG,ORDER_,NAME,URL
 	and not exists (select 0 from BC_IDENTITY_RESOURCE where NAME='分类管理');
 
 --------------------------------------  角色配置  ----------------------------------------------------
--- 插入角色: 分类管理管理角色
+-- 插入角色: 分类信息管理角色
 insert into BC_IDENTITY_ROLE (ID,STATUS_,INNER_,TYPE_,ORDER_,CODE,NAME) 
-	select NEXTVAL('CORE_SEQUENCE'), 0, false,  0,'0020', 'BC_CATEGORY_MANAGE','分类管理管理角色'
+	select NEXTVAL('CORE_SEQUENCE'), 0, false,  0,'0020', 'BC_CATEGORY_MANAGE','分类信息管理'
 	from BC_DUAL 
 	where not exists (select 0 from BC_IDENTITY_ROLE where CODE='BC_CATEGORY_MANAGE');
 
--- 插入角色: 分类管理查阅角色
+-- 插入角色: 分类信息查阅角色
 insert into BC_IDENTITY_ROLE (ID,STATUS_,INNER_,TYPE_,ORDER_,CODE,NAME) 
-	select NEXTVAL('CORE_SEQUENCE'), 0, false,  0,'0021', 'BC_CATEGORY_READ','分类管理查阅角色'
+	select NEXTVAL('CORE_SEQUENCE'), 0, false,  0,'0021', 'BC_CATEGORY_READ','分类信息查阅'
 	from BC_DUAL 
 	where not exists (select 0 from BC_IDENTITY_ROLE where CODE='BC_CATEGORY_READ');
 
 --------------------------------------  角色-资源配置  ----------------------------------------------------
--- 插入角色-资源：分类管理管理角色，分类管理资源
+-- 插入角色-资源：分类信息管理角色，分类管理资源
 insert into BC_IDENTITY_ROLE_RESOURCE (RID,SID) 
 	select r.id,m.id 
 	from BC_IDENTITY_ROLE r,BC_IDENTITY_RESOURCE m 
@@ -28,7 +47,7 @@ insert into BC_IDENTITY_ROLE_RESOURCE (RID,SID)
 	and m.NAME='分类管理'
 	and not exists (select 0 from BC_IDENTITY_ROLE_RESOURCE rm where rm.RID=r.id and rm.SID=m.id);
 
--- 插入角色-资源：分类管理查阅角色，分类管理资源
+-- 插入角色-资源：分类信息查阅角色，分类管理资源
 insert into BC_IDENTITY_ROLE_RESOURCE (RID,SID) 
 	select r.id,m.id 
 	from BC_IDENTITY_ROLE r,BC_IDENTITY_RESOURCE m 
@@ -37,10 +56,10 @@ insert into BC_IDENTITY_ROLE_RESOURCE (RID,SID)
 	and not exists (select 0 from BC_IDENTITY_ROLE_RESOURCE rm where rm.RID=r.id and rm.SID=m.id);
 
 --------------------------------------  岗位配置  ----------------------------------------------------
--- 插入岗位：分类管理管理岗位隶属于宝成
+-- 插入岗位：分类管理岗位隶属于宝成
 insert into BC_IDENTITY_ACTOR (ID,UID_,STATUS_,INNER_,TYPE_,CODE, NAME, ORDER_,PCODE,PNAME) 
 	select NEXTVAL('CORE_SEQUENCE'),'group.init.'||NEXTVAL('CORE_SEQUENCE'), 0, false, 3
-	, 'CategoryManageGroup','分类管理管理岗位', '9920','[1]baochengzongbu','宝城'
+	, 'CategoryManageGroup','分类信息管理岗', '9920','[1]baochengzongbu','宝城'
 	from BC_DUAL
 	where not exists (select 0 from BC_IDENTITY_ACTOR where CODE='CategoryManageGroup');
 insert into BC_IDENTITY_ACTOR_RELATION (TYPE_,MASTER_ID,FOLLOWER_ID) 
@@ -50,10 +69,10 @@ insert into BC_IDENTITY_ACTOR_RELATION (TYPE_,MASTER_ID,FOLLOWER_ID)
 	and af.CODE = 'CategoryManageGroup' 
 	and not exists (select 0 from BC_IDENTITY_ACTOR_RELATION r where r.TYPE_=0 and r.MASTER_ID=am.id and r.FOLLOWER_ID=af.id);
 
--- 插入岗位：分类管理查阅岗位隶属于宝成
+-- 插入岗位：分类查阅岗位隶属于宝成
 insert into BC_IDENTITY_ACTOR (ID,UID_,STATUS_,INNER_,TYPE_,CODE, NAME, ORDER_,PCODE,PNAME) 
 	select NEXTVAL('CORE_SEQUENCE'),'group.init.'||NEXTVAL('CORE_SEQUENCE'), 0, false, 3
-	, 'CategoryReadGroup','分类管理查阅岗位', '9921','[1]baochengzongbu','宝城'
+	, 'CategoryReadGroup','分类信息查阅岗', '9921','[1]baochengzongbu','宝城'
 	from BC_DUAL
 	where not exists (select 0 from BC_IDENTITY_ACTOR where CODE='CategoryReadGroup');
 insert into BC_IDENTITY_ACTOR_RELATION (TYPE_,MASTER_ID,FOLLOWER_ID) 
@@ -64,14 +83,14 @@ insert into BC_IDENTITY_ACTOR_RELATION (TYPE_,MASTER_ID,FOLLOWER_ID)
 	and not exists (select 0 from BC_IDENTITY_ACTOR_RELATION r where r.TYPE_=0 and r.MASTER_ID=am.id and r.FOLLOWER_ID=af.id);
 
 --------------------------------------  岗位-角色配置  ----------------------------------------------------
--- 插入岗位-角色：分类管理管理岗位，分类管理管理角色
+-- 插入岗位-角色：分类信息管理岗，分类信息管理角色
 insert into BC_IDENTITY_ROLE_ACTOR (AID,RID) 
 	select a.id, r.id 
 	from BC_IDENTITY_ACTOR a,BC_IDENTITY_ROLE r 
 	where a.CODE in ('CategoryManageGroup') and r.CODE in ('BC_CATEGORY_MANAGE')
 	and not exists (select 0 from BC_IDENTITY_ROLE_ACTOR ra where ra.AID=a.id and ra.RID=r.id);
 
--- 插入岗位-角色：分类管理查阅岗位，分类管理查阅角色
+-- 插入岗位-角色：分类信息查阅岗，分类信息查阅角色
 insert into BC_IDENTITY_ROLE_ACTOR (AID,RID) 
 	select a.id, r.id 
 	from BC_IDENTITY_ACTOR a,BC_IDENTITY_ROLE r 
@@ -79,7 +98,7 @@ insert into BC_IDENTITY_ROLE_ACTOR (AID,RID)
 	and not exists (select 0 from BC_IDENTITY_ROLE_ACTOR ra where ra.AID=a.id and ra.RID=r.id);
 
 --------------------------------------  岗位-用户配置  ----------------------------------------------------
--- 插入岗位-用户：分类管理管理岗位-admin
+-- 插入岗位-用户：分类管理岗-admin
 insert into BC_IDENTITY_ACTOR_RELATION (TYPE_,MASTER_ID,FOLLOWER_ID) 
     select 0,am.id,af.id
     from BC_IDENTITY_ACTOR am,BC_IDENTITY_ACTOR af
@@ -87,7 +106,7 @@ insert into BC_IDENTITY_ACTOR_RELATION (TYPE_,MASTER_ID,FOLLOWER_ID)
 	and af.CODE in ('admin') -- 用户帐号
 	and not exists (select 0 from BC_IDENTITY_ACTOR_RELATION r where r.TYPE_=0 and r.MASTER_ID=am.id and r.FOLLOWER_ID=af.id);
 
--- 插入岗位-用户：分类管理查阅岗位-dragon
+-- 插入岗位-用户：分类查阅岗-dragon
 insert into BC_IDENTITY_ACTOR_RELATION (TYPE_,MASTER_ID,FOLLOWER_ID) 
     select 0,am.id,af.id
     from BC_IDENTITY_ACTOR am,BC_IDENTITY_ACTOR af
@@ -115,7 +134,7 @@ insert into bc_template (id,order_,code,content,file_date,author_id,modifier_id,
 	select nextval('core_sequence'),'5005','BC-CATEGORY-COUNT',null,now(),
 		(select id from bc_identity_actor_history where actor_code='admin' and current=true),
 		(select id from bc_identity_actor_history where actor_code='admin' and current=true),now(),
-		'分类管理','bc/categoryView.v1.countSql.ftl',false,'分类管理模块总行数SQL查询语句模板',0,'1.0','平台/分类管理',
+		'分类管理','bc/categoryView.v1.count.sql.ftl',false,'分类管理模块总行数SQL查询语句模板',0,'1.0','平台/分类管理',
 		(select id from bc_template_type where code='freemarker'),
 		0,false,'Template.category.2'
 	from BC_DUAL 
