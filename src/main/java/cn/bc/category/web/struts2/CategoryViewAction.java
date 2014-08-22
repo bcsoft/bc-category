@@ -134,8 +134,7 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 
 	@Override
 	protected OrderCondition getGridOrderCondition() {
-		return new OrderCondition("father", Direction.Desc)
-				.add("sn", Direction.Asc);
+		return new OrderCondition("full_code", Direction.Asc);
 	}
 
 	/**
