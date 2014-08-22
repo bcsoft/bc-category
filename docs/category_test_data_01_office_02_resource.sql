@@ -1,3 +1,23 @@
+-- 清除资源、角色、岗位配置数据
+-- 办公用品分类
+delete from BC_IDENTITY_ROLE_RESOURCE where sid in 
+	(select id from BC_IDENTITY_RESOURCE where ORDER_ like '800702');
+delete from BC_IDENTITY_RESOURCE where ORDER_ like '800702';
+-- 角色
+delete from BC_IDENTITY_ROLE_ACTOR where rid in 
+	(select id from BC_IDENTITY_ROLE where code like 'BC_OFFICE_TYPE_%');
+delete from bc_identity_role_resource where rid in
+	(select id from BC_IDENTITY_ROLE where code like 'BC_OFFICE_TYPE_%');
+delete from BC_IDENTITY_ROLE where code like 'BC_OFFICE_TYPE_%';
+-- 岗位
+delete from BC_IDENTITY_ACTOR_RELATION where 
+	FOLLOWER_ID in (select id from BC_IDENTITY_ACTOR where name like '%办公用品分类%')
+	or MASTER_ID in (select id from BC_IDENTITY_ACTOR where name like '%办公用品分类%');
+delete from bc_subscribe_actor where aid in (
+	select id from BC_IDENTITY_ACTOR where name like '%办公用品分类%'
+);
+delete from BC_IDENTITY_ACTOR where name like '%办公用品分类%';
+
 --------------------------------------  资源配置  ----------------------------------------------------
 -- 插入资源: 办公用品分类，隶属系统维护
 insert into BC_IDENTITY_RESOURCE (ID,STATUS_,INNER_,TYPE_,BELONG,ORDER_,NAME,URL,ICONCLASS) 
