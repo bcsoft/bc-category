@@ -60,6 +60,7 @@ public class SelectCategoryAction  extends AbstractSelectPageAction<Map<String, 
 	
 	public int preRoleId;//根据pid查找所有的
 	public long preId;//当前要编辑的分类的id，如果没有，就是新建，默认是0
+	public String multiSelect;//多选
 	
 	@Autowired
 	private TemplateService templateService;
@@ -123,6 +124,10 @@ public class SelectCategoryAction  extends AbstractSelectPageAction<Map<String, 
 
 		// 是否是调用选择文件夹方法
 		//json.put("isSelectFolders", isSelectFolders);
+
+		// 分类多选的条件
+		if(this.multiSelect != null && this.multiSelect.length() > 0)
+			json.put("multiSelect", "yes");
 	}
 
 	@Override
