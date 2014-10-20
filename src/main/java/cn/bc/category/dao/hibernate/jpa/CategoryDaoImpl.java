@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import cn.bc.category.dao.CategoryDao;
@@ -27,17 +28,40 @@ public class CategoryDaoImpl extends HibernateCrudJpaDao<Category> implements Ca
 		return this.save(category) != null;
 	}
 
-	public List<Map<String, Object>> findSubNodesData(Long pid) {
-		String sql = "select id, name_ as name from bc_category";
-		if(pid == null){
+	public List<Map<String, Object>> findSubNodesData(Long pid, String code) {
+//		String sql = "select id, name_ as name from bc_category";
+//		if(pid == null){
+//			sql += " where pid is null";
+//			sql += " order by pid desc, sn asc";
+//			return this.jdbcTemplate.queryForList(sql);
+//		}else{
+//			sql += " where pid = ?";
+//			sql += " order by pid desc, sn asc";
+//			return this.jdbcTemplate.queryForList(sql, pid);
+//		}
+		String sql = "with recursive actor(id) as (";
+		sql += " select id from bc_identity_actor where code = ?";
+		sql += " union";
+		sql += " select identity_find_actor_ancestor_ids(?))";
+		sql += " , category (id, full_sn) as (";
+		sql += " select id, array[sn::text]";
+		sql += " from bc_category c";
+		if(pid == null)
 			sql += " where pid is null";
-			sql += " order by pid desc, sn asc";
-			return this.jdbcTemplate.queryForList(sql);
-		}else{
+		else
 			sql += " where pid = ?";
-			sql += " order by pid desc, sn asc";
-			return this.jdbcTemplate.queryForList(sql, pid);
-		}
+		sql += " and not exists (";
+		sql += " select 0 from bc_acl_actor aa";
+		sql += " inner join bc_acl_doc ad on aa.pid = ad.id";
+		sql += " where ad.doc_type = 'Category' and ad.doc_id = c.id::text";
+		sql += " and ((aa.role = '00' and aa.aid in (select id from actor))";
+		sql += " or (aa.role in ('11', '01') and aa.aid not in (select id from actor)))))";
+		sql += " select oc.id as id, oc.name_ as name from category c";
+		sql += " inner join bc_category oc on oc.id = c.id";
+		if(pid == null)
+			return this.jdbcTemplate.queryForList(sql, code, code);
+		else
+			return this.jdbcTemplate.queryForList(sql, code, code, pid);
 	}
 
 	public Long getIdByFullCode(String fullCode) {
@@ -45,6 +69,7 @@ public class CategoryDaoImpl extends HibernateCrudJpaDao<Category> implements Ca
 		id = (id == null || id == 0 ? null : id);
 		return id;
 	}
+
 	public List<Map<String, Object>> find4ParentType(Long id) {
 		String sql = "select pbc.name_,iah.actor_name" +
 				" from bc_category bc" +

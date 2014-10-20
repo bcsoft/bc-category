@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 
 import cn.bc.category.domain.Category;
 import cn.bc.category.service.CategoryService;
+import cn.bc.core.util.StringUtils;
 import cn.bc.identity.domain.ActorHistory;
 import cn.bc.identity.web.SystemContext;
 import cn.bc.web.struts2.EntityAction;
@@ -40,6 +41,7 @@ public class CategoryFormAction extends EntityAction<Long,Category> implements
 	public String rootNode;//等于空表示是最上级的节点！
 	
 	public long rootId;
+	public String fullAcl;
 	
 	private CategoryService categoryService;
 	@Autowired
@@ -47,22 +49,24 @@ public class CategoryFormAction extends EntityAction<Long,Category> implements
 		this.setCrudService(categoryService);
 		this.categoryService = categoryService;
 	}
-	
+
 	@Override
-	public boolean isReadonly() {//拥有管理员的角色和分类管理的角色
-		SystemContext context = (SystemContext) this.getContext();		
-		
-		if(manageRole != null && !"".equals(manageRole)){//manageRole不为空
-			return !context.hasAnyRole(
-					manageRole,getText("key.role.bc.admin"));
-		}else{
-			//判断ACL
-			
-			//也没有ACL，直接返回true
-			return true;
-		}	
+	public boolean isReadonly() {// 拥有管理员的角色和分类管理的角色
+		SystemContext context = (SystemContext) this.getContext();
+
+		if (manageRole != null && !"".equals(manageRole)) // manageRole不为空
+			// 包含管理角色
+			if (context.hasAnyRole(manageRole))
+				return false;
+
+		// 不包含管理角色，判断ACL
+		if (fullAcl != null)
+			return fullAcl.indexOf("10") == -1 && fullAcl.indexOf("11") == -1;
+
+		// 没有管理角色也没有ACL编辑权限
+		return true;
 	}
-	
+
 	public String form () throws Exception{
 		getStatusList();
 		if(isReadonly()){

@@ -3,6 +3,7 @@ package cn.bc.category.web.struts2;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,12 +29,16 @@ import cn.bc.core.query.condition.Direction;
 import cn.bc.core.query.condition.impl.EqualsCondition;
 import cn.bc.core.query.condition.impl.OrderCondition;
 import cn.bc.core.util.DateUtils;
+import cn.bc.core.util.JsonUtils;
+import cn.bc.core.util.StringUtils;
 import cn.bc.db.jdbc.SqlObject;
 import cn.bc.db.jdbc.spring.JdbcTemplatePagingQuery;
 import cn.bc.identity.web.SystemContext;
 import cn.bc.template.service.TemplateService;
 import cn.bc.web.formater.AbstractFormater;
 import cn.bc.web.formater.EntityStatusFormater;
+import cn.bc.web.formater.Icon;
+import cn.bc.web.formater.LinkFormater4Id;
 import cn.bc.web.struts2.TreeViewAction;
 import cn.bc.web.ui.html.grid.Column;
 import cn.bc.web.ui.html.grid.HiddenColumn4MapKey;
@@ -47,18 +52,20 @@ import cn.bc.web.ui.html.tree.TreeNode;
 import cn.bc.web.ui.json.Json;
 
 import com.sun.star.uno.Exception;
+import com.thoughtworks.xstream.alias.ClassMapper.Null;
 
 /**
  * 分类视图Action
  * 
  * @author Action
- *
+ * 
  */
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 @Controller
 public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 	private static final long serialVersionUID = 1L;
-	private final static Log logger = LogFactory.getLog(CategoryViewAction.class);
+	private final static Log logger = LogFactory
+			.getLog(CategoryViewAction.class);
 
 	@Autowired
 	private TemplateService templateService;
@@ -77,11 +84,12 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 	private Long pid;
 	/** 状态：正常|禁用|全部 */
 	public String status = String.valueOf(0);
+	private SystemContext systemContext;
 
 	public Long getPid() {
-		if(this.pid == null){
+		if (this.pid == null) {
 			return this.categoryService.getIdByFullCode(this.rootNode);
-		}else{
+		} else {
 			return this.pid;
 		}
 	}
@@ -92,15 +100,12 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 
 	@Override
 	public boolean isReadonly() {
-		// 判断当前用户是否只读，拥有manageRole角色即不用判断ACL权限
-		SystemContext context = (SystemContext) this.getContext();
+		// 判断当前用户是否只读，拥有manageRole角色
+		this.systemContext = this.getSystemContext();
 		boolean isReadonly = true;
-		if (manageRole != null && manageRole.length() != 0) 
-			isReadonly = !context.hasAnyRole(manageRole);
-		else if (!isReadonly) 
-			return isReadonly;
+		if (manageRole != null && manageRole.length() != 0)
+			return !systemContext.hasAnyRole(manageRole);
 
-		//TODO 不拥有角色，判断ACL权限
 		return isReadonly;
 	}
 
@@ -114,7 +119,8 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 		Long rootId = this.categoryService.getIdByFullCode(this.rootNode);
 		// 树节点ID
 		Long pid = this.getPid();
-		return rootId == pid || (rootId != null && pid != null && rootId.equals(pid));
+		return rootId == pid
+				|| (rootId != null && pid != null && rootId.equals(pid));
 	}
 
 	@Override
@@ -123,7 +129,7 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 		if (status != null && status.length() > 0) {
 			String[] ss = status.split(",");
 			if (ss.length == 1) {
-				statusCondition = new EqualsCondition("status_",
+				statusCondition = new EqualsCondition("oc.status_",
 						new Integer(ss[0]));
 			}
 		}
@@ -134,14 +140,14 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 
 	@Override
 	protected OrderCondition getGridOrderCondition() {
-		return new OrderCondition("full_code", Direction.Asc);
+		return new OrderCondition("c.full_sn", Direction.Asc);
 	}
 
 	/**
 	 * SQL分页查询语句及参数配置
 	 * 
 	 * @return
-	 * @throws java.lang.Exception 
+	 * @throws java.lang.Exception
 	 */
 	private PagingQueryConfig getPagingQueryConfig() {
 		// 加载模板，获得查询SQL
@@ -158,10 +164,15 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 		}
 
 		// 查询对象
-		cn.bc.core.query.cfg.impl.PagingQueryConfig cfg = 
-				new cn.bc.core.query.cfg.impl.PagingQueryConfig(querySql, countSql, params);
-		if (pid != null) cfg.addTemplateParam("pid", pid);
+		cn.bc.core.query.cfg.impl.PagingQueryConfig cfg = new cn.bc.core.query.cfg.impl.PagingQueryConfig(
+				querySql, countSql, params);
+		if (pid != null)
+			cfg.addTemplateParam("pid", pid);
 		cfg.addTemplateParam("isRoot", this.isRootNode());
+		cfg.addTemplateParam("code", this.getSystemContext().getUser()
+				.getCode());
+		if (!isReadonly())
+			cfg.addTemplateParam("isManager", true);
 
 		// 分页参数
 		Page<Map<String, Object>> p = getPage();
@@ -174,9 +185,8 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 
 	@Override
 	protected Query<Map<String, Object>> getQuery() {
-		JdbcTemplatePagingQuery<Map<String, Object>> jdbcQuery = 
-				new JdbcTemplatePagingQuery<Map<String,Object>>(jdbcTemplate, 
-						getPagingQueryConfig(), null);
+		JdbcTemplatePagingQuery<Map<String, Object>> jdbcQuery = new JdbcTemplatePagingQuery<Map<String, Object>>(
+				jdbcTemplate, getPagingQueryConfig(), null);
 		jdbcQuery.condition(this.getGridCondition());
 		return jdbcQuery;
 	}
@@ -193,7 +203,7 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 
 	@Override
 	protected String[] getGridSearchFields() {
-		return new String[]{"father", "name_", "code"};
+		return new String[] { "father", "name_", "code" };
 	}
 
 	@Override
@@ -212,22 +222,22 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 		Toolbar toolbar = new Toolbar();
 		if (!this.isReadonly()) {
 			// 新建
-			toolbar.addButton(new ToolbarButton().setIcon("ui-icon-lightbulb").setText("新建")
-					.setClick("bc.category.view.create"));
+			toolbar.addButton(new ToolbarButton().setIcon("ui-icon-lightbulb")
+					.setText("新建").setClick("bc.category.view.create"));
 			// 编辑
-			toolbar.addButton(new ToolbarButton().setIcon("ui-icon-lightbulb").setText("编辑")
-					.setClick("bc.category.view.edit"));
+			toolbar.addButton(new ToolbarButton().setIcon("ui-icon-lightbulb")
+					.setText("编辑").setClick("bc.category.view.edit"));
 			// 删除
-			toolbar.addButton(new ToolbarButton().setIcon("ui-icon-lightbulb").setText("删除")
-					.setClick("bc.category.view.delete_"));
+			toolbar.addButton(new ToolbarButton().setIcon("ui-icon-lightbulb")
+					.setText("删除").setClick("bc.category.view.delete_"));
 			// 状态
 			toolbar.addButton(Toolbar.getDefaultToolbarRadioGroup(
-					this.getStatues(), "status", 0, 
+					this.getStatues(), "status", 0,
 					getText("title.click2changeSearchStatus")));
 		} else {
 			// 查看
-			toolbar.addButton(this.getDefaultOpenToolbarButton()
-					.setClick("bc.category.view.create"));
+			toolbar.addButton(this.getDefaultOpenToolbarButton().setClick(
+					"bc.category.view.create"));
 		}
 		// 搜索按钮
 		toolbar.addButton(this.getDefaultSearchToolbarButton());
@@ -238,7 +248,8 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 	protected List<Column> getGridColumns() {
 		List<Column> columns = new ArrayList<Column>();
 		// id列
-		columns.add(new IdColumn().setId("id").setValueExpression("['pid'] + ',' + ['code']"));
+		columns.add(new IdColumn().setId("id").setValueExpression(
+				"['pid'] + ',' + ['code']"));
 		// 状态
 		columns.add(new TextColumn4MapKey("status", "status_",
 				getText("category.status"), 35).setSortable(true)
@@ -249,8 +260,18 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 				.setUseTitleFromLabel(true));
 		// 名称
 		columns.add(new TextColumn4MapKey("name", "name_",
-				getText("category.name")).setSortable(true)
-				.setUseTitleFromLabel(true));
+				getText("category.name")).setSortable(true).setValueFormater(
+				new AbstractFormater<Object>() {
+					@SuppressWarnings("unchecked")
+					@Override
+					public Object format(Object context, Object value) {
+						Map<String, Object> map = (Map<String, Object>) context;
+						return !isReadonly() ? StringUtils.toString(map
+								.get("name_")) : buildColumnIcon(map,
+								createIcon(), editIcon(), delIcon())
+								+ StringUtils.toString(map.get("name_"));
+					}
+				}));
 		// 编码
 		columns.add(new TextColumn4MapKey("code", "code",
 				getText("category.code"), 150).setSortable(true)
@@ -258,11 +279,20 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 		// 排序号
 		columns.add(new TextColumn4MapKey("sn", "sn",
 				getText("category.order"), 60).setSortable(true));
-//		//TODO 权限配置
-//		columns.add(new TextColumn4MapKey("acl", "acl",
-//				getText("category.permiss")).setSortable(true));
+		// 权限配置
+		columns.add(new TextColumn4MapKey("acls", "acls",
+				getText("category.permiss"), 120)
+				.setValueFormater(new AbstractFormater<Object>() {
+					@SuppressWarnings("unchecked")
+					@Override
+					public Object format(Object context, Object value) {
+						Map<String, Object> map = (Map<String, Object>) context;
+						return buildColumnIcon(map, aclIcon(map))
+								+ formatACLConfig(map);
+					}
+				}));
 		// 最后修改
-		columns.add(new TextColumn4MapKey("modified_date", "modified_date", 
+		columns.add(new TextColumn4MapKey("modified_date", "modified_date",
 				getText("category.modified"), 210).setSortable(true)
 				.setValueFormater(new AbstractFormater<Object>() {
 					@Override
@@ -271,21 +301,138 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 							return null;
 						@SuppressWarnings("unchecked")
 						Map<String, Object> map = (Map<String, Object>) context;
-						return map.get("modifier") + 
-								" (" +DateUtils.formatDateTime2Minute((Date)value) + "）";
+						return map.get("modifier") + " ("
+								+ DateUtils.formatDateTime2Minute((Date) value)
+								+ "）";
 					}
 				}));
 		// 隐藏列
 		columns.add(new HiddenColumn4MapKey("id", "id"));
 		columns.add(new HiddenColumn4MapKey("name_", "name_"));
+		columns.add(new HiddenColumn4MapKey("full_acl", "full_acl"));
 		return columns;
+	}
+
+	/**
+	 * 构建视图列的图标
+	 * 
+	 * @param m
+	 *            查询返回的map
+	 * @return
+	 */
+	private String buildColumnIcon(Map<String, Object> m, Icon... icons) {
+		String fullAcl = StringUtils.toString(m.get("full_acl"));
+		if (isReadonly() && fullAcl.indexOf("10") == -1
+				&& fullAcl.indexOf("11") == -1)
+			return "";
+
+		// 返回自定义图标
+		String icon = "";
+		for (Icon i : icons)
+			icon += i.wrap();
+
+		return icon;
+	}
+
+	/**
+	 * 新建图标
+	 * 
+	 * @return
+	 */
+	private Icon createIcon() {
+		Icon icon = new Icon();
+		icon.setClazz("ui-icon ui-icon-plusthick");
+		icon.setTitle("新建");// 鼠标提示信息
+		icon.setClick("bc.category.view.create");// 点击函数
+		return icon;
+	}
+
+	/**
+	 * 编辑图标
+	 * 
+	 * @return
+	 */
+	private Icon editIcon() {
+		Icon icon = new Icon();
+		icon.setClazz("ui-icon ui-icon-pencil");
+		icon.setTitle("编辑");// 鼠标提示信息
+		icon.setClick("bc.category.view.edit");// 点击函数
+		return icon;
+	}
+
+	/**
+	 * 删除图标
+	 * 
+	 * @return
+	 */
+	private Icon delIcon() {
+		Icon icon = new Icon();
+		icon.setClazz("ui-icon ui-icon-close");
+		icon.setTitle("删除");// 鼠标提示信息
+		icon.setClick("bc.category.view.delete_");// 点击函数
+		return icon;
+	}
+
+	/**
+	 * ACL 扳手Icon
+	 * 
+	 * @param m
+	 * @return
+	 */
+	private Icon aclIcon(Map<String, Object> m) {
+		String fullAcl = StringUtils.toString(m.get("full_acl"));
+		// 小图标: 查看所有ACL配置信息
+		Icon icon = new Icon();
+		icon.setClazz("ui-icon ui-icon-wrench");
+		icon.setTitle(getText("category.permiss.seeAll"));// 鼠标提示信息
+		icon.setClick("bc.category.view.aclConfig");// 点击函数
+		Map<String, Object> args = new HashMap<String, Object>();
+		args.put("docId", m.get("id"));
+		args.put("docType", "Category");
+		args.put("docName", m.get("name_"));
+		if (fullAcl.indexOf("10") != -1)
+			args.put("bit", "10");// 当前用户的ACL
+		else if (fullAcl.indexOf("11") != -1 || !isReadonly())
+			args.put("bit", "11");
+		icon.setClickArguments(JsonUtils.toJson(args));
+		return icon;
+	}
+
+	/**
+	 * 格式化数据库返回的ACL配置信息
+	 * 
+	 * @param m
+	 *            {"acls":"name,role::name,role..."}
+	 * @return "name（编辑||查阅）,name（编辑||查阅）..."
+	 */
+	private String formatACLConfig(Map<String, Object> m) {
+		Object aclsObj = m.get("acls");
+		if (aclsObj == null)
+			return "";
+		String acls = StringUtils.toString(aclsObj);
+		String[] aclArr = acls.split("::");
+		String aclConfig = "";
+		for (int i = 0; i < aclArr.length; i++) {
+			String[] acl = aclArr[i].split(",");
+			aclConfig += acl[0];
+			if (acl[1].equals("11") || acl[1].equals("10"))
+				aclConfig += "（编辑）";
+			else if (acl[1].equals("01"))
+				aclConfig += "（查阅）";
+			else if (acl[1].equals("00"))
+				aclConfig += "（无权限）";
+			// 如果不是最后一次循环
+			if (!(i >= aclArr.length - 1))
+				aclConfig += "，";
+		}
+		return aclConfig;
 	}
 
 	@Override
 	protected Tree getHtmlPageTree() {
 		Long pid = this.getPid();
 		String rootPid = (pid != null ? pid.toString() : "");
-		
+
 		Tree tree = new Tree(rootPid, "全部");
 		tree.setShowRoot(true);
 
@@ -298,15 +445,16 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 		cfg.put("clickNode", "bc.category.view.clickTreeNode");
 		tree.setCfg(cfg);
 
-		// 树的数据 
+		// 树的数据
 		List<Map<String, Object>> treeData;
 
 		// 构建树的子节点
 		Collection<TreeNode> treeNodes;
 		try {
-			treeData = this.categoryService.findSubNodesData(this.getPid());
+			treeData = this.categoryService.findSubNodesData(this.getPid(),
+					this.getSystemContext().getUser().getCode());
 			treeNodes = this.buildTreeNodes(treeData);
-			for (TreeNode treeNode : treeNodes) 
+			for (TreeNode treeNode : treeNodes)
 				tree.addSubNode(treeNode);
 		} catch (Exception e) {
 			logger.error(e.getMessage());
@@ -318,15 +466,17 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 	/**
 	 * 构建树节点
 	 * 
-	 * @param treeData 树节点数据
+	 * @param treeData
+	 *            树节点数据
 	 * @return
 	 */
-	private Collection<TreeNode> buildTreeNodes(List<Map<String, Object>> treeData)
-			throws Exception {
+	private Collection<TreeNode> buildTreeNodes(
+			List<Map<String, Object>> treeData) throws Exception {
 		List<TreeNode> treeNodes = new ArrayList<TreeNode>();
 		for (Map<String, Object> data : treeData) {
 			TreeNode node = null;
-			node = new TreeNode(String.valueOf(data.get("id")), String.valueOf(data.get("name")));
+			node = new TreeNode(String.valueOf(data.get("id")),
+					String.valueOf(data.get("name")));
 			treeNodes.add(node);
 		}
 		return treeNodes;
@@ -340,7 +490,9 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 	public String loadTreeData() {
 		JSONObject json = new JSONObject();
 		try {
-			List<Map<String, Object>> data = this.categoryService.findSubNodesData(this.getPid());
+			List<Map<String, Object>> data = this.categoryService
+					.findSubNodesData(this.getPid(), this.getSystemContext()
+							.getUser().getCode());
 			json.put("success", true);
 			json.put("subNodesCount", data.size());
 			json.put("html", TreeNode.buildSubNodes(this.buildTreeNodes(data)));
@@ -359,34 +511,12 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 		if (this.status != null && this.status.trim().length() > 0) {
 			json.put("status", status);
 		}
-		
+
 		// 父节点条件
 		json.put("pid", this.getPid());
 		json.put("rootNode", this.rootNode);
 		json.put("rootId", this.getPid());
 	}
-	
-	/*@Override
-	protected JSONObject getGridExtrasData(){
-		JSONObject json = new JSONObject();	
-
-		try{
-			json.put("rootId", this.getPid());
-
-			
-			if (this.status != null && this.status.trim().length() > 0) {
-				json.put("status", status);
-			}
-			
-			// 父节点条件
-			json.put("pid", this.pid);
-		}catch(JSONException e){
-			
-		}
-		
-		
-		return json;
-	}*/
 
 	@Override
 	protected Integer getTreeWith() {
@@ -400,9 +530,9 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 	 */
 	protected Map<String, String> getStatues() {
 		Map<String, String> statues = new LinkedHashMap<String, String>();
-		statues.put(String.valueOf(BCConstants.STATUS_ENABLED), 
+		statues.put(String.valueOf(BCConstants.STATUS_ENABLED),
 				getText("bc.status.enabled"));
-		statues.put(String.valueOf(BCConstants.STATUS_DISABLED), 
+		statues.put(String.valueOf(BCConstants.STATUS_DISABLED),
 				getText("bc.status.disabled"));
 		statues.put("", getText("bc.status.all"));
 		return statues;
@@ -415,19 +545,32 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 
 	@Override
 	protected String getHtmlPageJs() {
-		return this.getContextPath()
-				+ "/modules/bc/category/view.js";
+		return this.getContextPath() + "/modules/bc/category/view.js,"
+		// 加载ACL的API
+				+ this.getContextPath() + "/bc/acl/api.js";
 	}
-	
-	//视图双击的方法
+
+	// 视图双击的方法
 	@Override
 	protected String getGridDblRowMethod() {
 		return "bc.category.view.edit";
 	}
+
 	@Override
 	protected String getFormActionName() {
 		// TODO 获取表单action的简易名称
 		return null;
+	}
+
+	/**
+	 * 获取系统上下文
+	 * 
+	 * @return
+	 */
+	private SystemContext getSystemContext() {
+		if (this.systemContext != null)
+			return this.systemContext;
+		return (SystemContext) this.getContext();
 	}
 
 }

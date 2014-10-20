@@ -23,8 +23,8 @@ public class CategoryServiceImpl extends DefaultCrudService<Category> implements
 		return this.categoryDao.saveCategory(category);
 	}
 
-	public List<Map<String, Object>> findSubNodesData(Long pid) {
-		return this.categoryDao.findSubNodesData(pid);
+	public List<Map<String, Object>> findSubNodesData(Long pid, String code) {
+		return this.categoryDao.findSubNodesData(pid, code);
 	}
 	public List<Map<String , Object>> find4ParentType(Long id) {
 		return this.categoryDao.find4ParentType(id);
