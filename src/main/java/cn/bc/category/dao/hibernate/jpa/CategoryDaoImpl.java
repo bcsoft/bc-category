@@ -28,17 +28,7 @@ public class CategoryDaoImpl extends HibernateCrudJpaDao<Category> implements Ca
 		return this.save(category) != null;
 	}
 
-	public List<Map<String, Object>> findSubNodesData(Long pid, String code) {
-//		String sql = "select id, name_ as name from bc_category";
-//		if(pid == null){
-//			sql += " where pid is null";
-//			sql += " order by pid desc, sn asc";
-//			return this.jdbcTemplate.queryForList(sql);
-//		}else{
-//			sql += " where pid = ?";
-//			sql += " order by pid desc, sn asc";
-//			return this.jdbcTemplate.queryForList(sql, pid);
-//		}
+	public List<Map<String, Object>> findSubNodesData(Long pid, String code, boolean isReadonly) {
 		String sql = "with recursive actor(id) as (";
 		sql += " select id from bc_identity_actor where code = ?";
 		sql += " union";
@@ -50,13 +40,15 @@ public class CategoryDaoImpl extends HibernateCrudJpaDao<Category> implements Ca
 			sql += " where pid is null";
 		else
 			sql += " where pid = ?";
-		sql += " and not exists (";
-		sql += " select 0 from bc_acl_actor aa";
-		sql += " inner join bc_acl_doc ad on aa.pid = ad.id";
-		sql += " where ad.doc_type = 'Category' and ad.doc_id = c.id::text";
-		sql += " and ((aa.role = '00' and aa.aid in (select id from actor))";
-		sql += " or (aa.role in ('11', '01') and aa.aid not in (select id from actor)))))";
-		sql += " select oc.id as id, oc.name_ as name from category c";
+		if(isReadonly) { 
+			sql += " and not exists (";
+			sql += " select 0 from bc_acl_actor aa";
+			sql += " inner join bc_acl_doc ad on aa.pid = ad.id";
+			sql += " where ad.doc_type = 'Category' and ad.doc_id = c.id::text";
+			sql += " and ((aa.role = '00' and aa.aid in (select id from actor))";
+			sql += " or (aa.role in ('11', '01') and aa.aid not in (select id from actor))))";
+		}
+		sql += ") select oc.id as id, oc.name_ as name from category c";
 		sql += " inner join bc_category oc on oc.id = c.id";
 		if(pid == null)
 			return this.jdbcTemplate.queryForList(sql, code, code);

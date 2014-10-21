@@ -102,11 +102,8 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 	public boolean isReadonly() {
 		// 判断当前用户是否只读，拥有manageRole角色
 		this.systemContext = this.getSystemContext();
-		boolean isReadonly = true;
-		if (manageRole != null && manageRole.length() != 0)
-			return !systemContext.hasAnyRole(manageRole);
-
-		return isReadonly;
+			return !systemContext.hasAnyRole(manageRole,
+					getText("key.role.bc.admin"));
 	}
 
 	/**
@@ -469,7 +466,7 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 		Collection<TreeNode> treeNodes;
 		try {
 			treeData = this.categoryService.findSubNodesData(this.getPid(),
-					this.getSystemContext().getUser().getCode());
+					this.getSystemContext().getUser().getCode(), isReadonly());
 			treeNodes = this.buildTreeNodes(treeData);
 			for (TreeNode treeNode : treeNodes)
 				tree.addSubNode(treeNode);
@@ -509,7 +506,7 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 		try {
 			List<Map<String, Object>> data = this.categoryService
 					.findSubNodesData(this.getPid(), this.getSystemContext()
-							.getUser().getCode());
+							.getUser().getCode(), isReadonly());
 			json.put("success", true);
 			json.put("subNodesCount", data.size());
 			json.put("html", TreeNode.buildSubNodes(this.buildTreeNodes(data)));

@@ -59,7 +59,7 @@ public class CategoryFormAction extends EntityAction<Long, Category> implements
 
 		if (manageRole != null && !"".equals(manageRole)) // manageRole不为空
 			// 包含管理角色
-			if (context.hasAnyRole(manageRole))
+			if (context.hasAnyRole(manageRole, getText("key.role.bc.admin")))
 				return false;
 
 		// 不包含管理角色，判断ACL

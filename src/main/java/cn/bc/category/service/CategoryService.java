@@ -30,7 +30,7 @@ public interface CategoryService extends CrudService<Category>{
 	 * <p>key: id -- bc_category的id</p>
 	 * <p>key: name -- bc_category的name</p>
 	 */
-	List<Map<String, Object>> findSubNodesData(Long pid, String code);
+	List<Map<String, Object>> findSubNodesData(Long pid, String code, boolean isReadonly);
 
 	/**
 	 * 通过节点全编码获得id
