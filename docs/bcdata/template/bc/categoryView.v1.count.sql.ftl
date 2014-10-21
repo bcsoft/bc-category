@@ -55,6 +55,7 @@ with recursive actor(id) as (
 select count(*)
 	from category c
 	inner join bc_category oc on oc.id = c.id
+	left join bc_category poc on poc.id = oc.pid
 
 	-- 条件
 	<#if condition??>${condition}</#if>

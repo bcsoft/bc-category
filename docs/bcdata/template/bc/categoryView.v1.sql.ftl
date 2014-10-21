@@ -1,13 +1,24 @@
--- 账号及其隶属的组织（单位、部门或岗位）及这些组织的所有祖先 
+-- 账号及其隶属的组织（单位、部门或岗位）及这些组织的所有祖先
 with recursive actor(id) as (
 	select id from bc_identity_actor where code = '${code}'
 	union
 	select identity_find_actor_ancestor_ids('${code}')
 )
+-- 父节点
+<#if pid??>
+,father(acl) as (
+	select COALESCE((
+		select aa.role from bc_category c
+		inner join bc_acl_doc ad on ad.doc_id = c.id::text
+		inner join bc_acl_actor aa on aa.pid = ad.id
+		where c.id = ${pid?c} and aa.aid in(select id from actor)), '99')
+)
+</#if>
 -- 后代节点
 , category (id, full_sn, full_acl) as (
 	-- 指定节点的一级子节点（含ACL控制）
 	select id, array[sn::text], 
+		<#if pid??>(select acl from father) ||','|| </#if>
 		COALESCE((select aa.role from bc_acl_actor aa
 				inner join bc_acl_doc ad on aa.pid = ad.id 
 				where ad.doc_id = c.id::text
@@ -60,7 +71,7 @@ with recursive actor(id) as (
 		</#if>
 </#if>
 )
-select oc.id as id, poc.name_ as father, oc.name_ as name_, oc.status_ as status_,
+select oc.id as id, poc.id as pid, poc.name_ as father, oc.name_ as name_, oc.status_ as status_,
 	oc.code as code, oc.sn as sn, ia.name as modifier, oc.modified_date as modified_date,
 	c.full_acl as full_acl,
 	-- 分类的所有用户 ACL 配置信息

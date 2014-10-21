@@ -78,3 +78,29 @@ $BODY$
 	END;
 	$BODY$
   LANGUAGE plpgsql VOLATILE;
+  
+------------------------------ 存储函数 ------------------------------
+
+-- Function: category_find_offspring_by_pid(integer)
+
+-- DROP FUNCTION category_find_offspring_by_pid(integer);
+
+CREATE OR REPLACE FUNCTION category_find_offspring_by_pid(pid integer)
+  RETURNS SETOF integer AS
+$BODY$
+	/** 获取 category 的后代分类
+	 *  @param pid 分类category的id
+	 */
+	begin
+		return query
+		with recursive category (id) as (
+			-- 父节点
+			select id from bc_category bc where bc.pid = $1
+			-- 递归获取子节点
+			union all 
+			select c.id from bc_category c
+				inner join category p on p.id = c.pid
+		) select * from category;
+	end;
+$BODY$
+  LANGUAGE plpgsql VOLATILE

@@ -139,8 +139,9 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 	}
 
 	@Override
-	protected OrderCondition getGridOrderCondition() {
-		return new OrderCondition("c.full_sn", Direction.Asc);
+	protected OrderCondition getGridDefaultOrderCondition() {
+		return new OrderCondition("oc.status_", Direction.Asc).add("c.full_sn",
+				Direction.Asc);
 	}
 
 	/**
@@ -168,6 +169,7 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 				querySql, countSql, params);
 		if (pid != null)
 			cfg.addTemplateParam("pid", pid);
+		cfg.addTemplateParam("father", pid);
 		cfg.addTemplateParam("isRoot", this.isRootNode());
 		cfg.addTemplateParam("code", this.getSystemContext().getUser()
 				.getCode());
@@ -203,7 +205,7 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 
 	@Override
 	protected String[] getGridSearchFields() {
-		return new String[] { "father", "name_", "code" };
+		return new String[] { "poc.name_", "oc.name_", "oc.code" };
 	}
 
 	@Override
@@ -236,8 +238,8 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 					getText("title.click2changeSearchStatus")));
 		} else {
 			// 查看
-			toolbar.addButton(this.getDefaultOpenToolbarButton().setClick(
-					"bc.category.view.create"));
+			toolbar.addButton(new ToolbarButton().setIcon("ui-icon-lightbulb")
+					.setText("查看").setClick("bc.category.view.edit"));
 		}
 		// 搜索按钮
 		toolbar.addButton(this.getDefaultSearchToolbarButton());
@@ -260,18 +262,25 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 				.setUseTitleFromLabel(true));
 		// 名称
 		columns.add(new TextColumn4MapKey("name", "name_",
-				getText("category.name")).setSortable(true).setValueFormater(
-				new AbstractFormater<Object>() {
+				getText("category.name")).setSortable(true)
+				.setValueFormater(new AbstractFormater<String>() {
 					@SuppressWarnings("unchecked")
 					@Override
-					public Object format(Object context, Object value) {
+					public String format(Object context, Object value) {
 						Map<String, Object> map = (Map<String, Object>) context;
 						return !isReadonly() ? StringUtils.toString(map
 								.get("name_")) : buildColumnIcon(map,
 								createIcon(), editIcon(), delIcon())
 								+ StringUtils.toString(map.get("name_"));
 					}
-				}));
+
+					@Override
+					public String getExportText(Object context, Object value) {
+						@SuppressWarnings("unchecked")
+						Map<String, Object> map = (Map<String, Object>) context;
+						return (String) map.get("name_");
+					}
+				}).setUseTitleFromLabel(true));
 		// 编码
 		columns.add(new TextColumn4MapKey("code", "code",
 				getText("category.code"), 150).setSortable(true)
@@ -289,6 +298,13 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 						Map<String, Object> map = (Map<String, Object>) context;
 						return buildColumnIcon(map, aclIcon(map))
 								+ formatACLConfig(map);
+					}
+
+					@Override
+					public String getExportText(Object context, Object value) {
+						@SuppressWarnings("unchecked")
+						Map<String, Object> map = (Map<String, Object>) context;
+						return formatACLConfig(map);
 					}
 				}));
 		// 最后修改
@@ -308,6 +324,7 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 				}));
 		// 隐藏列
 		columns.add(new HiddenColumn4MapKey("id", "id"));
+		columns.add(new HiddenColumn4MapKey("pid", "pid"));
 		columns.add(new HiddenColumn4MapKey("name_", "name_"));
 		columns.add(new HiddenColumn4MapKey("full_acl", "full_acl"));
 		return columns;
@@ -558,8 +575,7 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 
 	@Override
 	protected String getFormActionName() {
-		// TODO 获取表单action的简易名称
-		return null;
+		return "category";
 	}
 
 	/**

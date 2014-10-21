@@ -14,14 +14,14 @@ import cn.bc.core.EntityImpl;
  * 分类
  * 
  * @author Action
- *
+ * 
  */
 @Entity
 @Table(name = "BC_CATEGORY")
 public class Category extends EntityImpl {
 	private static final long serialVersionUID = 1L;
 
-	private Integer pid;// 父类别ID
+	private long pid;// 父类别ID
 	private int status_;// 状态
 	private String code;// 编码
 	private String name_;// 名称
@@ -29,12 +29,11 @@ public class Category extends EntityImpl {
 	private Integer modifier_id;// 最后修改人ID
 	private Calendar modified_date;// 最后修改时间
 
-	
-	public Integer getPid() {
+	public long getPid() {
 		return pid;
 	}
-	
-	public void setPid(Integer pid) {
+
+	public void setPid(long pid) {
 		this.pid = pid;
 	}
 

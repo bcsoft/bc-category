@@ -2,7 +2,7 @@
 
 -- 根节点
 insert into BC_CATEGORY (ID,PID,STATUS_,CODE,NAME_,SN,MODIFIED_DATE,MODIFIER_ID)
-  select NEXTVAL('CORE_SEQUENCE'),null,0,'TPL','模板','11',now(),
+  select NEXTVAL('CORE_SEQUENCE'),null,0,'TPL','模板分类','11',now(),
     (select id from bc_identity_actor_history where actor_code='admin' and current=true)
   from bc_dual
   where not exists (
@@ -10,7 +10,7 @@ insert into BC_CATEGORY (ID,PID,STATUS_,CODE,NAME_,SN,MODIFIED_DATE,MODIFIER_ID)
     where c.pid is null and c.code='TPL'
   );
 
--- 模板 子节点
+-- 模板分类 子节点
 insert into BC_CATEGORY (ID,PID,STATUS_,CODE,NAME_,SN,MODIFIED_DATE,MODIFIER_ID)
   select NEXTVAL('CORE_SEQUENCE'),(select id from bc_category where code='TPL'),
     0,'JJHT_BY_BUSINESS','经济合同（按合同性质）','01',now(),
@@ -81,7 +81,7 @@ insert into BC_CATEGORY (ID,PID,STATUS_,CODE,NAME_,SN,MODIFIED_DATE,MODIFIER_ID)
     where c.pid=(select id from bc_category where code='TPL') and c.code='REPORT'
   );  
 
--- 模板/经济合同(按合同性质) 子节点
+-- 模板分类/经济合同(按合同性质) 子节点
 insert into BC_CATEGORY (ID,PID,STATUS_,CODE,NAME_,SN,MODIFIED_DATE,MODIFIER_ID)
   select NEXTVAL('CORE_SEQUENCE'),(select id from bc_category where code='JJHT_BY_BUSINESS'),
     0,'SY6850CBC','首月6850承包车','01',now(),
@@ -162,7 +162,7 @@ insert into BC_CATEGORY (ID,PID,STATUS_,CODE,NAME_,SN,MODIFIED_DATE,MODIFIER_ID)
     where c.pid=(select id from bc_category where code='JJHT_BY_BUSINESS') and c.code='GKC'
   );
 
--- 模板/经济合同(按类别) 子节点
+-- 模板分类/经济合同(按类别) 子节点
 insert into BC_CATEGORY (ID,PID,STATUS_,CODE,NAME_,SN,MODIFIED_DATE,MODIFIER_ID)
   select NEXTVAL('CORE_SEQUENCE'),(select id from bc_category where code='JJHT_BY_TYPE'),
     0,'HT','合同','01',now(),

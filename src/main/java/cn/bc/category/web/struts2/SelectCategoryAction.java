@@ -153,7 +153,7 @@ public class SelectCategoryAction  extends AbstractSelectPageAction<Map<String, 
 		columns.add(new TextColumn4MapKey("c.name_", "name_",
 				getText("category.select.name"), 80).setSortable(true).setUseTitleFromLabel(true));		
 		columns.add(new TextColumn4MapKey("c.code", "code",
-				getText("category.select.code"), 80).setSortable(true).setUseTitleFromLabel(true));
+				getText("category.select.code"), 120).setSortable(true).setUseTitleFromLabel(true));
 		columns.add(new TextColumn4MapKey("c.pname", "pname",
 				getText("category.select.type")).setSortable(true)
 				.setUseTitleFromLabel(true));;
