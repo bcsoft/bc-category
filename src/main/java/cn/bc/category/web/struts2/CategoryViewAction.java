@@ -258,7 +258,7 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 				getText("category.father"), 120).setSortable(true)
 				.setUseTitleFromLabel(true));
 		// 名称
-		columns.add(new TextColumn4MapKey("name", "name_",
+		columns.add(new TextColumn4MapKey("name_", "name_",
 				getText("category.name")).setSortable(true)
 				.setValueFormater(new AbstractFormater<String>() {
 					@SuppressWarnings("unchecked")
@@ -303,7 +303,7 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 						Map<String, Object> map = (Map<String, Object>) context;
 						return formatACLConfig(map);
 					}
-				}));
+				}).setUseTitleFromLabel(true));
 		// 最后修改
 		columns.add(new TextColumn4MapKey("modified_date", "modified_date",
 				getText("category.modified"), 210).setSortable(true)
@@ -429,7 +429,9 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 		for (int i = 0; i < aclArr.length; i++) {
 			String[] acl = aclArr[i].split(",");
 			aclConfig += acl[0];
-			if (acl[1].equals("11") || acl[1].equals("10"))
+			if (acl[1].equals("11"))
+				aclConfig += "（编辑，查阅）";
+			if (acl[1].equals("10"))
 				aclConfig += "（编辑）";
 			else if (acl[1].equals("01"))
 				aclConfig += "（查阅）";

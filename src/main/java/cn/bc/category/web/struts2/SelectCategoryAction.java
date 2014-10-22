@@ -146,15 +146,15 @@ public class SelectCategoryAction  extends AbstractSelectPageAction<Map<String, 
 	@Override
 	protected List<Column> getGridColumns() {
 		List<Column> columns = new ArrayList<Column>();
-		columns.add(new IdColumn4MapKey("c.id", "id"));
-		columns.add(new TextColumn4MapKey("c.status_", "status",
+		columns.add(new IdColumn4MapKey("id", "id"));
+		columns.add(new TextColumn4MapKey("status_", "status",
 				getText("category.select.status"), 40).setSortable(true)
 				.setValueFormater(new KeyValueFormater(getStatus())));
-		columns.add(new TextColumn4MapKey("c.name_", "name_",
-				getText("category.select.name"), 80).setSortable(true).setUseTitleFromLabel(true));		
-		columns.add(new TextColumn4MapKey("c.code", "code",
+		columns.add(new TextColumn4MapKey("name_", "name_",
+				getText("category.select.name"), 160).setSortable(true).setUseTitleFromLabel(true));		
+		columns.add(new TextColumn4MapKey("code", "code",
 				getText("category.select.code"), 120).setSortable(true).setUseTitleFromLabel(true));
-		columns.add(new TextColumn4MapKey("c.pname", "pname",
+		columns.add(new TextColumn4MapKey("pname", "pname",
 				getText("category.select.type")).setSortable(true)
 				.setUseTitleFromLabel(true));;
 		return columns;
@@ -251,7 +251,7 @@ public class SelectCategoryAction  extends AbstractSelectPageAction<Map<String, 
 	 * 复写order by方法！
 	 */
 	@Override
-	protected OrderCondition getGridOrderCondition() {
+	protected OrderCondition getGridDefaultOrderCondition() {
 		return new OrderCondition("full_sn", Direction.Asc);
 	}
 
