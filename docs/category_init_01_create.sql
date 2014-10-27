@@ -104,3 +104,52 @@ $BODY$
 	end;
 $BODY$
   LANGUAGE plpgsql VOLATILE
+
+  ------------------------------ 存储函数 ------------------------------
+
+-- Function: category_get_full_acl_by_id_actorid(integer, text)
+
+-- DROP FUNCTION category_get_full_acl_by_id_actorid(integer, text);
+
+CREATE OR REPLACE FUNCTION category_get_full_acl_by_id_actorid(id integer, actor_code text)
+  RETURNS SETOF text AS
+$BODY$
+	/** 获取参与者的当前分类(bc_category)的 ACL 信息
+	 *  @param id 当前分类ID
+	 *  @param actor_code 参与者code
+	 *  return 分类从祖先分类继承下来的ACL配置，没有配置为null
+	 */
+	begin
+		return query
+		-- 账号及其隶属的组织（单位、部门或岗位）及这些组织的所有祖先
+		with recursive actor(id) as (
+			select i.id from bc_identity_actor i where code = $2
+			union
+			select identity_find_actor_ancestor_ids($2)
+		),
+		-- 递归获取所属分类的ACL配置（包含自己）
+		category (id, pid, acl) as (
+			-- 当前分类
+			select c.id, c.pid,
+				-- 查找ACL配置
+				(select aa.role from bc_acl_actor aa
+					inner join bc_acl_doc ad on aa.pid = ad.id 
+					where ad.doc_id = c.id::text
+					and aa.aid in (select a.id from actor a))
+				from bc_category c
+				where c.id = $1
+			union all
+			-- 所属分类
+			select p.id, p.pid,
+				-- 查找ACL配置
+				(select aa.role from bc_acl_actor aa
+					inner join bc_acl_doc ad on aa.pid = ad.id 
+					where ad.doc_id = p.id::text
+					and aa.aid in (select a.id from actor a))
+				from bc_category p
+				inner join category c on p.id = c.pid
+		) 
+		select bit_and(acl::bit(2))::text from category;
+	end;
+$BODY$
+  LANGUAGE plpgsql VOLATILE

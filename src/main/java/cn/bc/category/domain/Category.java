@@ -21,7 +21,7 @@ import cn.bc.core.EntityImpl;
 public class Category extends EntityImpl {
 	private static final long serialVersionUID = 1L;
 
-	private long pid;// 父类别ID
+	private Long pid;// 父类别ID
 	private int status_;// 状态
 	private String code;// 编码
 	private String name_;// 名称
@@ -29,11 +29,11 @@ public class Category extends EntityImpl {
 	private Integer modifier_id;// 最后修改人ID
 	private Calendar modified_date;// 最后修改时间
 
-	public long getPid() {
+	public Long getPid() {
 		return pid;
 	}
 
-	public void setPid(long pid) {
+	public void setPid(Long pid) {
 		this.pid = pid;
 	}
 
