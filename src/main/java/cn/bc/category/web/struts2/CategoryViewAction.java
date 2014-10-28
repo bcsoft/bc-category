@@ -34,11 +34,11 @@ import cn.bc.core.util.StringUtils;
 import cn.bc.db.jdbc.SqlObject;
 import cn.bc.db.jdbc.spring.JdbcTemplatePagingQuery;
 import cn.bc.identity.web.SystemContext;
+import cn.bc.identity.web.SystemContextHolder;
 import cn.bc.template.service.TemplateService;
 import cn.bc.web.formater.AbstractFormater;
 import cn.bc.web.formater.EntityStatusFormater;
 import cn.bc.web.formater.Icon;
-import cn.bc.web.formater.LinkFormater4Id;
 import cn.bc.web.struts2.TreeViewAction;
 import cn.bc.web.ui.html.grid.Column;
 import cn.bc.web.ui.html.grid.HiddenColumn4MapKey;
@@ -52,7 +52,6 @@ import cn.bc.web.ui.html.tree.TreeNode;
 import cn.bc.web.ui.json.Json;
 
 import com.sun.star.uno.Exception;
-import com.thoughtworks.xstream.alias.ClassMapper.Null;
 
 /**
  * 分类视图Action
@@ -76,12 +75,16 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 
 	/** 窗口标题 */
 	public String pageTitle;
+	/** 命名空间 */
+	public String namespace;
 	/** 管理角色编码 */
 	public String manageRole;
 	/** 根节点全编码 */
 	public String rootNode;
-	/** 当前节点ID */
+	/** 当前节点所属分类ID */
 	private Long pid;
+	/** 点击树节点的回调函数 */
+	public String callback;
 	/** 状态：正常|禁用|全部 */
 	public String status = String.valueOf(0);
 	private SystemContext systemContext;
@@ -102,8 +105,8 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 	public boolean isReadonly() {
 		// 判断当前用户是否只读，拥有manageRole角色
 		this.systemContext = this.getSystemContext();
-			return !systemContext.hasAnyRole(manageRole,
-					getText("key.role.bc.admin"));
+		return !systemContext.hasAnyRole(manageRole,
+				getText("key.role.bc.admin"));
 	}
 
 	/**
@@ -287,8 +290,8 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 				getText("category.order"), 60).setSortable(true));
 		// 权限配置
 		columns.add(new TextColumn4MapKey("acls", "acls",
-				getText("category.permiss"), 120)
-				.setValueFormater(new AbstractFormater<Object>() {
+				getText("category.permiss"), 120).setValueFormater(
+				new AbstractFormater<Object>() {
 					@SuppressWarnings("unchecked")
 					@Override
 					public Object format(Object context, Object value) {
@@ -444,21 +447,38 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 		return aclConfig;
 	}
 
-	@Override
-	protected Tree getHtmlPageTree() {
-		Long pid = this.getPid();
+	/**
+	 * 获得分类导航树菜单
+	 * 
+	 * @param rootNode
+	 *            树的顶级节点
+	 * @param isReadonly
+	 *            是否只读
+	 * @param userCode
+	 *            用户编码 Code
+	 * @param url
+	 *            点击展开子节点图标的URL
+	 * @param callback
+	 *            点击树节点的回调函数
+	 * @param categoryService
+	 *            分类模块业务逻辑接口
+	 * @return 树菜单
+	 */
+	public static Tree getCategoryTree(Long pid, boolean isReadonly,
+			String userCode, String url, String callback,
+			CategoryService categoryService) {
 		String rootPid = (pid != null ? pid.toString() : "");
 
 		Tree tree = new Tree(rootPid, "全部");
 		tree.setShowRoot(true);
 
 		// 点击展开子节点图标的URL
-		tree.setUrl(this.getHtmlPageNamespace() + "/loadTreeData");
+		tree.setUrl(url);
 
 		// 树的参数配置
 		Json cfg = new Json();
 		// 点击节点的回调函数
-		cfg.put("clickNode", "bc.category.view.clickTreeNode");
+		cfg.put("clickNode", callback);
 		tree.setCfg(cfg);
 
 		// 树的数据
@@ -467,9 +487,9 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 		// 构建树的子节点
 		Collection<TreeNode> treeNodes;
 		try {
-			treeData = this.categoryService.findSubNodesData(this.getPid(),
-					this.getSystemContext().getUser().getCode(), isReadonly());
-			treeNodes = this.buildTreeNodes(treeData);
+			treeData = categoryService.findSubNodesData(pid, userCode,
+					isReadonly);
+			treeNodes = buildTreeNodes(treeData);
 			for (TreeNode treeNode : treeNodes)
 				tree.addSubNode(treeNode);
 		} catch (Exception e) {
@@ -479,6 +499,14 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 		return tree;
 	}
 
+	@Override
+	protected Tree getHtmlPageTree() {
+		return CategoryViewAction.getCategoryTree(this.getPid(),
+				this.isReadonly(), SystemContextHolder.get().getUser()
+						.getCode(), this.getHtmlPageNamespace()
+						+ "/loadTreeData", this.callback, this.categoryService);
+	}
+
 	/**
 	 * 构建树节点
 	 * 
@@ -486,7 +514,7 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 	 *            树节点数据
 	 * @return
 	 */
-	private Collection<TreeNode> buildTreeNodes(
+	public static Collection<TreeNode> buildTreeNodes(
 			List<Map<String, Object>> treeData) throws Exception {
 		List<TreeNode> treeNodes = new ArrayList<TreeNode>();
 		for (Map<String, Object> data : treeData) {
@@ -504,19 +532,8 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 	 * @return
 	 */
 	public String loadTreeData() {
-		JSONObject json = new JSONObject();
-		try {
-			List<Map<String, Object>> data = this.categoryService
-					.findSubNodesData(this.getPid(), this.getSystemContext()
-							.getUser().getCode(), isReadonly());
-			json.put("success", true);
-			json.put("subNodesCount", data.size());
-			json.put("html", TreeNode.buildSubNodes(this.buildTreeNodes(data)));
-		} catch (java.lang.Exception e) {
-			logger.error(e.getMessage());
-		}
-
-		this.json = json.toString();
+		this.json = this.categoryService.getLoadTreeData(this.isReadonly(),
+				this.getPid());
 		return "json";
 	}
 
@@ -556,7 +573,7 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 
 	@Override
 	protected String getHtmlPageNamespace() {
-		return getModuleContextPath() + "/category";
+		return getModuleContextPath() + this.namespace;
 	}
 
 	@Override
