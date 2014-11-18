@@ -402,7 +402,7 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 		String fullAcl = StringUtils.toString(m.get("full_acl"));
 		// 小图标: 查看所有ACL配置信息
 		Icon icon = new Icon();
-		if (fullAcl == null) return icon;
+		if (isReadonly() && fullAcl == null) return icon;
 		icon.setClazz("ui-icon ui-icon-wrench");
 		icon.setTitle(getText("category.permiss.seeAll"));// 鼠标提示信息
 		icon.setClick("bc.category.view.aclConfig");// 点击函数
@@ -410,9 +410,9 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 		args.put("docId", m.get("id"));
 		args.put("docType", "Category");
 		args.put("docName", m.get("name_"));
-		if (fullAcl.indexOf("10") != -1)
+		if (fullAcl != null && fullAcl.indexOf("10") != -1)
 			args.put("bit", "10");// 当前用户的ACL
-		else if (fullAcl.indexOf("11") != -1 || !isReadonly())
+		else if (!isReadonly() || fullAcl != null && fullAcl.indexOf("11") != -1)
 			args.put("bit", "11");
 		icon.setClickArguments(JsonUtils.toJson(args));
 		return icon;
