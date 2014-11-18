@@ -96,10 +96,10 @@ public class SelectCategoryAction  extends AbstractSelectPageAction<Map<String, 
 			//args.add(preId);//当前的分类id
 		}
 
-		args.add(preId);
 		cn.bc.core.query.cfg.impl.PagingQueryConfig cfg =
 				new cn.bc.core.query.cfg.impl.PagingQueryConfig(s1, s2, args);
 		cfg.addTemplateParam("isRoot",isRoot);
+		cfg.addTemplateParam("isManager", !this.isReadonly());
 		// 分页参数
 		Page<Map<String, Object>> p = getPage();
 		if (p != null) {
@@ -156,25 +156,19 @@ public class SelectCategoryAction  extends AbstractSelectPageAction<Map<String, 
 				getText("category.select.code"), 120).setSortable(true).setUseTitleFromLabel(true));
 		columns.add(new TextColumn4MapKey("pname", "pname",
 				getText("category.select.type")).setSortable(true)
-				.setUseTitleFromLabel(true));;
+				.setUseTitleFromLabel(true));
 		return columns;
 	}
 	
 	@Override
 	public boolean isReadonly() {
-		/*SystemContext context = (SystemContext) this.getContext();		
-		
-		String manage = this.manageRole;
-		System.out.println("manage:"+manage);
-		if(manageRole != null && !"".equals(manageRole)){//manageRole不为空
-			return !context.hasAnyRole(
-					manageRole,getText("key.role.bc.admin"));
-		}else{
-			//判断ACL
-			
-			//也没有ACL，直接返回true
-			return true;
-		}*/
+		SystemContext context = (SystemContext) this.getContext();
+
+		if (manageRole != null && !"".equals(manageRole)) // manageRole不为空
+			// 包含管理角色
+			if (context.hasAnyRole(manageRole, getText("key.role.bc.admin")))
+				return false;
+
 		return true;
 	}
 
