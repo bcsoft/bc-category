@@ -103,7 +103,7 @@ $BODY$
 		) select * from category;
 	end;
 $BODY$
-  LANGUAGE plpgsql VOLATILE
+  LANGUAGE plpgsql VOLATILE;
 
   ------------------------------ 存储函数 ------------------------------
 
@@ -152,4 +152,4 @@ $BODY$
 		select bit_and(acl::bit(2))::text from category;
 	end;
 $BODY$
-  LANGUAGE plpgsql VOLATILE
+  LANGUAGE plpgsql VOLATILE;

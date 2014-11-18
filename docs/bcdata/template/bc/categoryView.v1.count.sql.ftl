@@ -5,9 +5,9 @@ with recursive actor(id) as (
 	select identity_find_actor_ancestor_ids('${code}')
 )
 -- 后代节点
-, category (id, full_sn, deep) as (
+, category (id, full_sn) as (
 	-- 指定节点的一级子节点（含ACL控制）
-	select id, array[sn::text], 0
+	select id, array[sn::text]
 		from bc_category c
 		-- 一级子节点
 		where <#if pid??>pid = ?<#else>pid is null</#if> 
@@ -31,7 +31,7 @@ with recursive actor(id) as (
 <#if isRoot>
 	-- 递归获取后代节点
 	union all 
-	select c.id, p.full_sn || c.sn::text, p.deep + 1
+	select c.id, p.full_sn || c.sn::text
 		from bc_category c
 		inner join category p on p.id = c.pid
 		-- 管理员则不进行 ACL 控制

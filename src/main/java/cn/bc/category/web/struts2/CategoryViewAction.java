@@ -339,7 +339,9 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 	 */
 	private String buildColumnIcon(Map<String, Object> m, Icon... icons) {
 		String fullAcl = StringUtils.toString(m.get("full_acl"));
-		if (isReadonly() && fullAcl.indexOf("10") == -1
+		if (isReadonly() && fullAcl == null
+				|| isReadonly() && fullAcl != null
+				&& fullAcl.indexOf("10") == -1
 				&& fullAcl.indexOf("11") == -1)
 			return "";
 
@@ -400,6 +402,7 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 		String fullAcl = StringUtils.toString(m.get("full_acl"));
 		// 小图标: 查看所有ACL配置信息
 		Icon icon = new Icon();
+		if (fullAcl == null) return icon;
 		icon.setClazz("ui-icon ui-icon-wrench");
 		icon.setTitle(getText("category.permiss.seeAll"));// 鼠标提示信息
 		icon.setClick("bc.category.view.aclConfig");// 点击函数
@@ -450,7 +453,7 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 	/**
 	 * 获得分类导航树菜单
 	 * 
-	 * @param rootNode
+	 * @param pid
 	 *            树的顶级节点
 	 * @param isReadonly
 	 *            是否只读
