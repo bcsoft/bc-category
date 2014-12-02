@@ -83,7 +83,7 @@ $BODY$
 
 -- Function: category_find_offspring_by_pid(integer)
 
--- DROP FUNCTION category_find_offspring_by_pid(integer);
+DROP FUNCTION IF exists category_find_offspring_by_pid(integer);
 
 CREATE OR REPLACE FUNCTION category_find_offspring_by_pid(pid integer)
   RETURNS SETOF integer AS
@@ -109,7 +109,7 @@ $BODY$
 
 -- Function: category_get_full_acl_by_id_actorid(integer, text)
 
--- DROP FUNCTION category_get_full_acl_by_id_actorid(integer, text);
+DROP FUNCTION IF exists category_get_full_acl_by_id_actorid(integer, text);
 
 CREATE OR REPLACE FUNCTION category_get_full_acl_by_id_actorid(id integer, actor_code text)
   RETURNS SETOF text AS

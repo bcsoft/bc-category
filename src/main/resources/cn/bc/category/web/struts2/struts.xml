@@ -68,7 +68,7 @@
 			<!-- 根节点全编码 -->
 			<param name="rootNode">TPL</param>
 			<!-- 管理角色的编码 -->
-			<param name="manageRole">BC_TPL_MANAGE</param>
+			<param name="manageRole">BC_TEMPLATE_CATEGORY_MANAGE</param>
 			<!-- 点击树节点的回调函数 -->
 			<param name="callback">bc.category.view.clickTreeNode</param>
 		</action>
@@ -76,13 +76,13 @@
 		<!-- 视图：分页数据 -->
 		<action name="data" class="categoryViewAction" method="data">
 			<param name="rootNode">TPL</param>
-			<param name="manageRole">BC_TPL_MANAGE</param>
+			<param name="manageRole">BC_TEMPLATE_CATEGORY_MANAGE</param>
 		</action>
 
 		<!-- 视图：导出数据 -->
 		<action name="export" class="categoryViewAction" method="export">
 			<param name="rootNode">TPL</param>
-			<param name="manageRole">BC_TPL_MANAGE</param>
+			<param name="manageRole">BC_TEMPLATE_CATEGORY_MANAGE</param>
 		</action>
 
 		<!-- 视图：展开树形菜单的子节点 -->
@@ -93,20 +93,20 @@
 		<!-- 表单：新建|编辑|查看 -->
 		<action name="form" class="categoryFormAction" method="form">
 			<param name="rootNode">TPL</param>
-			<param name="manageRole">BC_TPL_MANAGE</param>
+			<param name="manageRole">BC_TEMPLATE_CATEGORY_MANAGE</param>
 			<result name="form">/modules/bc/category/form.jsp</result>
 		</action>
 
 		<!-- 表单：保存 -->
 		<action name="save" class="categoryFormAction" method="save">
 			<param name="rootNode">TPL</param>
-			<param name="manageRole">BC_TPL_MANAGE</param>
+			<param name="manageRole">BC_TEMPLATE_CATEGORY_MANAGE</param>
 		</action>
 
 		<!-- 视图：删除 -->
 		<action name="delete" class="categoryFormAction" method="delete">
 			<param name="rootNode">TPL</param>
-			<param name="manageRole">BC_TPL_MANAGE</param>
+			<param name="manageRole">BC_TEMPLATE_CATEGORY_MANAGE</param>
 		</action>
 	</package>
 
