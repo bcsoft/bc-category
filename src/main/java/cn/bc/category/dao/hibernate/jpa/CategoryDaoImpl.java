@@ -50,6 +50,7 @@ public class CategoryDaoImpl extends HibernateCrudJpaDao<Category> implements Ca
 		}
 		sql += ") select oc.id as id, oc.name_ as name from category c";
 		sql += " inner join bc_category oc on oc.id = c.id";
+		sql += " order by oc.status_ asc,c.full_sn asc";
 		if(pid == null)
 			return this.jdbcTemplate.queryForList(sql, code, code);
 		else
