@@ -361,7 +361,7 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 	private Icon createIcon() {
 		Icon icon = new Icon();
 		icon.setClazz("ui-icon ui-icon-plusthick");
-		icon.setTitle("新建");// 鼠标提示信息
+		icon.setTitle("在此分类下新建子分类");// 鼠标提示信息
 		icon.setClick("bc.category.view.create");// 点击函数
 		return icon;
 	}
@@ -374,7 +374,7 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 	private Icon editIcon() {
 		Icon icon = new Icon();
 		icon.setClazz("ui-icon ui-icon-pencil");
-		icon.setTitle("编辑");// 鼠标提示信息
+		icon.setTitle("编辑此分类");// 鼠标提示信息
 		icon.setClick("bc.category.view.edit");// 点击函数
 		return icon;
 	}
@@ -387,7 +387,7 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 	private Icon delIcon() {
 		Icon icon = new Icon();
 		icon.setClazz("ui-icon ui-icon-close");
-		icon.setTitle("删除");// 鼠标提示信息
+		icon.setTitle("删除此分类");// 鼠标提示信息
 		icon.setClick("bc.category.view.delete_");// 点击函数
 		return icon;
 	}
@@ -552,6 +552,7 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 		json.put("pid", this.getPid());
 		json.put("rootNode", this.rootNode);
 		json.put("rootId", this.getPid());
+		json.put("namespace", this.namespace);
 	}
 
 	@Override

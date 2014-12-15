@@ -45,6 +45,9 @@ public class CategoryFormAction extends EntityAction<Long, Category> implements
 	public long rootId;// 根节点ID
 	public String fullAcl;// 根节点累计下来的ACL role
 
+	/** 命名空间 */
+	public String namespace;
+
 	private CategoryService categoryService;
 
 	@Autowired
