@@ -117,6 +117,7 @@
 			<param name="manageRole">BC_TEMPLATE_CATEGORY_MANAGE</param>
 			<param name="namespace">/tpl</param>
 			<result name="form">/modules/bc/category/form.jsp</result>
+			<result name="formr">/modules/bc/category/form.jsp</result>
 		</action>
 
 		<!-- 表单：保存 -->
@@ -191,6 +192,7 @@
 			<param name="manageRole">BC_OFFICE_TYPE_MANAGE</param>
 			<param name="namespace">/officeType</param>
 			<result name="form">/modules/bc/category/form.jsp</result>
+			<result name="formr">/modules/bc/category/form.jsp</result>
 		</action>
 
 		<!-- 表单：保存 -->
@@ -265,6 +267,7 @@
 			<param name="manageRole">BC_ASSET_TYPE_MANAGE</param>
 			<param name="namespace">/asset</param>
 			<result name="form">/modules/bc/category/form.jsp</result>
+			<result name="formr">/modules/bc/category/form.jsp</result>
 		</action>
 
 		<!-- 表单：保存 -->
