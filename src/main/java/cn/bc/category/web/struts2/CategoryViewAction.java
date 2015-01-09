@@ -8,6 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.bc.core.util.TemplateUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONException;
@@ -35,7 +36,6 @@ import cn.bc.db.jdbc.SqlObject;
 import cn.bc.db.jdbc.spring.JdbcTemplatePagingQuery;
 import cn.bc.identity.web.SystemContext;
 import cn.bc.identity.web.SystemContextHolder;
-import cn.bc.template.service.TemplateService;
 import cn.bc.web.formater.AbstractFormater;
 import cn.bc.web.formater.EntityStatusFormater;
 import cn.bc.web.formater.Icon;
@@ -63,11 +63,8 @@ import com.sun.star.uno.Exception;
 @Controller
 public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 	private static final long serialVersionUID = 1L;
-	private final static Log logger = LogFactory
-			.getLog(CategoryViewAction.class);
+	private final static Log logger = LogFactory.getLog(CategoryViewAction.class);
 
-	@Autowired
-	private TemplateService templateService;
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 	@Autowired
@@ -152,8 +149,8 @@ public class CategoryViewAction extends TreeViewAction<Map<String, Object>> {
 	 */
 	private PagingQueryConfig getPagingQueryConfig() {
 		// 加载模板，获得查询SQL
-		String querySql = this.templateService.getContent("BC-CATEGORY");
-		String countSql = this.templateService.getContent("BC-CATEGORY-COUNT");
+		String querySql = TemplateUtils.getContent("BC-CATEGORY");
+		String countSql = TemplateUtils.getContent("BC-CATEGORY-COUNT");
 		// 查询参数
 		List<Object> params = null;
 		Long pid = this.getPid();
