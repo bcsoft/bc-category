@@ -7,12 +7,16 @@
 		<version>2.6</version>
 		<relativePath>../bc-framework/bc-parent/pom.xml</relativePath>
 	</parent>
-	<version>1.0</version>
+	<version>1.1</version>
 	<artifactId>bc-category</artifactId>
 	<description>分类管理</description>
 
 	<dependencies>
-		<!-- 模板模块 -->
+		<dependency>
+			<groupId>cn.bc</groupId>
+			<artifactId>bc-core</artifactId>
+			<version>2.6.7</version>
+		</dependency>
 		<dependency>
 			<groupId>cn.bc</groupId>
 			<artifactId>bc-web</artifactId>
