@@ -20,11 +20,6 @@
 		</dependency>
 		<dependency>
 			<groupId>cn.bc</groupId>
-			<artifactId>bc-template</artifactId>
-			<version>2.6</version>
-		</dependency>
-		<dependency>
-			<groupId>cn.bc</groupId>
 			<artifactId>bc-orm-hibernate</artifactId>
 			<version>2.6</version>
 		</dependency>
