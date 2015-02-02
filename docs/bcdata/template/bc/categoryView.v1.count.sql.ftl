@@ -23,7 +23,19 @@ with recursive actor(id) as (
 					(aa.role = '00' and aa.aid in (select id from actor))
 					or
 					-- 限定只能别人查阅的控制
-					(aa.role in ('11', '01') and aa.aid not in (select id from actor))
+					(
+						-- 别人能看的
+						(aa.role in ('11', '01') and aa.aid not in (select id from actor))
+						and
+						ad.doc_id not in (
+							-- 我能看的
+							select my_ad.doc_id from bc_acl_actor my_aa
+								inner join bc_acl_doc my_ad on my_aa.pid = my_ad.id
+								where my_ad.doc_type = 'Category' and my_ad.doc_id = c.id::text
+								and my_aa.role in ('11', '10', '01') 
+								and my_aa.aid in (select id from actor)
+						)
+					)
 				)
 		)
 		</#if>
@@ -46,7 +58,19 @@ with recursive actor(id) as (
 					(aa.role = '00' and aa.aid in (select id from actor))
 					or
 					-- 限定只能别人查阅的控制
-					(aa.role in ('11', '01') and aa.aid not in (select id from actor))
+					(
+						-- 别人能看的
+						(aa.role in ('11', '01') and aa.aid not in (select id from actor))
+						and
+						ad.doc_id not in (
+							-- 我能看的
+							select my_ad.doc_id from bc_acl_actor my_aa
+								inner join bc_acl_doc my_ad on my_aa.pid = my_ad.id
+								where my_ad.doc_type = 'Category' and my_ad.doc_id = c.id::text
+								and my_aa.role in ('11', '10', '01') 
+								and my_aa.aid in (select id from actor)
+						)
+					)
 				)
 		)
 		</#if>

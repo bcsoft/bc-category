@@ -1,8 +1,8 @@
 -- 账号及其隶属的组织（单位、部门或岗位）及这些组织的所有祖先
 with recursive actor(id) as (
-	select i.id from bc_identity_actor i where code = 'xzc'
+	select i.id from bc_identity_actor i where code = '${code}'
 	union
-	select identity_find_actor_ancestor_ids('xzc')
+	select identity_find_actor_ancestor_ids('${code}')
 ),
 -- 递归获取父节点下的后代节点（同级之间按 sn 排序）
 category (id, pid, status_, code, name_ , pname, sn, full_sn, acl) as (
@@ -13,9 +13,9 @@ category (id, pid, status_, code, name_ , pname, sn, full_sn, acl) as (
 		-- 查找ACL配置
 		(
 			select aa.role from bc_acl_actor aa
-				inner join bc_acl_doc ad on aa.pid = ad.id 
-				where ad.doc_id = p.id::text
-				and aa.aid in (select a.id from actor a)
+				inner join bc_acl_doc ad on aa.pid = ad.id
+				where ad.doc_type = 'Category' and ad.doc_id = p.id::text
+				and (aa.role in ('11', '10', '01') and aa.aid in (select id from actor))
 		)
 		from bc_category p 
 		<#if isRoot == true>
@@ -33,11 +33,12 @@ category (id, pid, status_, code, name_ , pname, sn, full_sn, acl) as (
 		COALESCE(
 			(
 				select aa.role from bc_acl_actor aa
-					inner join bc_acl_doc ad on aa.pid = ad.id 
-					where ad.doc_id = c.id::text
-					and aa.aid in (select a.id from actor a)
+					inner join bc_acl_doc ad on aa.pid = ad.id
+					where ad.doc_type = 'Category' and ad.doc_id = c.id::text
+					and (aa.role in ('11', '10', '01') and aa.aid in (select id from actor))
 			)
-			, p.acl)
+			, p.acl
+		)
 		from bc_category c
 			INNER JOIN category p ON p.id = c.pid
 )

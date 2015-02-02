@@ -1,19 +1,5 @@
 package cn.bc.category.web.struts2;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.context.annotation.Scope;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Controller;
-
 import cn.bc.category.service.CategoryService;
 import cn.bc.core.Page;
 import cn.bc.core.query.Query;
@@ -22,10 +8,7 @@ import cn.bc.core.query.condition.Condition;
 import cn.bc.core.query.condition.Direction;
 import cn.bc.core.query.condition.impl.AndCondition;
 import cn.bc.core.query.condition.impl.EqualsCondition;
-import cn.bc.core.query.condition.impl.InCondition;
 import cn.bc.core.query.condition.impl.OrderCondition;
-import cn.bc.core.util.StringUtils;
-import cn.bc.db.jdbc.RowMapper;
 import cn.bc.db.jdbc.SqlObject;
 import cn.bc.db.jdbc.spring.JdbcTemplatePagingQuery;
 import cn.bc.identity.web.SystemContext;
@@ -36,6 +19,18 @@ import cn.bc.web.ui.html.grid.Column;
 import cn.bc.web.ui.html.grid.IdColumn4MapKey;
 import cn.bc.web.ui.html.grid.TextColumn4MapKey;
 import cn.bc.web.ui.html.page.PageOption;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Controller;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 选择所属分类视图
@@ -61,13 +56,13 @@ public class SelectCategoryAction  extends AbstractSelectPageAction<Map<String, 
 	public int preRoleId;//根据pid查找所有的
 	public long preId;//当前要编辑的分类的id，如果没有，就是新建，默认是0
 	public String multiSelect;//多选
-	
+
 	@Autowired
 	private TemplateService templateService;
-	
+
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
-	
+
 	@Autowired
 	private CategoryService categoryService;
 
@@ -98,7 +93,8 @@ public class SelectCategoryAction  extends AbstractSelectPageAction<Map<String, 
 
 		cn.bc.core.query.cfg.impl.PagingQueryConfig cfg =
 				new cn.bc.core.query.cfg.impl.PagingQueryConfig(s1, s2, args);
-		cfg.addTemplateParam("isRoot",isRoot);
+		cfg.addTemplateParam("code", this.getSystemContext().getUser().getCode());
+		cfg.addTemplateParam("isRoot", isRoot);
 		cfg.addTemplateParam("isManager", !this.isReadonly());
 		// 分页参数
 		Page<Map<String, Object>> p = getPage();
@@ -162,7 +158,7 @@ public class SelectCategoryAction  extends AbstractSelectPageAction<Map<String, 
 	
 	@Override
 	public boolean isReadonly() {
-		SystemContext context = (SystemContext) this.getContext();
+		SystemContext context = this.getSystemContext();
 
 		if (manageRole != null && !"".equals(manageRole)) // manageRole不为空
 			// 包含管理角色
@@ -170,6 +166,10 @@ public class SelectCategoryAction  extends AbstractSelectPageAction<Map<String, 
 				return false;
 
 		return true;
+	}
+
+	private SystemContext getSystemContext() {
+		return (SystemContext) this.getContext();
 	}
 
 	@Override
