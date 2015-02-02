@@ -9,10 +9,10 @@ import cn.bc.core.query.condition.Direction;
 import cn.bc.core.query.condition.impl.AndCondition;
 import cn.bc.core.query.condition.impl.EqualsCondition;
 import cn.bc.core.query.condition.impl.OrderCondition;
+import cn.bc.core.util.TemplateUtils;
 import cn.bc.db.jdbc.SqlObject;
 import cn.bc.db.jdbc.spring.JdbcTemplatePagingQuery;
 import cn.bc.identity.web.SystemContext;
-import cn.bc.template.service.TemplateService;
 import cn.bc.web.formater.KeyValueFormater;
 import cn.bc.web.struts2.AbstractSelectPageAction;
 import cn.bc.web.ui.html.grid.Column;
@@ -58,9 +58,6 @@ public class SelectCategoryAction  extends AbstractSelectPageAction<Map<String, 
 	public String multiSelect;//多选
 
 	@Autowired
-	private TemplateService templateService;
-
-	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
 	@Autowired
@@ -75,8 +72,8 @@ public class SelectCategoryAction  extends AbstractSelectPageAction<Map<String, 
 		// 是否为根节点
 		boolean isRoot = true;
 		//TODO 查询的SQL
-		String s1 = this.templateService.getContent("BC-SELECT-CATEGORY");
-		String s2 = this.templateService.getContent("BC-SELECT-CATEGORY-COUNT");
+		String s1 = TemplateUtils.getContent("BC-SELECT-CATEGORY");
+		String s2 = TemplateUtils.getContent("BC-SELECT-CATEGORY-COUNT");
 
 		//preRoleId = 23122;
 		
