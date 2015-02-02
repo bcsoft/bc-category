@@ -15,7 +15,7 @@ category (id, pid, status_, code, name_ , pname, sn, full_sn, acl) as (
 			select aa.role from bc_acl_actor aa
 				inner join bc_acl_doc ad on aa.pid = ad.id
 				where ad.doc_type = 'Category' and ad.doc_id = p.id::text
-				and (aa.role in ('11', '10', '01') and aa.aid in (select id from actor))
+				and (aa.role in ('11', '10') and aa.aid in (select id from actor))
 		)
 		from bc_category p 
 		<#if isRoot == true>
@@ -35,7 +35,7 @@ category (id, pid, status_, code, name_ , pname, sn, full_sn, acl) as (
 				select aa.role from bc_acl_actor aa
 					inner join bc_acl_doc ad on aa.pid = ad.id
 					where ad.doc_type = 'Category' and ad.doc_id = c.id::text
-					and (aa.role in ('11', '10', '01') and aa.aid in (select id from actor))
+					and (aa.role in ('11', '10') and aa.aid in (select id from actor))
 			)
 			, p.acl
 		)
