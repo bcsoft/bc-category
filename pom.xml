@@ -7,7 +7,7 @@
 		<version>2.6</version>
 		<relativePath>../bc-framework/bc-parent/pom.xml</relativePath>
 	</parent>
-	<version>1.1</version>
+	<version>1.2</version>
 	<artifactId>bc-category</artifactId>
 	<description>分类管理</description>
 
