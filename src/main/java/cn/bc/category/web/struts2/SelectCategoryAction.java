@@ -59,7 +59,7 @@ public class SelectCategoryAction  extends AbstractSelectPageAction<Map<String, 
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
-	
+
 	@Autowired
 	private CategoryService categoryService;
 
@@ -90,7 +90,8 @@ public class SelectCategoryAction  extends AbstractSelectPageAction<Map<String, 
 
 		cn.bc.core.query.cfg.impl.PagingQueryConfig cfg =
 				new cn.bc.core.query.cfg.impl.PagingQueryConfig(s1, s2, args);
-		cfg.addTemplateParam("isRoot",isRoot);
+		cfg.addTemplateParam("code", this.getSystemContext().getUser().getCode());
+		cfg.addTemplateParam("isRoot", isRoot);
 		cfg.addTemplateParam("isManager", !this.isReadonly());
 		// 分页参数
 		Page<Map<String, Object>> p = getPage();
@@ -154,7 +155,7 @@ public class SelectCategoryAction  extends AbstractSelectPageAction<Map<String, 
 	
 	@Override
 	public boolean isReadonly() {
-		SystemContext context = (SystemContext) this.getContext();
+		SystemContext context = this.getSystemContext();
 
 		if (manageRole != null && !"".equals(manageRole)) // manageRole不为空
 			// 包含管理角色
@@ -162,6 +163,10 @@ public class SelectCategoryAction  extends AbstractSelectPageAction<Map<String, 
 				return false;
 
 		return true;
+	}
+
+	private SystemContext getSystemContext() {
+		return (SystemContext) this.getContext();
 	}
 
 	@Override

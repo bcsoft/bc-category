@@ -42,11 +42,23 @@ public class CategoryDaoImpl extends HibernateCrudJpaDao<Category> implements Ca
 			sql += " where pid = ?";
 		if(isReadonly) { 
 			sql += " and not exists (";
-			sql += " select 0 from bc_acl_actor aa";
-			sql += " inner join bc_acl_doc ad on aa.pid = ad.id";
-			sql += " where ad.doc_type = 'Category' and ad.doc_id = c.id::text";
-			sql += " and ((aa.role = '00' and aa.aid in (select id from actor))";
-			sql += " or (aa.role in ('11', '01') and aa.aid not in (select id from actor))))";
+			sql += " 	select 0 from bc_acl_actor aa";
+			sql += " 		inner join bc_acl_doc ad on aa.pid = ad.id";
+			sql += " 		where ad.doc_type = 'Category' and ad.doc_id = c.id::text";
+			sql += " 		and (";
+			sql += " 			(aa.role = '00' and aa.aid in (select id from actor))";
+			sql += " 			or (";
+			sql += " 				(aa.role in ('11', '01') and aa.aid not in (select id from actor))";
+			sql += " 				and";
+			sql += " 				ad.doc_id not in (";
+			sql += " 					select my_ad.doc_id from bc_acl_actor my_aa";
+			sql += " 						inner join bc_acl_doc my_ad on my_aa.pid = my_ad.id";
+			sql += " 						where my_ad.doc_type = 'Category' and my_ad.doc_id = c.id::text";
+			sql += " 						and my_aa.role in ('11', '10', '01') and my_aa.aid in (select id from actor)";
+			sql += " 				)";
+			sql += " 			)";
+			sql += " 		)";
+			sql += " )";
 		}
 		sql += ") select oc.id as id, oc.name_ as name from category c";
 		sql += " inner join bc_category oc on oc.id = c.id";
