@@ -156,13 +156,8 @@ public class SelectCategoryAction  extends AbstractSelectPageAction<Map<String, 
 	@Override
 	public boolean isReadonly() {
 		SystemContext context = this.getSystemContext();
-
-		if (manageRole != null && !"".equals(manageRole)) // manageRole不为空
-			// 包含管理角色
-			if (context.hasAnyRole(manageRole, getText("key.role.bc.admin")))
-				return false;
-
-		return true;
+        // 配置权限
+        return !context.hasAnyRole(manageRole, getText("key.role.bc.admin"));
 	}
 
 	private SystemContext getSystemContext() {
