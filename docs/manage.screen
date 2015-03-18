@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model:Screen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:model="http://wireframesketcher.com/1.0/model.ecore">
+  <widgets xsi:type="model:WidgetGroup" id="29" x="8" y="8" measuredWidth="745" measuredHeight="271">
+    <widgets xsi:type="model:Window" id="1" y="45" width="745" height="226" text="分类管理 - 视图" measuredWidth="745" measuredHeight="226" minimizeButton="true" maximizeButton="true"/>
+    <widgets xsi:type="model:ButtonBar" id="3" x="4" y="68" text="新建, 编辑, 删除" measuredWidth="134" measuredHeight="30" selection="0">
+      <font/>
+      <items x="0" y="0" width="45" height="30" text="新建"/>
+      <items x="45" y="0" width="44" height="30" text="编辑"/>
+      <items x="89" y="0" width="45" height="30" text="删除"/>
+    </widgets>
+    <widgets xsi:type="model:Table" id="5" x="127" y="100" width="618" height="171" text="(w:30). !,(w:30). 状态,(w:60). 所属分类,(w:80). 名称,(w:60). 编码,(w:60). 排序号,(w:145). 访问配置,最后修改&#xA;1,正常,,模板,TPL,10,,小明 (2013-01-01 10:15)&#xA;2,正常,模板,经济合同,JJHT,10-01,,小明 (2013-01-01 10:15)&#xA;3,正常,模板,劳动合同,LDHT,10-02,,小明 (2013-01-01 10:15)&#xA;4,正常,模板,配件,PMC,10-03,,小明 (2013-01-01 10:15)&#xA;5,正常,,办公用品,BGYP,11,,小明 (2013-01-01 10:15)&#xA;6,正常,,资产,ZC,12,,小明 (2013-01-01 10:15)&#xA;" measuredWidth="618" measuredHeight="171" alternative="#eeeeee">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:SearchField" id="7" x="556" y="70" width="183" measuredWidth="183" measuredHeight="25">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:ButtonBar" id="149" x="140" y="68" text="正常, 禁用, 全部" measuredWidth="134" measuredHeight="30" selection="0">
+      <font/>
+      <items x="0" y="0" width="45" height="30" text="正常"/>
+      <items x="45" y="0" width="44" height="30" text="禁用"/>
+      <items x="89" y="0" width="45" height="30" text="全部"/>
+    </widgets>
+    <widgets xsi:type="model:Tree" id="150" y="100" width="129" height="171" text="全部&#xA;[-] 模板&#xA;-[+] 经济合同&#xA;-[+] 劳动合同&#xA;-[+] 配件&#xA;[+] 办公用品&#xA;[+] 资产" measuredWidth="129" measuredHeight="171" verticalScrollbar="true">
+      <items x="0" y="5" width="112" height="23" text="全部"/>
+      <items x="0" y="28" width="112" height="23" text="[-] 模板"/>
+      <items x="0" y="51" width="112" height="23" text="-[+] 经济合同"/>
+      <items x="0" y="74" width="112" height="23" text="-[+] 劳动合同"/>
+      <items x="0" y="97" width="112" height="23" text="-[+] 配件"/>
+      <items x="0" y="120" width="112" height="23" text="[+] 办公用品"/>
+      <items x="0" y="143" width="112" height="23" text="[+] 资产"/>
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:ButtonBar" id="153" x="276" y="68" text="访问配置" measuredWidth="70" measuredHeight="30">
+      <font/>
+      <items x="0" y="0" width="69" height="30" text="访问配置"/>
+    </widgets>
+    <widgets xsi:type="model:Text" id="174" text="category/page&#xD;&#xA;category/manage/page" measuredWidth="191" measuredHeight="44">
+      <font size="16px" bold="true"/>
+    </widgets>
+  </widgets>
+  <widgets xsi:type="model:Note" id="118" x="8" y="481" width="493" height="304" text="说明：&#xD;&#xA;1）角色配置&#xD;&#xA;- 分类管理（BC_CATEGORY_MANAGE）：&#xD;&#xA;对分类信息进行基本的增删改查操作，但不能删除&#xD;&#xA;- 删除分类（BC_CATEGORY_DELETE）：&#xD;&#xA;拥有此角色的用户可删除分类信息，但若要删除的分类信息含有下级分类，基于信息安全起见，不允许删除，但提示用户。&#xD;&#xA;如果&quot;访问配置&quot;中设置有此节点的编辑权限，则也可执行安全删除。&#xD;&#xA;&#xD;&#xA;2）视图的&quot;访问配置&quot;按钮，使用ACL模块的接口进行配置&#xD;&#xA;用于限定节点可以由谁进行查看或管理；&#xD;&#xA;如果配置为&quot;查看&quot;，则可以看到这个分类及其下的后代分类；&#xD;&#xA;如果配置为&quot;编辑&quot;，则可以管理这个分类及其下的后代分类。&#xD;&#xA;3）实现时区分开管理端和模块使用端&#xD;&#xA;模块使用端通过参数root来控制模块使用的节点范围，root参数的值为节点的全编码，如&#xD;&#xA;category/page?root=TPL/JJHT，代表&quot;模板/经济合同&quot;的配置管理或查阅，root为必须的参数，否则直接抛异常。" measuredWidth="493" measuredHeight="304" annotation="true" textAlignment="Left">
+    <font/>
+  </widgets>
+  <widgets xsi:type="model:WidgetGroup" id="119" x="8" y="284" measuredWidth="493" measuredHeight="190">
+    <widgets xsi:type="model:Window" id="120" y="45" width="493" height="145" text="分类 - 表单" measuredWidth="493" measuredHeight="145" minimizeButton="true" maximizeButton="true"/>
+    <widgets xsi:type="model:HLine" id="121" y="149" width="493" measuredWidth="493" measuredHeight="6"/>
+    <widgets xsi:type="model:Button" id="122" x="432" y="157" width="56" text="保存" measuredWidth="56" measuredHeight="27">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="125" x="30" y="70" text="*名称：" measuredWidth="46" measuredHeight="25" textAlignment="Right">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:TextField" id="126" x="73" y="70" width="168" text="经济合同" measuredWidth="168" measuredHeight="25">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="128" x="258" y="70" text="所属分类：" measuredWidth="65" measuredHeight="25" textAlignment="Right">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="132" x="258" y="125" text="最后更新：小明 (2011-01-02 10:15)" measuredWidth="202" measuredHeight="25" textAlignment="Right" foreground="#999999">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="133" x="30" y="97" text="*编码：" measuredWidth="46" measuredHeight="25" textAlignment="Right">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:TextField" id="134" x="73" y="97" width="168" text="JJHT" measuredWidth="168" measuredHeight="25">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:RadioButton" id="142" x="76" y="125" text="正常" measuredWidth="44" measuredHeight="25" selected="true">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:RadioButton" id="143" x="131" y="125" text="禁用" measuredWidth="44" measuredHeight="25">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="144" x="36" y="125" text="状态：" measuredWidth="41" measuredHeight="25">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:WidgetGroup" id="148" x="320" y="70" measuredWidth="168" measuredHeight="25">
+      <widgets xsi:type="model:TextField" id="130" width="168" text="模板" measuredWidth="168" measuredHeight="25">
+        <font/>
+      </widgets>
+      <widgets xsi:type="model:Icon" id="141" x="148" y="5" measuredWidth="16" measuredHeight="16" foreground="#666666" icon="delete (small)"/>
+      <widgets xsi:type="model:Icon" id="147" x="130" y="5" measuredWidth="16" measuredHeight="16" foreground="#666666" icon="add (small)"/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="168" x="270" y="97" text="排序号：" measuredWidth="53" measuredHeight="25" textAlignment="Right">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:TextField" id="169" x="320" y="97" width="168" text="10-01" measuredWidth="168" measuredHeight="25">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Text" id="175" text="category/open|edit&#xD;&#xA;category/manage/open|edit" measuredWidth="229" measuredHeight="44">
+      <font size="16px" bold="true"/>
+    </widgets>
+  </widgets>
+  <widgets xsi:type="model:WidgetGroup" id="154" x="512" y="283" measuredWidth="273" measuredHeight="302">
+    <widgets xsi:type="model:Window" id="155" y="45" width="273" height="257" text="选择分类 - 单选" measuredWidth="273" measuredHeight="257" minimizeButton="true" maximizeButton="true"/>
+    <widgets xsi:type="model:WidgetGroup" id="158" x="86" y="69" measuredWidth="183" measuredHeight="25">
+      <widgets xsi:type="model:SearchField" id="159" width="183" measuredWidth="183" measuredHeight="25">
+        <font/>
+      </widgets>
+      <widgets xsi:type="model:Icon" id="160" x="156" y="6" height="14" measuredWidth="16" measuredHeight="14" icon="desc (small)"/>
+    </widgets>
+    <widgets xsi:type="model:Button" id="166" x="213" y="271" width="56" text="确定" measuredWidth="56" measuredHeight="27">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Table" id="170" y="97" width="273" height="171" text="(w:30). ,(w:30). 状态,(w:80). 名称,(w:60). 编码,(w:60). 所属分类&#xA;1,正常,模板,TPL&#xA;2,正常,经济合同,JJHT,模板&#xA;3,正常,劳动合同,LDHT,模板&#xA;4,正常,配件,PMC,模板&#xA;5,正常,办公用品,BGYP&#xA;6,正常,资产,ZC&#xA;" measuredWidth="273" measuredHeight="171" alternative="#eeeeee">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Text" id="173" text="category/select&#xD;&#xA;category/manage/select " measuredWidth="202" measuredHeight="44">
+      <font size="16px" bold="true"/>
+    </widgets>
+  </widgets>
+  <widgets xsi:type="model:TextArea" id="176" x="751" y="53" width="273" height="226" text="Action类接口设计：&#xD;&#xA;视图：&#xD;&#xA;CategorysAction(){&#xD;&#xA;  /** 是否是模块管理员 */&#xD;&#xA;  isManager(){...}&#xD;&#xA;  &#xD;&#xA;  /** 根节点全编码 */&#xD;&#xA;  getRootCode(){...}&#xD;&#xA;}" measuredWidth="273" measuredHeight="226">
+    <font/>
+  </widgets>
+  <hRuler/>
+  <vRuler/>
+  <font size="12px"/>
+</model:Screen>
