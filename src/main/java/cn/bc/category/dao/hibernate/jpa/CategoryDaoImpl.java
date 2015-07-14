@@ -1,25 +1,20 @@
 package cn.bc.category.dao.hibernate.jpa;
 
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
-
 import cn.bc.category.dao.CategoryDao;
 import cn.bc.category.domain.Category;
 import cn.bc.core.query.condition.impl.AndCondition;
 import cn.bc.core.query.condition.impl.EqualsCondition;
-import cn.bc.orm.hibernate.jpa.HibernateCrudJpaDao;
+import cn.bc.orm.jpa.JpaCrudDao;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 
-public class CategoryDaoImpl extends HibernateCrudJpaDao<Category> implements CategoryDao {
+import java.util.List;
+import java.util.Map;
+
+public class CategoryDaoImpl extends JpaCrudDao<Category> implements CategoryDao {
+	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
-	@Autowired
-	public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
-		this.jdbcTemplate = jdbcTemplate;
-	}
 	public Category find4OneCategory(long id) {
 		return this.createQuery().condition(new AndCondition().add(new EqualsCondition("id", id))).singleResult();
 	}
@@ -36,11 +31,11 @@ public class CategoryDaoImpl extends HibernateCrudJpaDao<Category> implements Ca
 		sql += " , category (id, full_sn) as (";
 		sql += " select id, array[sn::text]";
 		sql += " from bc_category c";
-		if(pid == null)
+		if (pid == null)
 			sql += " where pid is null";
 		else
 			sql += " where pid = ?";
-		if(isReadonly) { 
+		if (isReadonly) {
 			sql += " and not exists (";
 			sql += " 	select 0 from bc_acl_actor aa";
 			sql += " 		inner join bc_acl_doc ad on aa.pid = ad.id";
@@ -63,14 +58,14 @@ public class CategoryDaoImpl extends HibernateCrudJpaDao<Category> implements Ca
 		sql += ") select oc.id as id, oc.name_ as name from category c";
 		sql += " inner join bc_category oc on oc.id = c.id";
 		sql += " order by oc.status_ asc,c.full_sn asc";
-		if(pid == null)
+		if (pid == null)
 			return this.jdbcTemplate.queryForList(sql, code, code);
 		else
 			return this.jdbcTemplate.queryForList(sql, code, code, pid);
 	}
 
 	public Long getIdByFullCode(String fullCode) {
-		Long id = this.jdbcTemplate.queryForLong("select category_get_id_by_full_code(?)", fullCode);
+		Long id = this.jdbcTemplate.queryForObject("select category_get_id_by_full_code(?)", new Object[]{fullCode}, Long.class);
 		id = (id == null || id == 0 ? null : id);
 		return id;
 	}
@@ -80,7 +75,7 @@ public class CategoryDaoImpl extends HibernateCrudJpaDao<Category> implements Ca
 				" from bc_category bc" +
 				" left join bc_category pbc on bc.pid = pbc.id" +
 				" left join bc_identity_actor_history iah on iah.id= bc.modifier_id where bc.id=?";
-		List<Map<String , Object>> list = this.jdbcTemplate.queryForList(sql, id);
+		List<Map<String, Object>> list = this.jdbcTemplate.queryForList(sql, id);
 		return list;
 	}
 }
