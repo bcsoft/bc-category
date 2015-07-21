@@ -1,4 +1,4 @@
-package cn.bc.category.dao.hibernate.jpa;
+package cn.bc.category.dao.jpa;
 
 import cn.bc.category.dao.CategoryDao;
 import cn.bc.category.domain.Category;
@@ -7,10 +7,12 @@ import cn.bc.core.query.condition.impl.EqualsCondition;
 import cn.bc.orm.jpa.JpaCrudDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
 
+@Component
 public class CategoryDaoImpl extends JpaCrudDao<Category> implements CategoryDao {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;

@@ -1,24 +1,23 @@
 package cn.bc.category.service;
 
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import cn.bc.category.dao.CategoryDao;
 import cn.bc.category.domain.Category;
 import cn.bc.category.web.struts2.CategoryViewAction;
 import cn.bc.core.service.DefaultCrudService;
 import cn.bc.identity.web.SystemContextHolder;
 import cn.bc.web.ui.html.tree.TreeNode;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-public class CategoryServiceImpl extends DefaultCrudService<Category> implements
-		CategoryService {
-	private final static Log logger = LogFactory
-			.getLog(CategoryViewAction.class);
+import java.util.List;
+import java.util.Map;
+
+@Service
+public class CategoryServiceImpl extends DefaultCrudService<Category> implements CategoryService {
+	private static Logger logger = LoggerFactory.getLogger(CategoryViewAction.class);
 	private CategoryDao categoryDao;
 
 	@Autowired
@@ -36,7 +35,7 @@ public class CategoryServiceImpl extends DefaultCrudService<Category> implements
 	}
 
 	public List<Map<String, Object>> findSubNodesData(Long pid, String code,
-			boolean isReadonly) {
+	                                                  boolean isReadonly) {
 		return this.categoryDao.findSubNodesData(pid, code, isReadonly);
 	}
 
