@@ -22,4 +22,9 @@
             <version>2.9-SNAPSHOT</version>
         </dependency>
     </dependencies>
+    <scm>
+        <connection>scm:git:git@bitbucket.org:bctaxi/bc-category.git</connection>
+        <developerConnection>scm:git:git@bitbucket.org:bctaxi/bc-category.git</developerConnection>
+        <url>https://bitbucket.org/bctaxi/bc-category</url>
+    </scm>
 </project>
