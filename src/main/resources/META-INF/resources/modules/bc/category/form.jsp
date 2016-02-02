@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
-<div title='<s:text name="categoryForm.title"/>' data-type='form' class="bc-page"
+<div title='<s:text name="category.title"/>' data-type='form' class="bc-page"
 	data-saveUrl='<s:url value="/bc/category/save" />'
 	data-js='<s:url value="/modules/bc/category/api.js" />,<s:url value="/modules/bc/category/form.js" />'
 	data-initMethod='bc.categoryForm.init'
