@@ -66,6 +66,7 @@
 			<param name="rootNode"></param>
 			<!-- 管理角色的编码 -->
 			<param name="manageRole">BC_CATEGORY_MANAGE</param>
+			<param name="namespace">/category</param>
 		</action>
 
 		<!-- 选择所属分类视图：非分页 -->
@@ -75,8 +76,20 @@
 			<param name="rootNode"></param>
 			<!-- 管理角色的编码 -->
 			<param name="manageRole">BC_CATEGORY_MANAGE</param>
+			<param name="namespace">/category</param>
+		</action>
+		<!-- 选择所属分类视图：非分页 -->
+		<action name="selectCategory/data" class="selectCategoryAction" method="data">
+			<param name="pageTitle">选择所属分类</param>
+			<!-- 根节点全编码 -->
+			<param name="rootNode"></param>
+			<!-- 管理角色的编码 -->
+			<param name="manageRole">BC_CATEGORY_MANAGE</param>
+			<param name="namespace">/category</param>
 		</action>
 	</package>
+
+
 
 	<!-- 模板分类 -->
 	<package name="tplType" extends="bc-default" namespace="/bc/tpl">
@@ -139,6 +152,8 @@
 			<param name="pageTitle">选择所属分类</param>
 			<!-- 根节点全编码 -->
 			<param name="rootNode">TPL</param>
+			<!-- 命名空间 -->
+			<param name="namespace">/tpl</param>
 			<!-- 管理角色的编码 -->
 			<param name="manageRole">BC_TEMPLATE_CATEGORY_MANAGE</param>
 		</action>
@@ -148,6 +163,17 @@
 			<param name="pageTitle">选择所属分类</param>
 			<!-- 根节点全编码 -->
 			<param name="rootNode">TPL</param>
+			<!-- 命名空间 -->
+			<param name="namespace">/tpl</param>
+			<!-- 管理角色的编码 -->
+			<param name="manageRole">BC_TEMPLATE_CATEGORY_MANAGE</param>
+		</action>
+		<action name="selectCategory/data" class="selectCategoryAction" method="data">
+			<param name="pageTitle">选择所属分类</param>
+			<!-- 根节点全编码 -->
+			<param name="rootNode">TPL</param>
+			<!-- 命名空间 -->
+			<param name="namespace">/tpl</param>
 			<!-- 管理角色的编码 -->
 			<param name="manageRole">BC_TEMPLATE_CATEGORY_MANAGE</param>
 		</action>
@@ -214,6 +240,8 @@
 			<param name="pageTitle">选择所属分类</param>
 			<!-- 根节点全编码 -->
 			<param name="rootNode">BGYP</param>
+			<!-- 命名空间 -->
+			<param name="namespace">/officeType</param>
 			<!-- 管理角色的编码 -->
 			<param name="manageRole">BC_OFFICE_TYPE_MANAGE</param>
 		</action>
@@ -223,6 +251,18 @@
 			<param name="pageTitle">选择所属分类</param>
 			<!-- 根节点全编码 -->
 			<param name="rootNode">BGYP</param>
+			<!-- 命名空间 -->
+			<param name="namespace">/officeType</param>
+			<!-- 管理角色的编码 -->
+			<param name="manageRole">BC_OFFICE_TYPE_MANAGE</param>
+		</action>
+
+		<action name="selectCategory/data" class="selectCategoryAction" method="data">
+			<param name="pageTitle">选择所属分类</param>
+			<!-- 根节点全编码 -->
+			<param name="rootNode">BGYP</param>
+			<!-- 命名空间 -->
+			<param name="namespace">/officeType</param>
 			<!-- 管理角色的编码 -->
 			<param name="manageRole">BC_OFFICE_TYPE_MANAGE</param>
 		</action>
@@ -288,6 +328,8 @@
 		<action name="selectCategory/paging" class="selectCategoryAction" method="paging">
 			<param name="pageTitle">选择所属分类</param>
 			<param name="rootNode">ASSET_TYPE</param>
+			<!-- 命名空间 -->
+			<param name="namespace">/asset</param>
 			<param name="manageRole">BC_ASSET_TYPE_MANAGE</param>
 		</action>
 
@@ -295,6 +337,16 @@
 		<action name="selectCategory/list" class="selectCategoryAction" method="list">
 			<param name="pageTitle">选择所属分类</param>
 			<param name="rootNode">ASSET_TYPE</param>
+			<!-- 命名空间 -->
+			<param name="namespace">/asset</param>
+			<param name="manageRole">BC_ASSET_TYPE_MANAGE</param>
+		</action>
+
+		<action name="selectCategory/data" class="selectCategoryAction" method="data">
+			<param name="pageTitle">选择所属分类</param>
+			<param name="rootNode">ASSET_TYPE</param>
+			<!-- 命名空间 -->
+			<param name="namespace">/asset</param>
 			<param name="manageRole">BC_ASSET_TYPE_MANAGE</param>
 		</action>
 	</package>

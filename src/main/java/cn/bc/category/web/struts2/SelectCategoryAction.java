@@ -57,6 +57,9 @@ public class SelectCategoryAction  extends AbstractSelectPageAction<Map<String, 
 	public long preId;//当前要编辑的分类的id，如果没有，就是新建，默认是0
 	public String multiSelect;//多选
 
+	/** 命名空间 */
+	public String namespace;
+
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
@@ -182,7 +185,11 @@ public class SelectCategoryAction  extends AbstractSelectPageAction<Map<String, 
 	@Override
     protected String getHtmlPageNamespace() {
 		//要写selectCategoryType，不然搜索或刷新找不到这个命名空间
-        return getModuleContextPath() + "/bc/category/selectCategory";
+		if(namespace != null){
+			return getModuleContextPath() + "/bc" + namespace +"/selectCategory";
+		}else {
+			return getModuleContextPath() + "/bc/category/selectCategory";
+		}
     }
 	 
 	@Override
