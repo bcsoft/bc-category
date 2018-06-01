@@ -17,48 +17,48 @@ import java.util.Map;
 
 @Service
 public class CategoryServiceImpl extends DefaultCrudService<Category> implements CategoryService {
-	private static Logger logger = LoggerFactory.getLogger(CategoryViewAction.class);
-	private CategoryDao categoryDao;
+  private static Logger logger = LoggerFactory.getLogger(CategoryViewAction.class);
+  private CategoryDao categoryDao;
 
-	@Autowired
-	public void setCategoryDao(CategoryDao categoryDao) {
-		this.categoryDao = categoryDao;
-		this.setCrudDao(categoryDao);
-	}
+  @Autowired
+  public void setCategoryDao(CategoryDao categoryDao) {
+    this.categoryDao = categoryDao;
+    this.setCrudDao(categoryDao);
+  }
 
-	public Category find4OneCategory(long id) {
-		return this.categoryDao.find4OneCategory(id);
-	}
+  public Category find4OneCategory(long id) {
+    return this.categoryDao.find4OneCategory(id);
+  }
 
-	public boolean saveCategory(Category category) {
-		return this.categoryDao.saveCategory(category);
-	}
+  public boolean saveCategory(Category category) {
+    return this.categoryDao.saveCategory(category);
+  }
 
-	public List<Map<String, Object>> findSubNodesData(Long pid, String code,
-	                                                  boolean isReadonly) {
-		return this.categoryDao.findSubNodesData(pid, code, isReadonly);
-	}
+  public List<Map<String, Object>> findSubNodesData(Long pid, String code,
+                                                    boolean isReadonly) {
+    return this.categoryDao.findSubNodesData(pid, code, isReadonly);
+  }
 
-	public List<Map<String, Object>> find4ParentType(Long id) {
-		return this.categoryDao.find4ParentType(id);
-	}
+  public List<Map<String, Object>> find4ParentType(Long id) {
+    return this.categoryDao.find4ParentType(id);
+  }
 
-	public Long getIdByFullCode(String fullCode) {
-		return this.categoryDao.getIdByFullCode(fullCode);
-	}
+  public Long getIdByFullCode(String fullCode) {
+    return this.categoryDao.getIdByFullCode(fullCode);
+  }
 
-	public String getLoadTreeData(boolean isReadonly, Long pid) {
-		JSONObject json = new JSONObject();
-		try {
-			List<Map<String, Object>> data = findSubNodesData(pid,
-					SystemContextHolder.get().getUser().getCode(), isReadonly);
-			json.put("success", true);
-			json.put("subNodesCount", data.size());
-			json.put("html", TreeNode.buildSubNodes(CategoryViewAction
-					.buildTreeNodes(data)));
-		} catch (java.lang.Exception e) {
-			logger.error(e.getMessage());
-		}
-		return json.toString();
-	}
+  public String getLoadTreeData(boolean isReadonly, Long pid) {
+    JSONObject json = new JSONObject();
+    try {
+      List<Map<String, Object>> data = findSubNodesData(pid,
+        SystemContextHolder.get().getUser().getCode(), isReadonly);
+      json.put("success", true);
+      json.put("subNodesCount", data.size());
+      json.put("html", TreeNode.buildSubNodes(CategoryViewAction
+        .buildTreeNodes(data)));
+    } catch (java.lang.Exception e) {
+      logger.error(e.getMessage());
+    }
+    return json.toString();
+  }
 }

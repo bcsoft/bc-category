@@ -34,186 +34,191 @@ import java.util.Map;
 
 /**
  * 选择所属分类视图
+ *
  * @author LeeDane
  */
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 @Controller
-public class SelectCategoryAction  extends AbstractSelectPageAction<Map<String, Object>>{
+public class SelectCategoryAction extends AbstractSelectPageAction<Map<String, Object>> {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	public String status;//分类的状态
-	
-	public String pageTitle; //窗口的标题
-	public String manageRole;//对应每个模块的管理者编码，如果没有，就需要进行ACL权限判断了！
-	public String rootNode;//等于空表示是最上级的节点！TPL/JJHT
-	
-	//public String preCode;//当前的节点编号
-	//public Long preId;//当前的节点的id
-	
-	public int preRoleId;//根据pid查找所有的
-	public long preId;//当前要编辑的分类的id，如果没有，就是新建，默认是0
-	public String multiSelect;//多选
+  /**
+   *
+   */
+  private static final long serialVersionUID = 1L;
+  public String status;//分类的状态
 
-	/** 命名空间 */
-	public String namespace;
+  public String pageTitle; //窗口的标题
+  public String manageRole;//对应每个模块的管理者编码，如果没有，就需要进行ACL权限判断了！
+  public String rootNode;//等于空表示是最上级的节点！TPL/JJHT
 
-	@Autowired
-	private JdbcTemplate jdbcTemplate;
+  //public String preCode;//当前的节点编号
+  //public Long preId;//当前的节点的id
 
-	@Autowired
-	private CategoryService categoryService;
+  public int preRoleId;//根据pid查找所有的
+  public long preId;//当前要编辑的分类的id，如果没有，就是新建，默认是0
+  public String multiSelect;//多选
 
-	/**
-	 * SQL分页查询语句及参数配置
-	 * 
-	 * @return
-	 */
-	private PagingQueryConfig getPagingQueryConfig() {
-		// 是否为根节点
-		boolean isRoot = true;
-		//TODO 查询的SQL
-		String s1 = TemplateUtils.getContent("BC-SELECT-CATEGORY");
-		String s2 = TemplateUtils.getContent("BC-SELECT-CATEGORY-COUNT");
+  /**
+   * 命名空间
+   */
+  public String namespace;
 
-		//preRoleId = 23122;
-		
-		List<Object> args = new ArrayList<Object>();
-		if(preRoleId != 0 ){
-			//Long pid = this.categoryService.findId(rootNode); //当前的权限下的最大分类的id
-			//preCode = "SFTZ";//当前编辑/新建时所要处理的分类的code
-			//preId = 23090;//当前编辑/新建时所要处理的分类的id
-			args.add(preRoleId);//参数id
-			isRoot = false;
-			//args.add(preCode);//当前的分类Code
-			//args.add(preId);//当前的分类id
-		}
+  @Autowired
+  private JdbcTemplate jdbcTemplate;
 
-		cn.bc.core.query.cfg.impl.PagingQueryConfig cfg =
-				new cn.bc.core.query.cfg.impl.PagingQueryConfig(s1, s2, args);
-		cfg.addTemplateParam("code", this.getSystemContext().getUser().getCode());
-		cfg.addTemplateParam("isRoot", isRoot);
-		cfg.addTemplateParam("isManager", !this.isReadonly());
-		// 分页参数
-		Page<Map<String, Object>> p = getPage();
-		if (p != null) {
-			cfg.setLimit(p.getPageSize());
-			cfg.setOffset(p.getFirstResult());
-		}
+  @Autowired
+  private CategoryService categoryService;
 
-		return cfg;
-	}
-	
-	@Override
-    protected void extendGridExtrasData(JSONObject json) throws JSONException {
-		super.extendGridExtrasData(json);
+  /**
+   * SQL分页查询语句及参数配置
+   *
+   * @return
+   */
+  private PagingQueryConfig getPagingQueryConfig() {
+    // 是否为根节点
+    boolean isRoot = true;
+    //TODO 查询的SQL
+    String s1 = TemplateUtils.getContent("BC-SELECT-CATEGORY");
+    String s2 = TemplateUtils.getContent("BC-SELECT-CATEGORY-COUNT");
 
-		// 状态条件
-		if (this.status != null && this.status.trim().length() > 0) {
-			json.put("status", status);
-		}
+    //preRoleId = 23122;
 
-		// 父节点条件
-		json.put("preRoleId", this.preRoleId);
-
-		// 是否是调用选择文件夹方法
-		//json.put("isSelectFolders", isSelectFolders);
-
-		// 分类多选的条件
-		if(this.multiSelect != null && this.multiSelect.length() > 0)
-			json.put("multiSelect", "yes");
-	}
-
-	@Override
-	protected Query<Map<String, Object>> getQuery() {
-		JdbcTemplatePagingQuery<Map<String, Object>> jdbcQuery =
-				new JdbcTemplatePagingQuery<Map<String,Object>>(jdbcTemplate, getPagingQueryConfig(), null);
-		jdbcQuery.condition(this.getGridCondition());
-		return jdbcQuery;
-	}
-
-	@Override
-	protected SqlObject<Map<String, Object>> getSqlObject() {
-		throw new UnsupportedOperationException();
-	}
-	
-	@Override
-	protected List<Column> getGridColumns() {
-		List<Column> columns = new ArrayList<Column>();
-		columns.add(new IdColumn4MapKey("id", "id"));
-		columns.add(new TextColumn4MapKey("status_", "status",
-				getText("category.select.status"), 40).setSortable(true)
-				.setValueFormater(new KeyValueFormater(getStatus())));
-		columns.add(new TextColumn4MapKey("name_", "name_",
-				getText("category.select.name"), 160).setSortable(true).setUseTitleFromLabel(true));		
-		columns.add(new TextColumn4MapKey("code", "code",
-				getText("category.select.code"), 120).setSortable(true).setUseTitleFromLabel(true));
-		columns.add(new TextColumn4MapKey("pname", "pname",
-				getText("category.select.type")).setSortable(true)
-				.setUseTitleFromLabel(true));
-		return columns;
-	}
-	
-	@Override
-	public boolean isReadonly() {
-		SystemContext context = this.getSystemContext();
-        // 配置权限
-        return !context.hasAnyRole(manageRole, getText("key.role.bc.admin"));
-	}
-
-	private SystemContext getSystemContext() {
-		return (SystemContext) this.getContext();
-	}
-
-	@Override
-	protected String getGridRowLabelExpression() {
-		return "['name']";
-	}
-
-	@Override
-	protected String[] getGridSearchFields() {
-		return new String[] { "c.name_","c.code" };
-	}
-	
-	@Override
-	protected String getModuleContextPath() {
-		return this.getContextPath();
-	}
-	
-	@Override
-    protected String getHtmlPageNamespace() {
-		//要写selectCategoryType，不然搜索或刷新找不到这个命名空间
-		if(namespace != null){
-			return getModuleContextPath() + "/bc" + namespace +"/selectCategory";
-		}else {
-			return getModuleContextPath() + "/bc/category/selectCategory";
-		}
+    List<Object> args = new ArrayList<Object>();
+    if (preRoleId != 0) {
+      //Long pid = this.categoryService.findId(rootNode); //当前的权限下的最大分类的id
+      //preCode = "SFTZ";//当前编辑/新建时所要处理的分类的code
+      //preId = 23090;//当前编辑/新建时所要处理的分类的id
+      args.add(preRoleId);//参数id
+      isRoot = false;
+      //args.add(preCode);//当前的分类Code
+      //args.add(preId);//当前的分类id
     }
-	 
-	@Override
-	protected String getFormActionName() {
-		return "selectCategory";
-	}
-    @Override
-    protected String getViewActionName() {
-        return "selectCategory";
+
+    cn.bc.core.query.cfg.impl.PagingQueryConfig cfg =
+      new cn.bc.core.query.cfg.impl.PagingQueryConfig(s1, s2, args);
+    cfg.addTemplateParam("code", this.getSystemContext().getUser().getCode());
+    cfg.addTemplateParam("isRoot", isRoot);
+    cfg.addTemplateParam("isManager", !this.isReadonly());
+    // 分页参数
+    Page<Map<String, Object>> p = getPage();
+    if (p != null) {
+      cfg.setLimit(p.getPageSize());
+      cfg.setOffset(p.getFirstResult());
     }
-	@Override
-	protected PageOption getHtmlPageOption() {
-		return super.getHtmlPageOption().setWidth(400).setHeight(450);
-	}
-	
-	@Override
-	protected String getHtmlPageJs() {
-		return this.getContextPath()+"/modules/bc/category/select.js";
-	}
-	
-	
-	@Override
-	protected Condition getGridSpecalCondition() {
-		AndCondition ac=new AndCondition();
+
+    return cfg;
+  }
+
+  @Override
+  protected void extendGridExtrasData(JSONObject json) throws JSONException {
+    super.extendGridExtrasData(json);
+
+    // 状态条件
+    if (this.status != null && this.status.trim().length() > 0) {
+      json.put("status", status);
+    }
+
+    // 父节点条件
+    json.put("preRoleId", this.preRoleId);
+
+    // 是否是调用选择文件夹方法
+    //json.put("isSelectFolders", isSelectFolders);
+
+    // 分类多选的条件
+    if (this.multiSelect != null && this.multiSelect.length() > 0)
+      json.put("multiSelect", "yes");
+  }
+
+  @Override
+  protected Query<Map<String, Object>> getQuery() {
+    JdbcTemplatePagingQuery<Map<String, Object>> jdbcQuery =
+      new JdbcTemplatePagingQuery<Map<String, Object>>(jdbcTemplate, getPagingQueryConfig(), null);
+    jdbcQuery.condition(this.getGridCondition());
+    return jdbcQuery;
+  }
+
+  @Override
+  protected SqlObject<Map<String, Object>> getSqlObject() {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  protected List<Column> getGridColumns() {
+    List<Column> columns = new ArrayList<Column>();
+    columns.add(new IdColumn4MapKey("id", "id"));
+    columns.add(new TextColumn4MapKey("status_", "status",
+      getText("category.select.status"), 40).setSortable(true)
+      .setValueFormater(new KeyValueFormater(getStatus())));
+    columns.add(new TextColumn4MapKey("name_", "name_",
+      getText("category.select.name"), 160).setSortable(true).setUseTitleFromLabel(true));
+    columns.add(new TextColumn4MapKey("code", "code",
+      getText("category.select.code"), 120).setSortable(true).setUseTitleFromLabel(true));
+    columns.add(new TextColumn4MapKey("pname", "pname",
+      getText("category.select.type")).setSortable(true)
+      .setUseTitleFromLabel(true));
+    return columns;
+  }
+
+  @Override
+  public boolean isReadonly() {
+    SystemContext context = this.getSystemContext();
+    // 配置权限
+    return !context.hasAnyRole(manageRole, getText("key.role.bc.admin"));
+  }
+
+  private SystemContext getSystemContext() {
+    return (SystemContext) this.getContext();
+  }
+
+  @Override
+  protected String getGridRowLabelExpression() {
+    return "['name']";
+  }
+
+  @Override
+  protected String[] getGridSearchFields() {
+    return new String[]{"c.name_", "c.code"};
+  }
+
+  @Override
+  protected String getModuleContextPath() {
+    return this.getContextPath();
+  }
+
+  @Override
+  protected String getHtmlPageNamespace() {
+    //要写selectCategoryType，不然搜索或刷新找不到这个命名空间
+    if (namespace != null) {
+      return getModuleContextPath() + "/bc" + namespace + "/selectCategory";
+    } else {
+      return getModuleContextPath() + "/bc/category/selectCategory";
+    }
+  }
+
+  @Override
+  protected String getFormActionName() {
+    return "selectCategory";
+  }
+
+  @Override
+  protected String getViewActionName() {
+    return "selectCategory";
+  }
+
+  @Override
+  protected PageOption getHtmlPageOption() {
+    return super.getHtmlPageOption().setWidth(400).setHeight(450);
+  }
+
+  @Override
+  protected String getHtmlPageJs() {
+    return this.getContextPath() + "/modules/bc/category/select.js";
+  }
+
+
+  @Override
+  protected Condition getGridSpecalCondition() {
+    AndCondition ac = new AndCondition();
 		/*if (status != null && status.length() > 0) {
 			String[] ss = status.split(",");
 			if(ss.length == 1){
@@ -226,45 +231,45 @@ public class SelectCategoryAction  extends AbstractSelectPageAction<Map<String, 
 			ac.add(new EqualsCondition("c.status_",0));
 		}*/
 
-		ac.add(new EqualsCondition("c.status_",0));
-		return ac.isEmpty()?null:ac;
-	}
+    ac.add(new EqualsCondition("c.status_", 0));
+    return ac.isEmpty() ? null : ac;
+  }
 
-	@Override
-	protected String getClickOkMethod() {
-		return "bc.select.category.clickOk";
-	}
-	
-	@Override
-	protected String getHtmlPageTitle() {
-		return this.getText("category.select.title");
-	}
-	
-	/**
-	 * 复写order by方法！
-	 */
-	@Override
-	protected OrderCondition getGridDefaultOrderCondition() {
-		return new OrderCondition("full_sn", Direction.Asc);
-	}
+  @Override
+  protected String getClickOkMethod() {
+    return "bc.select.category.clickOk";
+  }
 
-	/**
-	 * 状态值转换列表：正常|禁用|全部
-	 * 
-	 * @return
-	 */
-	private Map<String, String> getStatus() {
-		Map<String, String> statuses = new LinkedHashMap<String, String>();
-		statuses.put("0",
-				getText("category.status.enabled"));
-		statuses.put("1",
-				getText("category.status.disabled"));
-		statuses.put("0,1", getText("category.status.all"));
-		return statuses;
-	}
-	
-	@Override
-	protected boolean canExport() {
-		return false;
-	}
+  @Override
+  protected String getHtmlPageTitle() {
+    return this.getText("category.select.title");
+  }
+
+  /**
+   * 复写order by方法！
+   */
+  @Override
+  protected OrderCondition getGridDefaultOrderCondition() {
+    return new OrderCondition("full_sn", Direction.Asc);
+  }
+
+  /**
+   * 状态值转换列表：正常|禁用|全部
+   *
+   * @return
+   */
+  private Map<String, String> getStatus() {
+    Map<String, String> statuses = new LinkedHashMap<String, String>();
+    statuses.put("0",
+      getText("category.status.enabled"));
+    statuses.put("1",
+      getText("category.status.disabled"));
+    statuses.put("0,1", getText("category.status.all"));
+    return statuses;
+  }
+
+  @Override
+  protected boolean canExport() {
+    return false;
+  }
 }

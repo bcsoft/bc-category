@@ -24,47 +24,85 @@ select ad.doc_name, a.name, aa.role, a.id, ad.doc_type, ad.doc_id, a.code from b
 */
 
 -- ACL: 模板
-INSERT INTO bc_acl_doc(id, doc_id, doc_type, doc_name, file_date, author_id, modified_date, modifier_id)
-	select 11, (select id from bc_category where code = 'TPL')
-	, 'Category', '模板'
-	, now(), (select id from bc_identity_actor_history where actor_code = 'admin' and current = true)
-	, now(), (select id from bc_identity_actor_history where actor_code = 'admin' and current = true)
-	from bc_dual where not exists (select 0 from bc_acl_doc where id = 11);
+insert into bc_acl_doc (id, doc_id, doc_type, doc_name, file_date, author_id, modified_date, modifier_id)
+  select 11, (select id
+              from bc_category
+              where code = 'TPL'), 'Category', '模板', now(), (select id
+                                                             from bc_identity_actor_history
+                                                             where actor_code = 'admin' and current = true), now(),
+    (select id
+     from bc_identity_actor_history
+     where actor_code = 'admin' and current = true)
+  from bc_dual
+  where not exists(select 0
+                   from bc_acl_doc
+                   where id = 11);
 ---- admin 可查阅、编辑
-INSERT INTO bc_acl_actor(pid, aid, role, order_)
-	select 11, (select id from bc_identity_actor where code = 'admin'), '11', 1
-	from bc_dual where not exists (
-		select 0 from bc_acl_actor 
-		where pid = 11 and aid = (select id from bc_identity_actor where code = 'admin')
-	);
+insert into bc_acl_actor (pid, aid, role, order_)
+  select 11, (select id
+              from bc_identity_actor
+              where code = 'admin'), '11', 1
+  from bc_dual
+  where not exists(
+    select 0
+    from bc_acl_actor
+    where pid = 11 and aid = (select id
+                              from bc_identity_actor
+                              where code = 'admin')
+  );
 ---- dragon 禁止查阅
-INSERT INTO bc_acl_actor(pid, aid, role, order_)
-	select 11, (select id from bc_identity_actor where code = 'dragon'), '00', 2
-	from bc_dual where not exists (
-		select 0 from bc_acl_actor 
-		where pid = 11 and aid = (select id from bc_identity_actor where code = 'dragon')
-	);
-
+insert into bc_acl_actor (pid, aid, role, order_)
+  select 11, (select id
+              from bc_identity_actor
+              where code = 'dragon'), '00', 2
+  from bc_dual
+  where not exists(
+    select 0
+    from bc_acl_actor
+    where pid = 11 and aid = (select id
+                              from bc_identity_actor
+                              where code = 'dragon')
+  );
 
 -- ACL: 模板/经济合同（按合同性质）
-INSERT INTO bc_acl_doc(id, doc_id, doc_type, doc_name, file_date, author_id, modified_date, modifier_id)
-	select 12, (select id from bc_category where code = 'JJHT_BY_BUSINESS')
-	, 'Category', '经济合同（按合同性质）'
-	, now(), (select id from bc_identity_actor_history where actor_code = 'admin' and current = true)
-	, now(), (select id from bc_identity_actor_history where actor_code = 'admin' and current = true)
-	from bc_dual where not exists (select 0 from bc_acl_doc where id = 12);
+insert into bc_acl_doc (id, doc_id, doc_type, doc_name, file_date, author_id, modified_date, modifier_id)
+  select 12, (select id
+              from bc_category
+              where code = 'JJHT_BY_BUSINESS'), 'Category', '经济合同（按合同性质）', now(), (select id
+                                                                                   from bc_identity_actor_history
+                                                                                   where actor_code = 'admin' and
+                                                                                         current = true), now(),
+    (select id
+     from bc_identity_actor_history
+     where actor_code = 'admin' and current = true)
+  from bc_dual
+  where not exists(select 0
+                   from bc_acl_doc
+                   where id = 12);
 ---- admin 可查阅、编辑
-INSERT INTO bc_acl_actor(pid, aid, role, order_)
-	select 12, (select id from bc_identity_actor where code = 'admin'), '11', 1
-	from bc_dual where not exists (
-		select 0 from bc_acl_actor 
-		where pid = 12 and aid = (select id from bc_identity_actor where code = 'admin')
-	);
+insert into bc_acl_actor (pid, aid, role, order_)
+  select 12, (select id
+              from bc_identity_actor
+              where code = 'admin'), '11', 1
+  from bc_dual
+  where not exists(
+    select 0
+    from bc_acl_actor
+    where pid = 12 and aid = (select id
+                              from bc_identity_actor
+                              where code = 'admin')
+  );
 ---- dragon 禁止查阅
-INSERT INTO bc_acl_actor(pid, aid, role, order_)
-	select 12, (select id from bc_identity_actor where code = 'dragon'), '00', 2
-	from bc_dual where not exists (
-		select 0 from bc_acl_actor 
-		where pid = 12 and aid = (select id from bc_identity_actor where code = 'dragon')
-	);
+insert into bc_acl_actor (pid, aid, role, order_)
+  select 12, (select id
+              from bc_identity_actor
+              where code = 'dragon'), '00', 2
+  from bc_dual
+  where not exists(
+    select 0
+    from bc_acl_actor
+    where pid = 12 and aid = (select id
+                              from bc_identity_actor
+                              where code = 'dragon')
+  );
 

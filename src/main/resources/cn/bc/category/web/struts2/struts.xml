@@ -1,353 +1,352 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE struts PUBLIC
-    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
-    "http://struts.apache.org/dtds/struts-2.0.dtd">
+  "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+  "http://struts.apache.org/dtds/struts-2.0.dtd">
 <struts>
-	<!-- 管理端 -->
-	<package name="category" extends="bc-default" namespace="/bc/category">
-		<!-- 视图：分页 -->
-		<action name="paging" class="categoryViewAction" method="paging">
-			<!-- 窗口标题 -->
-			<param name="pageTitle">分类管理</param>
-			<!-- 命名空间 -->
-			<param name="namespace">/category</param>
-			<!-- 根节点全编码 -->
-			<param name="rootNode"></param>
-			<!-- 管理角色的编码 -->
-			<param name="manageRole">BC_CATEGORY_MANAGE</param>
-			<!-- 点击树节点的回调函数 -->
-			<param name="callback">bc.category.view.clickTreeNode</param>
-		</action>
+  <!-- 管理端 -->
+  <package name="category" extends="bc-default" namespace="/bc/category">
+    <!-- 视图：分页 -->
+    <action name="paging" class="categoryViewAction" method="paging">
+      <!-- 窗口标题 -->
+      <param name="pageTitle">分类管理</param>
+      <!-- 命名空间 -->
+      <param name="namespace">/category</param>
+      <!-- 根节点全编码 -->
+      <param name="rootNode"></param>
+      <!-- 管理角色的编码 -->
+      <param name="manageRole">BC_CATEGORY_MANAGE</param>
+      <!-- 点击树节点的回调函数 -->
+      <param name="callback">bc.category.view.clickTreeNode</param>
+    </action>
 
-		<!-- 视图：分页数据 -->
-		<action name="data" class="categoryViewAction" method="data">
-			<param name="rootNode"></param>
-			<param name="manageRole">BC_CATEGORY_MANAGE</param>
-		</action>
+    <!-- 视图：分页数据 -->
+    <action name="data" class="categoryViewAction" method="data">
+      <param name="rootNode"></param>
+      <param name="manageRole">BC_CATEGORY_MANAGE</param>
+    </action>
 
-		<!-- 视图：导出数据 -->
-		<action name="export" class="categoryViewAction" method="export">
-			<param name="rootNode"></param>
-			<param name="manageRole">BC_CATEGORY_MANAGE</param>
-		</action>
+    <!-- 视图：导出数据 -->
+    <action name="export" class="categoryViewAction" method="export">
+      <param name="rootNode"></param>
+      <param name="manageRole">BC_CATEGORY_MANAGE</param>
+    </action>
 
-		<!-- 视图：展开树形菜单的子节点 -->
-		<action name="loadTreeData" class="categoryViewAction" method="loadTreeData">
-			<param name="rootNode"></param>
-		</action>
+    <!-- 视图：展开树形菜单的子节点 -->
+    <action name="loadTreeData" class="categoryViewAction" method="loadTreeData">
+      <param name="rootNode"></param>
+    </action>
 
-		<!-- 表单：新建|编辑|查看 -->
-		<action name="form" class="categoryFormAction" method="form">
-			<param name="rootNode"></param>
-			<param name="manageRole">BC_CATEGORY_MANAGE</param>
-			<param name="namespace">/category</param>
-			<result name="form">/modules/bc/category/form.jsp</result>
-			<result name="formr">/modules/bc/category/form.jsp</result>
-		</action>
+    <!-- 表单：新建|编辑|查看 -->
+    <action name="form" class="categoryFormAction" method="form">
+      <param name="rootNode"></param>
+      <param name="manageRole">BC_CATEGORY_MANAGE</param>
+      <param name="namespace">/category</param>
+      <result name="form">/modules/bc/category/form.jsp</result>
+      <result name="formr">/modules/bc/category/form.jsp</result>
+    </action>
 
-		<!-- 表单：保存 -->
-		<action name="save" class="categoryFormAction" method="save">
-			<param name="rootNode"></param>
-			<param name="manageRole">BC_CATEGORY_MANAGE</param>
-			<param name="namespace">/category</param>
-		</action>
+    <!-- 表单：保存 -->
+    <action name="save" class="categoryFormAction" method="save">
+      <param name="rootNode"></param>
+      <param name="manageRole">BC_CATEGORY_MANAGE</param>
+      <param name="namespace">/category</param>
+    </action>
 
-		<!-- 表单：删除 -->
-		<action name="delete" class="categoryFormAction" method="delete">
-			<param name="rootNode"></param>
-			<param name="manageRole">BC_CATEGORY_MANAGE</param>
-			<param name="namespace">/category</param>
-		</action>
+    <!-- 表单：删除 -->
+    <action name="delete" class="categoryFormAction" method="delete">
+      <param name="rootNode"></param>
+      <param name="manageRole">BC_CATEGORY_MANAGE</param>
+      <param name="namespace">/category</param>
+    </action>
 
-		<!-- 选择所属分类视图：分页 -->
-		<action name="selectCategory/paging" class="selectCategoryAction" method="paging">
-			<param name="pageTitle">选择所属分类</param>
-			<!-- 根节点全编码 -->
-			<param name="rootNode"></param>
-			<!-- 管理角色的编码 -->
-			<param name="manageRole">BC_CATEGORY_MANAGE</param>
-			<param name="namespace">/category</param>
-		</action>
+    <!-- 选择所属分类视图：分页 -->
+    <action name="selectCategory/paging" class="selectCategoryAction" method="paging">
+      <param name="pageTitle">选择所属分类</param>
+      <!-- 根节点全编码 -->
+      <param name="rootNode"></param>
+      <!-- 管理角色的编码 -->
+      <param name="manageRole">BC_CATEGORY_MANAGE</param>
+      <param name="namespace">/category</param>
+    </action>
 
-		<!-- 选择所属分类视图：非分页 -->
-		<action name="selectCategory/list" class="selectCategoryAction" method="list">
-			<param name="pageTitle">选择所属分类</param>
-			<!-- 根节点全编码 -->
-			<param name="rootNode"></param>
-			<!-- 管理角色的编码 -->
-			<param name="manageRole">BC_CATEGORY_MANAGE</param>
-			<param name="namespace">/category</param>
-		</action>
-		<!-- 选择所属分类视图：非分页 -->
-		<action name="selectCategory/data" class="selectCategoryAction" method="data">
-			<param name="pageTitle">选择所属分类</param>
-			<!-- 根节点全编码 -->
-			<param name="rootNode"></param>
-			<!-- 管理角色的编码 -->
-			<param name="manageRole">BC_CATEGORY_MANAGE</param>
-			<param name="namespace">/category</param>
-		</action>
-	</package>
+    <!-- 选择所属分类视图：非分页 -->
+    <action name="selectCategory/list" class="selectCategoryAction" method="list">
+      <param name="pageTitle">选择所属分类</param>
+      <!-- 根节点全编码 -->
+      <param name="rootNode"></param>
+      <!-- 管理角色的编码 -->
+      <param name="manageRole">BC_CATEGORY_MANAGE</param>
+      <param name="namespace">/category</param>
+    </action>
+    <!-- 选择所属分类视图：非分页 -->
+    <action name="selectCategory/data" class="selectCategoryAction" method="data">
+      <param name="pageTitle">选择所属分类</param>
+      <!-- 根节点全编码 -->
+      <param name="rootNode"></param>
+      <!-- 管理角色的编码 -->
+      <param name="manageRole">BC_CATEGORY_MANAGE</param>
+      <param name="namespace">/category</param>
+    </action>
+  </package>
 
 
+  <!-- 模板分类 -->
+  <package name="tplType" extends="bc-default" namespace="/bc/tpl">
+    <!-- 视图：分页 -->
+    <action name="paging" class="categoryViewAction" method="paging">
+      <!-- 窗口标题 -->
+      <param name="pageTitle">模板分类</param>
+      <!-- 命名空间 -->
+      <param name="namespace">/tpl</param>
+      <!-- 根节点全编码 -->
+      <param name="rootNode">TPL</param>
+      <!-- 管理角色的编码 -->
+      <param name="manageRole">BC_TEMPLATE_CATEGORY_MANAGE</param>
+      <!-- 点击树节点的回调函数 -->
+      <param name="callback">bc.category.view.clickTreeNode</param>
+    </action>
 
-	<!-- 模板分类 -->
-	<package name="tplType" extends="bc-default" namespace="/bc/tpl">
-		<!-- 视图：分页 -->
-		<action name="paging" class="categoryViewAction" method="paging">
-			<!-- 窗口标题 -->
-			<param name="pageTitle">模板分类</param>
-			<!-- 命名空间 -->
-			<param name="namespace">/tpl</param>
-			<!-- 根节点全编码 -->
-			<param name="rootNode">TPL</param>
-			<!-- 管理角色的编码 -->
-			<param name="manageRole">BC_TEMPLATE_CATEGORY_MANAGE</param>
-			<!-- 点击树节点的回调函数 -->
-			<param name="callback">bc.category.view.clickTreeNode</param>
-		</action>
+    <!-- 视图：分页数据 -->
+    <action name="data" class="categoryViewAction" method="data">
+      <param name="rootNode">TPL</param>
+      <param name="manageRole">BC_TEMPLATE_CATEGORY_MANAGE</param>
+    </action>
 
-		<!-- 视图：分页数据 -->
-		<action name="data" class="categoryViewAction" method="data">
-			<param name="rootNode">TPL</param>
-			<param name="manageRole">BC_TEMPLATE_CATEGORY_MANAGE</param>
-		</action>
+    <!-- 视图：导出数据 -->
+    <action name="export" class="categoryViewAction" method="export">
+      <param name="rootNode">TPL</param>
+      <param name="manageRole">BC_TEMPLATE_CATEGORY_MANAGE</param>
+    </action>
 
-		<!-- 视图：导出数据 -->
-		<action name="export" class="categoryViewAction" method="export">
-			<param name="rootNode">TPL</param>
-			<param name="manageRole">BC_TEMPLATE_CATEGORY_MANAGE</param>
-		</action>
+    <!-- 视图：展开树形菜单的子节点 -->
+    <action name="loadTreeData" class="categoryViewAction" method="loadTreeData">
+      <param name="rootNode"></param>
+    </action>
 
-		<!-- 视图：展开树形菜单的子节点 -->
-		<action name="loadTreeData" class="categoryViewAction" method="loadTreeData">
-			<param name="rootNode"></param>
-		</action>
+    <!-- 表单：新建|编辑|查看 -->
+    <action name="form" class="categoryFormAction" method="form">
+      <param name="rootNode">TPL</param>
+      <param name="manageRole">BC_TEMPLATE_CATEGORY_MANAGE</param>
+      <param name="namespace">/tpl</param>
+      <result name="form">/modules/bc/category/form.jsp</result>
+      <result name="formr">/modules/bc/category/form.jsp</result>
+    </action>
 
-		<!-- 表单：新建|编辑|查看 -->
-		<action name="form" class="categoryFormAction" method="form">
-			<param name="rootNode">TPL</param>
-			<param name="manageRole">BC_TEMPLATE_CATEGORY_MANAGE</param>
-			<param name="namespace">/tpl</param>
-			<result name="form">/modules/bc/category/form.jsp</result>
-			<result name="formr">/modules/bc/category/form.jsp</result>
-		</action>
+    <!-- 表单：保存 -->
+    <action name="save" class="categoryFormAction" method="save">
+      <param name="rootNode">TPL</param>
+      <param name="manageRole">BC_TEMPLATE_CATEGORY_MANAGE</param>
+      <param name="namespace">/tpl</param>
+    </action>
 
-		<!-- 表单：保存 -->
-		<action name="save" class="categoryFormAction" method="save">
-			<param name="rootNode">TPL</param>
-			<param name="manageRole">BC_TEMPLATE_CATEGORY_MANAGE</param>
-			<param name="namespace">/tpl</param>
-		</action>
+    <!-- 视图：删除 -->
+    <action name="delete" class="categoryFormAction" method="delete">
+      <param name="rootNode">TPL</param>
+      <param name="manageRole">BC_TEMPLATE_CATEGORY_MANAGE</param>
+      <param name="namespace">/tpl</param>
+    </action>
 
-		<!-- 视图：删除 -->
-		<action name="delete" class="categoryFormAction" method="delete">
-			<param name="rootNode">TPL</param>
-			<param name="manageRole">BC_TEMPLATE_CATEGORY_MANAGE</param>
-			<param name="namespace">/tpl</param>
-		</action>
+    <!-- 选择所属分类视图：分页 -->
+    <action name="selectCategory/paging" class="selectCategoryAction" method="paging">
+      <param name="pageTitle">选择所属分类</param>
+      <!-- 根节点全编码 -->
+      <param name="rootNode">TPL</param>
+      <!-- 命名空间 -->
+      <param name="namespace">/tpl</param>
+      <!-- 管理角色的编码 -->
+      <param name="manageRole">BC_TEMPLATE_CATEGORY_MANAGE</param>
+    </action>
 
-		<!-- 选择所属分类视图：分页 -->
-		<action name="selectCategory/paging" class="selectCategoryAction" method="paging">
-			<param name="pageTitle">选择所属分类</param>
-			<!-- 根节点全编码 -->
-			<param name="rootNode">TPL</param>
-			<!-- 命名空间 -->
-			<param name="namespace">/tpl</param>
-			<!-- 管理角色的编码 -->
-			<param name="manageRole">BC_TEMPLATE_CATEGORY_MANAGE</param>
-		</action>
+    <!-- 选择所属分类视图：非分页 -->
+    <action name="selectCategory/list" class="selectCategoryAction" method="list">
+      <param name="pageTitle">选择所属分类</param>
+      <!-- 根节点全编码 -->
+      <param name="rootNode">TPL</param>
+      <!-- 命名空间 -->
+      <param name="namespace">/tpl</param>
+      <!-- 管理角色的编码 -->
+      <param name="manageRole">BC_TEMPLATE_CATEGORY_MANAGE</param>
+    </action>
+    <action name="selectCategory/data" class="selectCategoryAction" method="data">
+      <param name="pageTitle">选择所属分类</param>
+      <!-- 根节点全编码 -->
+      <param name="rootNode">TPL</param>
+      <!-- 命名空间 -->
+      <param name="namespace">/tpl</param>
+      <!-- 管理角色的编码 -->
+      <param name="manageRole">BC_TEMPLATE_CATEGORY_MANAGE</param>
+    </action>
+  </package>
 
-		<!-- 选择所属分类视图：非分页 -->
-		<action name="selectCategory/list" class="selectCategoryAction" method="list">
-			<param name="pageTitle">选择所属分类</param>
-			<!-- 根节点全编码 -->
-			<param name="rootNode">TPL</param>
-			<!-- 命名空间 -->
-			<param name="namespace">/tpl</param>
-			<!-- 管理角色的编码 -->
-			<param name="manageRole">BC_TEMPLATE_CATEGORY_MANAGE</param>
-		</action>
-		<action name="selectCategory/data" class="selectCategoryAction" method="data">
-			<param name="pageTitle">选择所属分类</param>
-			<!-- 根节点全编码 -->
-			<param name="rootNode">TPL</param>
-			<!-- 命名空间 -->
-			<param name="namespace">/tpl</param>
-			<!-- 管理角色的编码 -->
-			<param name="manageRole">BC_TEMPLATE_CATEGORY_MANAGE</param>
-		</action>
-	</package>
+  <!-- 办公用品分类 -->
+  <package name="officeType" extends="bc-default" namespace="/bc/officeType">
+    <!-- 视图：分页 -->
+    <action name="paging" class="categoryViewAction" method="paging">
+      <!-- 窗口标题 -->
+      <param name="pageTitle">办公用品分类</param>
+      <!-- 命名空间 -->
+      <param name="namespace">/officeType</param>
+      <!-- 根节点全编码 -->
+      <param name="rootNode">BGYP</param>
+      <!-- 管理角色的编码 -->
+      <param name="manageRole">BC_OFFICE_TYPE_MANAGE</param>
+      <!-- 点击树节点的回调函数 -->
+      <param name="callback">bc.category.view.clickTreeNode</param>
+    </action>
 
-	<!-- 办公用品分类 -->
-	<package name="officeType" extends="bc-default" namespace="/bc/officeType">
-		<!-- 视图：分页 -->
-		<action name="paging" class="categoryViewAction" method="paging">
-			<!-- 窗口标题 -->
-			<param name="pageTitle">办公用品分类</param>
-			<!-- 命名空间 -->
-			<param name="namespace">/officeType</param>
-			<!-- 根节点全编码 -->
-			<param name="rootNode">BGYP</param>
-			<!-- 管理角色的编码 -->
-			<param name="manageRole">BC_OFFICE_TYPE_MANAGE</param>
-			<!-- 点击树节点的回调函数 -->
-			<param name="callback">bc.category.view.clickTreeNode</param>
-		</action>
+    <!-- 视图：分页数据 -->
+    <action name="data" class="categoryViewAction" method="data">
+      <param name="rootNode">BGYP</param>
+      <param name="manageRole">BC_OFFICE_TYPE_MANAGE</param>
+    </action>
 
-		<!-- 视图：分页数据 -->
-		<action name="data" class="categoryViewAction" method="data">
-			<param name="rootNode">BGYP</param>
-			<param name="manageRole">BC_OFFICE_TYPE_MANAGE</param>
-		</action>
+    <!-- 视图：导出数据 -->
+    <action name="export" class="categoryViewAction" method="export">
+      <param name="rootNode">BGYP</param>
+      <param name="manageRole">BC_OFFICE_TYPE_MANAGE</param>
+    </action>
 
-		<!-- 视图：导出数据 -->
-		<action name="export" class="categoryViewAction" method="export">
-			<param name="rootNode">BGYP</param>
-			<param name="manageRole">BC_OFFICE_TYPE_MANAGE</param>
-		</action>
+    <!-- 视图：展开树形菜单的子节点 -->
+    <action name="loadTreeData" class="categoryViewAction" method="loadTreeData">
+      <param name="rootNode"></param>
+    </action>
 
-		<!-- 视图：展开树形菜单的子节点 -->
-		<action name="loadTreeData" class="categoryViewAction" method="loadTreeData">
-			<param name="rootNode"></param>
-		</action>
+    <!-- 表单：新建|编辑|查看 -->
+    <action name="form" class="categoryFormAction" method="form">
+      <param name="rootNode">BGYP</param>
+      <param name="manageRole">BC_OFFICE_TYPE_MANAGE</param>
+      <param name="namespace">/officeType</param>
+      <result name="form">/modules/bc/category/form.jsp</result>
+      <result name="formr">/modules/bc/category/form.jsp</result>
+    </action>
 
-		<!-- 表单：新建|编辑|查看 -->
-		<action name="form" class="categoryFormAction" method="form">
-			<param name="rootNode">BGYP</param>
-			<param name="manageRole">BC_OFFICE_TYPE_MANAGE</param>
-			<param name="namespace">/officeType</param>
-			<result name="form">/modules/bc/category/form.jsp</result>
-			<result name="formr">/modules/bc/category/form.jsp</result>
-		</action>
+    <!-- 表单：保存 -->
+    <action name="save" class="categoryFormAction" method="save">
+      <param name="rootNode">BGYP</param>
+      <param name="manageRole">BC_OFFICE_TYPE_MANAGE</param>
+      <param name="namespace">/officeType</param>
+    </action>
 
-		<!-- 表单：保存 -->
-		<action name="save" class="categoryFormAction" method="save">
-			<param name="rootNode">BGYP</param>
-			<param name="manageRole">BC_OFFICE_TYPE_MANAGE</param>
-			<param name="namespace">/officeType</param>
-		</action>
+    <!-- 视图：删除 -->
+    <action name="delete" class="categoryFormAction" method="delete">
+      <param name="rootNode">BGYP</param>
+      <param name="manageRole">BC_OFFICE_TYPE_MANAGE</param>
+      <param name="namespace">/officeType</param>
+    </action>
 
-		<!-- 视图：删除 -->
-		<action name="delete" class="categoryFormAction" method="delete">
-			<param name="rootNode">BGYP</param>
-			<param name="manageRole">BC_OFFICE_TYPE_MANAGE</param>
-			<param name="namespace">/officeType</param>
-		</action>
+    <!-- 选择所属分类视图：分页 -->
+    <action name="selectCategory/paging" class="selectCategoryAction" method="paging">
+      <param name="pageTitle">选择所属分类</param>
+      <!-- 根节点全编码 -->
+      <param name="rootNode">BGYP</param>
+      <!-- 命名空间 -->
+      <param name="namespace">/officeType</param>
+      <!-- 管理角色的编码 -->
+      <param name="manageRole">BC_OFFICE_TYPE_MANAGE</param>
+    </action>
 
-		<!-- 选择所属分类视图：分页 -->
-		<action name="selectCategory/paging" class="selectCategoryAction" method="paging">
-			<param name="pageTitle">选择所属分类</param>
-			<!-- 根节点全编码 -->
-			<param name="rootNode">BGYP</param>
-			<!-- 命名空间 -->
-			<param name="namespace">/officeType</param>
-			<!-- 管理角色的编码 -->
-			<param name="manageRole">BC_OFFICE_TYPE_MANAGE</param>
-		</action>
+    <!-- 选择所属分类视图：非分页 -->
+    <action name="selectCategory/list" class="selectCategoryAction" method="list">
+      <param name="pageTitle">选择所属分类</param>
+      <!-- 根节点全编码 -->
+      <param name="rootNode">BGYP</param>
+      <!-- 命名空间 -->
+      <param name="namespace">/officeType</param>
+      <!-- 管理角色的编码 -->
+      <param name="manageRole">BC_OFFICE_TYPE_MANAGE</param>
+    </action>
 
-		<!-- 选择所属分类视图：非分页 -->
-		<action name="selectCategory/list" class="selectCategoryAction" method="list">
-			<param name="pageTitle">选择所属分类</param>
-			<!-- 根节点全编码 -->
-			<param name="rootNode">BGYP</param>
-			<!-- 命名空间 -->
-			<param name="namespace">/officeType</param>
-			<!-- 管理角色的编码 -->
-			<param name="manageRole">BC_OFFICE_TYPE_MANAGE</param>
-		</action>
+    <action name="selectCategory/data" class="selectCategoryAction" method="data">
+      <param name="pageTitle">选择所属分类</param>
+      <!-- 根节点全编码 -->
+      <param name="rootNode">BGYP</param>
+      <!-- 命名空间 -->
+      <param name="namespace">/officeType</param>
+      <!-- 管理角色的编码 -->
+      <param name="manageRole">BC_OFFICE_TYPE_MANAGE</param>
+    </action>
+  </package>
 
-		<action name="selectCategory/data" class="selectCategoryAction" method="data">
-			<param name="pageTitle">选择所属分类</param>
-			<!-- 根节点全编码 -->
-			<param name="rootNode">BGYP</param>
-			<!-- 命名空间 -->
-			<param name="namespace">/officeType</param>
-			<!-- 管理角色的编码 -->
-			<param name="manageRole">BC_OFFICE_TYPE_MANAGE</param>
-		</action>
-	</package>
+  <!-- 资产分类 -->
+  <package name="assetType" extends="bc-default" namespace="/bc/asset">
+    <!-- 视图：分页 -->
+    <action name="paging" class="categoryViewAction" method="paging">
+      <!-- 窗口标题 -->
+      <param name="pageTitle">资产分类</param>
+      <!-- 命名空间 -->
+      <param name="namespace">/asset</param>
+      <!-- 根节点全编码 -->
+      <param name="rootNode">ASSET_TYPE</param>
+      <!-- 管理角色的编码 -->
+      <param name="manageRole">BC_ASSET_TYPE_MANAGE</param>
+      <!-- 点击树节点的回调函数 -->
+      <param name="callback">bc.category.view.clickTreeNode</param>
+    </action>
 
-	<!-- 资产分类 -->
-	<package name="assetType" extends="bc-default" namespace="/bc/asset">
-		<!-- 视图：分页 -->
-		<action name="paging" class="categoryViewAction" method="paging">
-			<!-- 窗口标题 -->
-			<param name="pageTitle">资产分类</param>
-			<!-- 命名空间 -->
-			<param name="namespace">/asset</param>
-			<!-- 根节点全编码 -->
-			<param name="rootNode">ASSET_TYPE</param>
-			<!-- 管理角色的编码 -->
-			<param name="manageRole">BC_ASSET_TYPE_MANAGE</param>
-			<!-- 点击树节点的回调函数 -->
-			<param name="callback">bc.category.view.clickTreeNode</param>
-		</action>
+    <!-- 视图：分页数据 -->
+    <action name="data" class="categoryViewAction" method="data">
+      <param name="rootNode">ASSET_TYPE</param>
+      <param name="manageRole">BC_ASSET_TYPE_MANAGE</param>
+    </action>
 
-		<!-- 视图：分页数据 -->
-		<action name="data" class="categoryViewAction" method="data">
-			<param name="rootNode">ASSET_TYPE</param>
-			<param name="manageRole">BC_ASSET_TYPE_MANAGE</param>
-		</action>
+    <!-- 视图：导出数据 -->
+    <action name="export" class="categoryViewAction" method="export">
+      <param name="rootNode">ASSET_TYPE</param>
+      <param name="manageRole">BC_ASSET_TYPE_MANAGE</param>
+    </action>
 
-		<!-- 视图：导出数据 -->
-		<action name="export" class="categoryViewAction" method="export">
-			<param name="rootNode">ASSET_TYPE</param>
-			<param name="manageRole">BC_ASSET_TYPE_MANAGE</param>
-		</action>
+    <!-- 视图：展开树形菜单的子节点 -->
+    <action name="loadTreeData" class="categoryViewAction" method="loadTreeData">
+      <param name="rootNode"></param>
+    </action>
 
-		<!-- 视图：展开树形菜单的子节点 -->
-		<action name="loadTreeData" class="categoryViewAction" method="loadTreeData">
-			<param name="rootNode"></param>
-		</action>
+    <!-- 表单：新建|编辑|查看 -->
+    <action name="form" class="categoryFormAction" method="form">
+      <param name="rootNode">ASSET_TYPE</param>
+      <param name="manageRole">BC_ASSET_TYPE_MANAGE</param>
+      <param name="namespace">/asset</param>
+      <result name="form">/modules/bc/category/form.jsp</result>
+      <result name="formr">/modules/bc/category/form.jsp</result>
+    </action>
 
-		<!-- 表单：新建|编辑|查看 -->
-		<action name="form" class="categoryFormAction" method="form">
-			<param name="rootNode">ASSET_TYPE</param>
-			<param name="manageRole">BC_ASSET_TYPE_MANAGE</param>
-			<param name="namespace">/asset</param>
-			<result name="form">/modules/bc/category/form.jsp</result>
-			<result name="formr">/modules/bc/category/form.jsp</result>
-		</action>
+    <!-- 表单：保存 -->
+    <action name="save" class="categoryFormAction" method="save">
+      <param name="rootNode">ASSET_TYPE</param>
+      <param name="manageRole">BC_ASSET_TYPE_MANAGE</param>
+      <param name="namespace">/asset</param>
+    </action>
 
-		<!-- 表单：保存 -->
-		<action name="save" class="categoryFormAction" method="save">
-			<param name="rootNode">ASSET_TYPE</param>
-			<param name="manageRole">BC_ASSET_TYPE_MANAGE</param>
-			<param name="namespace">/asset</param>
-		</action>
+    <!-- 视图：删除 -->
+    <action name="delete" class="categoryFormAction" method="delete">
+      <param name="rootNode">ASSET_TYPE</param>
+      <param name="manageRole">BC_ASSET_TYPE_MANAGE</param>
+      <param name="namespace">/asset</param>
+    </action>
 
-		<!-- 视图：删除 -->
-		<action name="delete" class="categoryFormAction" method="delete">
-			<param name="rootNode">ASSET_TYPE</param>
-			<param name="manageRole">BC_ASSET_TYPE_MANAGE</param>
-			<param name="namespace">/asset</param>
-		</action>
+    <!-- 选择所属分类视图：分页 -->
+    <action name="selectCategory/paging" class="selectCategoryAction" method="paging">
+      <param name="pageTitle">选择所属分类</param>
+      <param name="rootNode">ASSET_TYPE</param>
+      <!-- 命名空间 -->
+      <param name="namespace">/asset</param>
+      <param name="manageRole">BC_ASSET_TYPE_MANAGE</param>
+    </action>
 
-		<!-- 选择所属分类视图：分页 -->
-		<action name="selectCategory/paging" class="selectCategoryAction" method="paging">
-			<param name="pageTitle">选择所属分类</param>
-			<param name="rootNode">ASSET_TYPE</param>
-			<!-- 命名空间 -->
-			<param name="namespace">/asset</param>
-			<param name="manageRole">BC_ASSET_TYPE_MANAGE</param>
-		</action>
+    <!-- 选择所属分类视图：非分页 -->
+    <action name="selectCategory/list" class="selectCategoryAction" method="list">
+      <param name="pageTitle">选择所属分类</param>
+      <param name="rootNode">ASSET_TYPE</param>
+      <!-- 命名空间 -->
+      <param name="namespace">/asset</param>
+      <param name="manageRole">BC_ASSET_TYPE_MANAGE</param>
+    </action>
 
-		<!-- 选择所属分类视图：非分页 -->
-		<action name="selectCategory/list" class="selectCategoryAction" method="list">
-			<param name="pageTitle">选择所属分类</param>
-			<param name="rootNode">ASSET_TYPE</param>
-			<!-- 命名空间 -->
-			<param name="namespace">/asset</param>
-			<param name="manageRole">BC_ASSET_TYPE_MANAGE</param>
-		</action>
-
-		<action name="selectCategory/data" class="selectCategoryAction" method="data">
-			<param name="pageTitle">选择所属分类</param>
-			<param name="rootNode">ASSET_TYPE</param>
-			<!-- 命名空间 -->
-			<param name="namespace">/asset</param>
-			<param name="manageRole">BC_ASSET_TYPE_MANAGE</param>
-		</action>
-	</package>
+    <action name="selectCategory/data" class="selectCategoryAction" method="data">
+      <param name="pageTitle">选择所属分类</param>
+      <param name="rootNode">ASSET_TYPE</param>
+      <!-- 命名空间 -->
+      <param name="namespace">/asset</param>
+      <param name="manageRole">BC_ASSET_TYPE_MANAGE</param>
+    </action>
+  </package>
 </struts>
