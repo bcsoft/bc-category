@@ -4,10 +4,11 @@
   <parent>
     <groupId>cn.bc</groupId>
     <artifactId>bc-parent</artifactId>
-    <version>${revision}</version>
-    <relativePath>../bc-parent</relativePath>
+    <version>4.5-SNAPSHOT</version>
+    <relativePath/>
   </parent>
   <artifactId>bc-category</artifactId>
+  <version>4.5-SNAPSHOT</version>
   <description>分类管理</description>
   <dependencies>
     <dependency>
